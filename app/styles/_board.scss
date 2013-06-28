@@ -1,0 +1,46 @@
+
+.board-header {
+  margin: 0;
+  border-bottom: 1px solid #CCC;
+  h1 {
+    display: inline-block;
+    font-size: 20px;
+  }
+}
+
+.board-header-inner {
+  padding: 5px 20px;
+}
+
+#board-search {
+  margin-top:-5px;
+  margin-left: 20px;
+}
+
+.board-dropzone {
+  // background: darken($purple, 15%);
+  background: #efefef;
+  display: block;
+  // height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  // overflow-y: hidden;
+}
+
+.board-dropzone-inner {
+  padding: 10px;
+  width: 200%;
+}
+
+.column {
+  background: #FFF;
+  border: 1px solid #CCC;
+  float: left;
+  height: 400px;
+  margin: 0 5px;
+  width: 350px;
+}
+
+.column:first-child {
+  margin-left: 0px;
+}
