@@ -5,7 +5,8 @@
             id="board-search"
             class="input-medium search-query"
             placeholder="Search..."
-            grow-when-clicked="300">
+            grow-when-clicked="300"
+            ng-model="query">
   </div>
 </div>
 
@@ -16,7 +17,7 @@
         Todo
       </div>
       <div class="column-body">
-        <a ng-repeat="bug in stuff" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+        <a ng-repeat="bug in stuff | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
             <div class="card-body">

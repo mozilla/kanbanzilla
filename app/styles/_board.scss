@@ -32,9 +32,10 @@
   padding: 10px;
   width: 200%;
   height: 95%;
+  position: relative;
 
   // @include translate3d(-500px, 0, 0);
-  // @include transition(all 0.15s linear);
+  @include transition(all 0.15s linear);
 }
 
 .column {

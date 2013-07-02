@@ -1,42 +1,58 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .directive('fancyScrollHorizontally', ['$document', '$window', function ($document, $window) {
+  .directive('fancyScrollHorizontally', ['$document', function ($document) {
     return {
       restrict: 'A',
-      link: function postLink(scope, element, attrs) {
+      link: function postLink(scope, element) {
 
         var speed = 20;
         var position = 0;
 
+        function cssPrefix (key, value) {
+          var prefixes = ['-webkit-', '-moz-', '-o-'];
+          var prefixedRule = {};
+
+          for(var i = 0, l = prefixes.length; i < l ; i++){
+            prefixedRule[prefixes[i] + key] = value;
+          }
+
+          return prefixedRule;
+        }
+
         function moveElement (distance) {
-          if(position + distance <= 0) {
-            position += distance;
-            element.css('-webkit-transform', 'translate3d(' + position + 'px, 0, 0)');
+          position += distance;
+          if(position > 0) {
+            position = 0;
+          }
+          // element.css('left', position + 'px');
+          // element.css('-moz-transform', 'translate3d(' + position + 'px, 0, 0)');
+          element.css(cssPrefix('transform', 'translate3d(' + position + 'px, 0, 0)'));
+        }
+
+        function fancyScrollWheelHandler (e) {
+          console.log('scrolling');
+          if(e.target === e.currentTarget){
+            moveElement(e.originalEvent.wheelDelta / 5);
           }
         }
 
-        // angular.element(window).scroll(function () {
-        //   console.log('scrolling');
-        // });
-
-        angular.element(window).bind('scroll', function () {
-          console.log('scrolling');
-        });
-
-
-        $document.bind('keydown', function (e) {
-          if(e.keyCode == 37) {
+        function fancyKeyHandler (e) {
+          if(e.keyCode === 37) {
             moveElement(speed);
           }
-          else if(e.keyCode == '39') {
+          else if(e.keyCode === 39) {
             moveElement(-speed);
           }
+        }
+
+        element.bind('mousewheel', fancyScrollWheelHandler);
+        $document.bind('keydown', fancyKeyHandler);
+        scope.$on('$destroy', function () {
+          element.unbind('mousewheel');
+          $document.unbind('keydown');
         });
 
-        scope.$on('$destroy', function () {
-          element.unbind('keydown');
-        });
       }
     };
   }]);
