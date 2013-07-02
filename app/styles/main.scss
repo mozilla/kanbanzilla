@@ -29,10 +29,16 @@ html, body {
 }
 
 #product-component-switcher {
-  margin-top:5px;
   background: darken($purple, 10%);
   color: lighten($purple, 20%);
   border: none;
+  width: 300px;
   // border-color: lighten($purple, 15%);
-  margin-left:20px;
+  margin: 5px 20px 0 20px;
+}
+
+#s2id_product-component-switcher {
+  margin-top:5px;
+  width: 300px;
+  margin: 5px 20px 0 20px;
 }

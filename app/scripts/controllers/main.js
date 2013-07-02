@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('MainCtrl', ['$scope', 'Bugzilla',
+  .controller('MainCtrl', ['$scope', 'BugzillaMock',
   function ($scope, Bugzilla) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',
@@ -19,5 +19,15 @@ angular.module('kanbanzillaApp')
     //   .error(function (data) {
     //     console.log(data);
     //   });
+
+  Bugzilla.getAllBugs()
+    .success(function (resp) {
+      $scope.stuff = resp.data;
+      // console.log(data);
+    });
+
+    $scope.goToBugzilla = function (bug) {
+      window.location = Bugzilla.getLink(bug.id);
+    };
 
   }]);

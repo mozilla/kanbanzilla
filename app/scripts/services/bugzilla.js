@@ -19,17 +19,21 @@ angular.module('kanbanzillaApp')
 
       /* BUGS=============== */
 
-      getAllBugs: function () {
-
+      getLink: function (id) {
+        return 'https://bugzilla.mozilla.org/show_bug.cgi?id=' + id;
       },
 
-      countBugs: function (searchParams) {
-        // - /count GET
+      getAllBugs: function () {
+
       },
 
       getBug: function (id) {
         // - /bug/<id> GET
         return $http.get(BASE_URL + '/bug/' + id);
+      },
+
+      countBugs: function (searchParams) {
+        // - /count GET
       },
 
       createBug: function (data) {

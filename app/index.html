@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="components/select2/select2.css">
     <link rel="stylesheet" href="components/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="styles/unitedstrap.min.css">
     <link rel="stylesheet" href="styles/main.css">
@@ -34,17 +35,22 @@
 
         <ul class="nav">
           <li><a class="brand" href="#">Kanbanzilla</a></li>
-          <select name="" id="product-component-switcher">
-            <option value="">Sometihng</option>
-            <option value="">Project</option>
-            <option value="">Component</option>
-            <option value="">Another</option>
-            <option value="">Something</option>
-          </select>
+          <li>
+            <select name="" id="product-component-switcher" ui-select2 ng-model="select2">
+              <option value="">Something</option>
+              <option value="">Project</option>
+              <option value="">Component</option>
+              <option value="">Another</option>
+              <option value="">Something</option>
+            </select>
+          </li>
         </ul>
 
         <div class="pull-right">
-          <a href="#" class="btn btn-primary">Login</a>
+          <ul class="nav">
+            <li><a href="#/settings">Settings</a></li>
+            <li><a href="#">Something</a></li>
+          </ul>
         </div>
 
       </div>
@@ -54,15 +60,23 @@
       <div ng-view class="ng-view"></div>
     </div>
 
+    <script src="components/jquery/jquery.js"></script>
     <script src="components/angular/angular.js"></script>
     <script src="components/angular-cookies/angular-cookies.js"></script>
     <script src="components/angular-sanitize/angular-sanitize.js"></script>
 
     <!-- build:js scripts/scripts.js -->
+    <script src="components/select2/select2.js"></script>
+    <script src="components/angular-ui-select2/src/select2.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/main.js"></script>
     <script src="scripts/services/bugzilla.js"></script>
     <script src="scripts/directives/autofillheight.js"></script>
+    <script src="scripts/directives/growwhenclicked.js"></script>
+    <script src="scripts/services/bugzillamock.js"></script>
+    <script src="scripts/controllers/settings.js"></script>
+    <script src="scripts/filters/truncate.js"></script>
+    <script src="scripts/directives/fancyScrollHorizontally.js"></script>
     <!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->

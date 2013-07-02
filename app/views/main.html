@@ -1,15 +1,36 @@
 <div class="board-header">
   <div class="board-header-inner">
     <h1>Board Name</h1>
-    <input type="text" id="board-search" class="input-medium search-query" placeholder="Search...">
+    <input type="text"
+            id="board-search"
+            class="input-medium search-query"
+            placeholder="Search..."
+            grow-when-clicked="300">
   </div>
 </div>
 
 <div class="board-dropzone" auto-fill-height>
-  <div class="board-dropzone-inner">
+  <div class="board-dropzone-inner" fancy-scroll-horizontally>
     <div class="column">
       <div class="column-header">
         Todo
+      </div>
+      <div class="column-body">
+        <a ng-repeat="bug in stuff" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+          <div class="card">
+            <div class="card-header">Bug ID: #{{bug.id}}</div>
+            <div class="card-body">
+              <div class="card-content">
+                <strong>{{bug.alias | truncateByCharsAndEndWith : 200 : '...' }}</strong>
+                <p>{{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}</p>
+              </div>
+              <div class="card-hang-right"></div>
+            </div>
+            <div class="card-footer">
+              this is the footers
+            </div>
+          </div>
+        </a>
       </div>
     </div>
     <div class="column">

@@ -15,32 +15,109 @@
 #board-search {
   margin-top:-5px;
   margin-left: 20px;
+  @include transition(width 0.25s ease-in-out);
 }
 
 .board-dropzone {
-  // background: darken($purple, 15%);
-  background: #efefef;
+  background: darken($purple, 20%);
   display: block;
-  // height: 100%;
   width: 100%;
   overflow-x: hidden;
+  // possible non-javascript solution
+  // height: 100%;
   // overflow-y: hidden;
 }
 
 .board-dropzone-inner {
   padding: 10px;
   width: 200%;
+  height: 95%;
+
+  // @include translate3d(-500px, 0, 0);
+  // @include transition(all 0.15s linear);
 }
 
 .column {
-  background: #FFF;
+  // background: #4A4A4A;
+  background: #efefef;
   border: 1px solid #CCC;
+  border-top: 1px solid #FFF;
+  border-bottom: 1px solid #000;
   float: left;
-  height: 400px;
-  margin: 0 5px;
+  min-height: 115px;
+  padding-bottom:10px;
+  // height: 100%;
+  // height: 400px;
+  margin: 0 2px;
   width: 350px;
+  max-height:100%;
+  overflow: auto;
+
+  @include border-radius(5px);
 }
 
 .column:first-child {
   margin-left: 0px;
+}
+
+.column-header {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 10px 0 5px 15px;
+}
+
+.card-wrapper {
+  color: #333;
+  &:visited {
+    color: #333;
+  }
+  &:hover {
+    text-decoration: none;
+    color: mix(lighten(#333, 15%), $purple, 50%);
+  }
+}
+
+.card {
+  min-height: 50px;
+  background: #FFF;
+  margin: 5px;
+  border: 1px solid #CCC;
+  border-bottom: 1px solid #B1B1B1;
+  overflow-x: hidden;
+
+  @include border-radius(5px);
+}
+
+.card-header {
+  display: inline;
+  background: $purple;
+  color: #FFF;
+  padding: 2px;
+  font-size: 11px;
+  float: right;
+}
+
+.card-body {
+  padding: 5px;
+  position: relative;
+}
+
+.card-content {
+  // width: 80%;
+}
+
+.card-hang-right {
+  // background: $purple;
+  width: 65px;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.card-footer {
+  font-size:10px;
+  margin-top: 5px;
+  // background: #F4F2F2;
+  // border-top: 1px solid #E0DDDD;
 }
