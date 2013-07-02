@@ -30,4 +30,8 @@ angular.module('kanbanzillaApp')
       window.location = Bugzilla.getLink(bug.id);
     };
 
+    $scope.complete = function (bug) {
+      alert(bug.id);
+    };
+
   }]);

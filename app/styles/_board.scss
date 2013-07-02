@@ -30,12 +30,12 @@
 
 .board-dropzone-inner {
   padding: 10px;
-  width: 200%;
-  height: 95%;
+  width: 1000%;
+  height: 92%;
   position: relative;
 
   // @include translate3d(-500px, 0, 0);
-  @include transition(all 0.15s linear);
+  // @include transition(all 0.15s linear);
 }
 
 .column {
@@ -83,7 +83,7 @@
   background: #FFF;
   margin: 5px;
   border: 1px solid #CCC;
-  border-bottom: 1px solid #B1B1B1;
+  border-bottom: 1px solid #9E9E9E;
   overflow-x: hidden;
 
   @include border-radius(5px);

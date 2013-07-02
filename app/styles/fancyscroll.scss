@@ -1,0 +1,34 @@
+.fancy-scroll-background {
+  width: 99%;
+  margin: 0 0.5%;
+  background: darken($purple, 25%);
+  height: 12px;
+  position: absolute;
+  bottom: 10px;
+
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: moz-none;
+  -ms-user-select: none;
+  user-select: none;
+  @include border-radius(30px);
+}
+
+.fancy-scroll-background.hidden {
+  display: none;
+}
+
+.fancy-scroll-inner {
+  height: 100%;
+  position: relative;
+  // width: 200px;
+  background: darken($purple, 8%);
+  @include border-radius(30px);
+  &:hover {
+    background: $purple;
+  }
+
+  @include transition(all 0.15s linear)
+}
