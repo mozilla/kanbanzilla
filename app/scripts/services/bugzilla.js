@@ -17,6 +17,17 @@ angular.module('kanbanzillaApp')
 
       },
 
+      getConfig: function () {
+        console.log('getting /config');
+        return $http.get(BASE_URL + '/configuration/');
+      },
+
+      // getProducts: function () {
+      //   this.getConfig().success(function (data) {
+      //     console.log(data);
+      //   });
+      // },
+
       /* BUGS=============== */
 
       getLink: function (id) {

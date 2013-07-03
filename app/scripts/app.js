@@ -11,6 +11,10 @@ angular.module('kanbanzillaApp', ['ui.select2'])
         templateUrl: 'views/settings.html',
         controller: 'SettingsCtrl'
       })
+      .when('/board', {
+        templateUrl: 'views/board.html',
+        controller: 'BoardCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });

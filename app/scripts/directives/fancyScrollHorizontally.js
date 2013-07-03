@@ -107,7 +107,6 @@ angular.module('kanbanzillaApp')
         }
 
         init();
-
         scope.$on('$destroy', destroy);
 
       }

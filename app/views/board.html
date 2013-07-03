@@ -1,0 +1,127 @@
+<div class="board-header">
+  <div class="board-header-inner">
+    <h1>Board Name</h1>
+    <input type="text"
+            id="board-search"
+            class="input-medium search-query"
+            placeholder="Search..."
+            grow-when-clicked="300"
+            ng-model="query.alias">
+  </div>
+</div>
+
+<div class="board-dropzone" auto-fill-height>
+  <div class="board-dropzone-inner" fancy-scroll-horizontally>
+
+    <div class="column" horizontally-resizable>
+      <div class="column-header">
+        Unconfirmed
+      </div>
+      <div class="column-body" max-remaining-height="40">
+        <div class="column-body-inner">
+          <a ng-repeat="bug in stuff | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+            <div class="card">
+              <div class="card-header">Bug ID: #{{bug.id}}</div>
+              <div class="card-body">
+                <div class="card-content">
+                  <strong>{{bug.alias | truncateByCharsAndEndWith : 200 : '...' }}</strong>
+                  <p>{{bug.summary | truncateByCharsAndEndWith : 150 : '...' }}</p>
+                </div>
+                <div class="card-hang-right"></div>
+              </div>
+              <div class="card-footer">
+                <span class="pull-right" ng-click="complete(bug)">
+                  <i class="icon-search"></i>
+                </span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="column" horizontally-resizable>
+      <div class="column-header">
+        New
+      </div>
+      <div class="column-body" max-remaining-height="40">
+        <a ng-repeat="bug in stuff | filter: 'new' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+          <div class="card">
+            <div class="card-header">Bug ID: #{{bug.id}}</div>
+            <div class="card-body">
+              <div class="card-content">
+                <strong>{{bug.alias | truncateByCharsAndEndWith : 200 : '...' }}</strong>
+                <p>{{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}</p>
+              </div>
+              <div class="card-hang-right"></div>
+            </div>
+            <div class="card-footer">
+              <span class="pull-right" ng-click="complete(bug)">
+                <i class="icon-search"></i>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="column" horizontally-resizable>
+      <div class="column-header">
+        Assigned
+      </div>
+      <div class="column-body" max-remaining-height="40">
+        <a ng-repeat="bug in stuff | filter: 'assigned' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+          <div class="card">
+            <div class="card-header">Bug ID: #{{bug.id}}</div>
+            <div class="card-body">
+              <div class="card-content">
+                <strong>{{bug.alias | truncateByCharsAndEndWith : 200 : '...' }}</strong>
+                <p>{{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}</p>
+              </div>
+              <div class="card-hang-right"></div>
+            </div>
+            <div class="card-footer">
+              <span class="pull-right" ng-click="complete(bug)">
+                <i class="icon-search"></i>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="column" horizontally-resizable>
+      <div class="column-header">
+        Resolved
+      </div>
+      <div class="column-body" max-remaining-height="40">
+        <a ng-repeat="bug in stuff | filter: 'resolved' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+          <div class="card">
+            <div class="card-header">Bug ID: #{{bug.id}}</div>
+            <div class="card-body">
+              <div class="card-content">
+                <strong>{{bug.alias | truncateByCharsAndEndWith : 200 : '...' }}</strong>
+                <p>{{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}</p>
+              </div>
+              <div class="card-hang-right"></div>
+            </div>
+            <div class="card-footer">
+              <span class="pull-right" ng-click="complete(bug)">
+                <i class="icon-search"></i>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="column" horizontally-resizable>
+      <div class="column-header">Something 1</div>
+      <div class="column-body"></div>
+    </div>
+    <div class="column" style="width:700px;" horizontally-resizable>
+      <div class="column-header">Something 2</div>
+      <div class="column-body"></div>
+    </div>
+    <div class="column" horizontally-resizable>
+      <div class="column-header">Something 3</div>
+      <div class="column-body"></div>
+    </div>
+  </div>
+</div>

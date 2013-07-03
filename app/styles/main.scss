@@ -19,15 +19,16 @@ html, body {
    -khtml-user-select: none;
    -webkit-user-select: none;
    user-select: none;
+   cursor: ew-resize;
 }
 
 
-.ng-view-wrapper {
+.myng-view-wrapper {
   width: 100%;
   height: 100%;
 }
 
-.ng-view {
+.myng-view {
   // height:100%;
   padding-top:41px;
   // overflow: hidden;

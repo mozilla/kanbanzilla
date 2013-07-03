@@ -7,28 +7,50 @@ angular.module('kanbanzillaApp')
       link: function postLink(scope, element) {
         var resizing = false;
         var resizeHandle = angular.element(document.createElement('div'));
+        var mouseX;
+        var cachedOffsetLeft;
 
         function horizontalResizeHandler (e) {
           if(resizing){
-            element.css('width', e.clientX - element.offset().left + 'px');
+            mouseX = e.clientX;
+            // element.css('width', e.clientX - element.offset().left + 'px');
           }
         }
+
+        function horizontalMouseupHandler (e) {
+          if(resizing){
+            element.parent().removeClass('unselectable');
+          }
+          cachedOffsetLeft = undefined;
+          resizing = false;
+        }
+
+        setInterval(function () {
+          if(resizing){
+            if(cachedOffsetLeft === undefined){
+              cachedOffsetLeft = element.offset().left;
+            }
+            // console.log(element.offset().left);
+            element.css('width', mouseX - cachedOffsetLeft + 'px');
+          }
+        }, 16);
 
         resizeHandle.addClass('resizable-handle');
         element[0].appendChild(resizeHandle[0]);
 
         resizeHandle.bind('mousedown', function () {
           resizing = true;
+          // cachedOffsetLeft = element.offset().left;
           element.parent().addClass('unselectable');
         });
 
         $document.bind('mousemove', horizontalResizeHandler);
+        $document.bind('mouseup', horizontalMouseupHandler);
 
-        $document.bind('mouseup', function () {
-          if(resizing){
-            element.parent().removeClass('unselectable');
-          }
-          resizing = false;
+        scope.$on('destroy', function () {
+          resizeHandle.unbind('mousedown');
+          $document.unbind('mousemove', horizontalResizeHandler);
+          $document.unbind('mouseup', horizontalMouseupHandler);
         });
       }
     };
