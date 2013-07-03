@@ -10,9 +10,6 @@ angular.module('kanbanzillaApp')
 
         function horizontalResizeHandler (e) {
           if(resizing){
-            // console.log(e);
-            // console.log(e.clientX, element.context.offsetLeft, e.clientX - element.context.offsetLeft);
-            console.log(e.clientX - element.offset().left);
             element.css('width', e.clientX - element.offset().left + 'px');
           }
         }
@@ -22,8 +19,7 @@ angular.module('kanbanzillaApp')
 
         resizeHandle.bind('mousedown', function () {
           resizing = true;
-          console.log('resizing');
-          console.log(element.parent().addClass('unselectable'));
+          element.parent().addClass('unselectable');
         });
 
         $document.bind('mousemove', horizontalResizeHandler);
@@ -33,7 +29,6 @@ angular.module('kanbanzillaApp')
             element.parent().removeClass('unselectable');
           }
           resizing = false;
-          console.log('not resizing');
         });
       }
     };
