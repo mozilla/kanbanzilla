@@ -4,7 +4,7 @@ angular.module('kanbanzillaApp')
   .factory('BugzillaMock', ['$q','$http', function($q,$http) {
 
     return {
-      getBug: function () {
+      getBug: function (id) {
         return $http.get('35.json');
       },
       getAllBugs: function () {
