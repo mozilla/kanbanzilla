@@ -1,9 +1,9 @@
 .resizable-handle {
   cursor: ew-resize;
-  width: 5px;
+  width: 6px;
   height: 100%;
   position: absolute;
-  background: red;
-  right: -1px;
+  // background: red;
+  right: -3px;
   top: 0;
 }
