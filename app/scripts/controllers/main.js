@@ -20,7 +20,7 @@ angular.module('kanbanzillaApp')
     //     console.log(data);
     //   });
 
-  Bugzilla.getAllBugs()
+    Bugzilla.getAllBugs()
     .success(function (resp) {
       $scope.stuff = resp.data;
       // console.log(data);

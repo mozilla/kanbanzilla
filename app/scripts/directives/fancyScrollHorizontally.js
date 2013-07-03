@@ -8,7 +8,7 @@ angular.module('kanbanzillaApp')
 
         var speed = 20;
         var position = 0;
-        var width = element[0].children[element[0].children.length - 1].offsetLeft + element[0].children[0].offsetWidth;
+        var width = element[0].children[element[0].children.length - 1].offsetLeft + element[0].children[element[0].children.length - 1].offsetWidth;
         var windowWidth = window.innerWidth;
         var scrollbarInnerWidthPercent = 0;
         var scrollbar = document.createElement('div');
@@ -18,9 +18,17 @@ angular.module('kanbanzillaApp')
         function init () {
           element.css('width', width + 'px');
           addScrollbar();
+
           element.bind('mousewheel', fancyScrollWheelHandler);
           $document.bind('keydown', fancyKeyHandler);
-          window.addEventListener('resize', sizeScrollbar);
+          angular.element(window).bind('resize', sizeScrollbar);
+          // window.addEventListener('resize', sizeScrollbar);
+        }
+
+        function destroy () {
+          element.unbind('mousewheel');
+          $document.unbind('keydown');
+          window.removeEventListener('resize', sizeScrollbar);
         }
 
         function addScrollbar () {
@@ -46,11 +54,18 @@ angular.module('kanbanzillaApp')
           if(position > 0) {
             position = 0;
           }
-          if(position - windowWidth < -width - 10) {
-            position = -width - 10 + windowWidth;
+          if(position - windowWidth < -width - 17) {
+            position = -width - 17 + windowWidth;
           }
-          element.css(cssPrefix('transform', 'translate3d(' + position + 'px, 0, 0)'));
           moveScrollbar();
+          render();
+        }
+
+        function render () {
+          if(scrollbarInnerWidthPercent < 1){
+            // element.css('left', position + 'px');
+            element.css(cssPrefix('transform', 'translate3d(' + position + 'px, 0, 0)'));
+          }
         }
 
         function cssPrefix (key, value) {
@@ -67,7 +82,7 @@ angular.module('kanbanzillaApp')
         function moveScrollbar () {
           var completion = position / -(width - windowWidth);
           var remainderScrollbarWidth = (1 - scrollbarInnerWidthPercent);
-          var offset = Math.min(completion, 1) * remainderScrollbarWidth * (windowWidth * .99);
+          var offset = Math.min(completion, 1) * remainderScrollbarWidth * (windowWidth * 0.99);
 
           // this line is causing some weird compositing bugs on chrome with my thinkpad w530s nvidia gpu. Works fine on other hardware/software. The left positioning works without using the GPU.
           // jScrollbarInner.css(cssPrefix('transform', 'translate3d(' + offset + 'px, 0, 0)'));
@@ -93,11 +108,7 @@ angular.module('kanbanzillaApp')
 
         init();
 
-        scope.$on('$destroy', function () {
-          element.unbind('mousewheel');
-          $document.unbind('keydown');
-          window.removeEventListener('resize', sizeScrollbar);
-        });
+        scope.$on('$destroy', destroy);
 
       }
     };

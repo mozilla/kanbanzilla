@@ -24,11 +24,11 @@
   height: 100%;
   position: relative;
   // width: 200px;
-  background: darken($purple, 8%);
+  background: darken($purple, 13%);
   @include border-radius(30px);
   &:hover {
-    background: $purple;
+    background: darken($purple, 6%);
   }
 
-  @include transition(all 0.15s linear)
+  // @include transition(all 0.1s linear)
 }
