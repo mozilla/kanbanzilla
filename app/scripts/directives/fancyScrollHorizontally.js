@@ -58,6 +58,9 @@ angular.module('kanbanzillaApp')
           if(scrollbarInnerWidthPercent < 1){
             scrollbar.className = 'fancy-scroll-background';
           }
+          else {
+            scrollbar.className = 'fancy-scroll-background hidden';
+          }
           moveElement(0);
         }
 
