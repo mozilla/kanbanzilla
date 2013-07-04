@@ -9,6 +9,10 @@ angular.module('kanbanzillaApp')
         var resizeHandle = angular.element(document.createElement('div'));
         var mouseX;
         var cachedOffsetLeft;
+        var resizeEvent = new CustomEvent("resizableResize", {
+          bubbles: false,
+          cancellable: true,
+        });
 
         function horizontalResizeHandler (e) {
           if(resizing){
@@ -20,6 +24,7 @@ angular.module('kanbanzillaApp')
         function horizontalMouseupHandler (e) {
           if(resizing){
             element.parent().removeClass('unselectable');
+            window.dispatchEvent(resizeEvent);
           }
           cachedOffsetLeft = undefined;
           resizing = false;

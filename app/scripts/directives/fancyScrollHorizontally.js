@@ -8,7 +8,7 @@ angular.module('kanbanzillaApp')
 
         var speed = 20;
         var position = 0;
-        var width = element[0].children[element[0].children.length - 1].offsetLeft + element[0].children[element[0].children.length - 1].offsetWidth;
+        var width = 0;
         var windowWidth = window.innerWidth;
         var scrollbarInnerWidthPercent = 0;
         var scrollbar = document.createElement('div');
@@ -16,19 +16,31 @@ angular.module('kanbanzillaApp')
         var jScrollbarInner = angular.element(scrollbarInner);
 
         function init () {
-          element.css('width', width + 'px');
+          calculateWidth();
+          resizeDropZone();
           addScrollbar();
 
           element.bind('mousewheel', fancyScrollWheelHandler);
           $document.bind('keydown', fancyKeyHandler);
-          angular.element(window).bind('resize', sizeScrollbar);
-          // window.addEventListener('resize', sizeScrollbar);
+          // angular.element(window).bind('resize', sizeScrollbar);
+          window.addEventListener('resize', sizeScrollbar);
+          window.addEventListener('resizableResize', resizableResizeHandler);
         }
 
         function destroy () {
           element.unbind('mousewheel');
           $document.unbind('keydown');
           window.removeEventListener('resize', sizeScrollbar);
+          window.removeEventListener('resizableResize', resizableResizeHandler);
+        }
+
+        function resizeDropZone () {
+          element.css('width', width + windowWidth + 'px');
+        }
+
+        function calculateWidth () {
+          // This method breaks when resizing columns more than the width of your window
+          width = element[0].children[element[0].children.length - 1].offsetLeft + element[0].children[element[0].children.length - 1].offsetWidth;
         }
 
         function addScrollbar () {
@@ -83,10 +95,14 @@ angular.module('kanbanzillaApp')
           var completion = position / -(width - windowWidth);
           var remainderScrollbarWidth = (1 - scrollbarInnerWidthPercent);
           var offset = Math.min(completion, 1) * remainderScrollbarWidth * (windowWidth * 0.99);
-
-          // this line is causing some weird compositing bugs on chrome with my thinkpad w530s nvidia gpu. Works fine on other hardware/software. The left positioning works without using the GPU.
           // jScrollbarInner.css(cssPrefix('transform', 'translate3d(' + offset + 'px, 0, 0)'));
           jScrollbarInner.css('left', offset + 'px');
+        }
+
+        function resizableResizeHandler (e) {
+          calculateWidth();
+          resizeDropZone();
+          sizeScrollbar();
         }
 
         function fancyScrollWheelHandler (e) {

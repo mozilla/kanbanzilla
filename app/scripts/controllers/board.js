@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('BoardCtrl', ['$scope', 'Bugzilla',
-  function ($scope, Bugzilla) {
+  .controller('BoardCtrl', ['$scope', 'BugzillaMock', '$routeParams',
+  function ($scope, Bugzilla, $routeParams) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
@@ -12,19 +12,26 @@ angular.module('kanbanzillaApp')
     console.log('Board Controller');
 
     $scope.stuff = [];
+    $scope.product = $routeParams.id;
 
-    Bugzilla.getBug(35)
-      .success(function (data) {
-        $scope.stuff.push(data);
+    // Bugzilla.getBug(35)
+    //   .success(function (data) {
+    //     $scope.stuff.push(data);
+    //     console.log(data);
+    //   })
+    //   .error(function (data) {
+    //     console.log(data);
+    //   });
+
+
+    Bugzilla.getBugsForProduct($routeParams.id)
+      .success(function(data) {
         console.log(data);
+        $scope.stuff = data.data;
       })
       .error(function (data) {
         console.log(data);
       });
-
-    Bugzilla.getConfig().success(function (data) {
-      console.log(data);
-    });
 
 
     // Bugzilla.getAllBugs()

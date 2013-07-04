@@ -11,7 +11,7 @@ angular.module('kanbanzillaApp', ['ui.select2'])
         templateUrl: 'views/settings.html',
         controller: 'SettingsCtrl'
       })
-      .when('/board', {
+      .when('/board/:id', {
         templateUrl: 'views/board.html',
         controller: 'BoardCtrl'
       })

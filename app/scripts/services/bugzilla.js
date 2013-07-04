@@ -1,11 +1,13 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .factory('Bugzilla', ['$http', function($http) {
+  .factory('Bugzilla', ['$http', '$q', '$timeout', function($http, $q, $timeout) {
 
     var TEST_URL = 'https://api-dev.bugzilla.mozilla.org/test/1.3',
         PROD_URL = 'https://api-dev.bugzilla.mozilla.org/latest',
         BASE_URL = PROD_URL;
+
+    var cache = {};
 
     // $http.defaults.headers.jsonp['Content-Type'] = 'application/json';
     // $http.defaults.headers.jsonp['Accept'] = 'application/javascript';
@@ -22,6 +24,33 @@ angular.module('kanbanzillaApp')
         return $http.get(BASE_URL + '/configuration/');
       },
 
+      getProducts: function () {
+        var deferred = $q.defer();
+        deferred.promise.success = deferred.promise.then;
+
+        if(cache['products']) {
+          console.log('grabbing from cache');
+          $timeout(function() {
+            deferred.resolve(cache.products);
+          },1);
+        }
+        else {
+          $http.get(BASE_URL + '/configuration')
+          .success(function (data) {
+            var products = [];
+            for(var product in data.product) {
+              products.push(product);
+            }
+            cache['products'] = products;
+            deferred.resolve(products);
+          })
+          .error(function(data){
+            deferred.resolve(data);
+          });
+        }
+        return deferred.promise;
+      },
+
       // getProducts: function () {
       //   this.getConfig().success(function (data) {
       //     console.log(data);
@@ -36,6 +65,15 @@ angular.module('kanbanzillaApp')
 
       getAllBugs: function () {
 
+      },
+
+      getBugsForProduct: function (product) {
+        console.log('/bug?product=' + product);
+        return $http({
+          method: 'GET',
+          url: BASE_URL + '/bug',
+          params: {'product': product}
+        });
       },
 
       getBug: function (id) {

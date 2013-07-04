@@ -7,6 +7,9 @@ angular.module('kanbanzillaApp')
       getBug: function (id) {
         return $http.get('35.json');
       },
+      getBugsForProduct: function (id) {
+        return $http.get('allbugs.json');
+      },
       getAllBugs: function () {
         return $http.get('allbugs.json');
       },

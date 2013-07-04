@@ -9,4 +9,18 @@ angular.module('kanbanzillaApp')
       'Karma'
     ];
 
+
+    $scope.products = [];
+
+    // Bugzilla.getConfig().success(function (data) {
+    //   for(var product in data.product) {
+    //     $scope.products.push(product);
+    //   }
+    // });
+
+    Bugzilla.getProducts()
+      .success(function(data) {
+        $scope.products = data;
+      });
+
   }]);
