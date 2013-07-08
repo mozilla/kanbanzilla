@@ -60,6 +60,7 @@ angular.module('kanbanzillaApp')
           }
           else {
             scrollbar.className = 'fancy-scroll-background hidden';
+            position = 0;
           }
           moveElement(0);
         }
@@ -80,6 +81,9 @@ angular.module('kanbanzillaApp')
           if(scrollbarInnerWidthPercent < 1){
             // element.css('left', position + 'px');
             element.css(cssPrefix('transform', 'translate3d(' + position + 'px, 0, 0)'));
+          }
+          else {
+            element.css(cssPrefix('transform', 'translate3d(0px, 0, 0)'));
           }
         }
 

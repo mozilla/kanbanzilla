@@ -51,20 +51,10 @@ angular.module('kanbanzillaApp')
         return deferred.promise;
       },
 
-      // getProducts: function () {
-      //   this.getConfig().success(function (data) {
-      //     console.log(data);
-      //   });
-      // },
-
       /* BUGS=============== */
 
       getLink: function (id) {
         return 'https://bugzilla.mozilla.org/show_bug.cgi?id=' + id;
-      },
-
-      getAllBugs: function () {
-
       },
 
       getBugsForProduct: function (product) {
