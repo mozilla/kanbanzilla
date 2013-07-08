@@ -15,10 +15,6 @@ angular.module('kanbanzillaApp')
 
     return {
 
-      authenticate: function (user, pass) {
-
-      },
-
       getConfig: function () {
         console.log('getting /config');
         return $http.get(BASE_URL + '/configuration/');
@@ -66,6 +62,14 @@ angular.module('kanbanzillaApp')
         });
       },
 
+      getBugs: function (searchParams) {
+        return $http({
+          method: 'GET',
+          url: BASE_URL + '/bug',
+          params: searchParams
+        });
+      },
+
       getBug: function (id) {
         // - /bug/<id> GET
         return $http.get(BASE_URL + '/bug/' + id);
@@ -73,6 +77,11 @@ angular.module('kanbanzillaApp')
 
       countBugs: function (searchParams) {
         // - /count GET
+        return $http({
+          method: 'GET',
+          url: BASE_URL + '/count',
+          params: searchParams
+        });
       },
 
       createBug: function (data) {
@@ -85,8 +94,9 @@ angular.module('kanbanzillaApp')
 
       /* COMMENTS=========== */
 
-      commentsForBug: function (id) {
+      getCommentsForBug: function (id) {
         // - /bug/<id>/comment GET
+        return $http.get(BASE_URL + '/bug/' + id + '/comment');
       },
 
       postComment: function (bugId, data) {
@@ -97,18 +107,21 @@ angular.module('kanbanzillaApp')
 
       getHistoryForBug: function (id) {
         // - /bug/<id>/history GET
+        return $http.get(BASE_URL + '/bug/' + id + '/history');
       },
 
       /* FLAGS=============== */
 
       getFlagsForBug: function (id) {
         // - /bug/<id>/flag GET
+        return $http.get(BASE_URL + '/bug/' + id + '/flag');
       },
 
       /* ATTACHMENTS========= */
 
       getAttachmentsForBug: function (id) {
         // - /bug/<id>/attachment GET
+        return $http.get(BASE_URL + '/bug/' + id + '/attachment');
       },
 
       postAttachment: function (bugId, data) {
@@ -117,6 +130,7 @@ angular.module('kanbanzillaApp')
 
       getAttachment: function (id) {
         // - /attachment/<id> GET
+        return $http.get(BASE_URL + '/attachment/' + id);
       },
 
       updateAttachment: function (id, data) {
@@ -127,10 +141,16 @@ angular.module('kanbanzillaApp')
 
       searchForUsers: function (query) {
         // - /user GET - requires authentication
+        return $http({
+          method: 'GET',
+          url: BASE_URL + '/user',
+          params: query
+        });
       },
 
       getUser: function (id) {
         // - /user/<id> GET
+        return $http.get(BASE_URL + '/user/' + id);
       }
 
     };

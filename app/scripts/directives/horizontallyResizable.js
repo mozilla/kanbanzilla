@@ -45,7 +45,7 @@ angular.module('kanbanzillaApp')
 
         resizeHandle.bind('mousedown', function () {
           resizing = true;
-          // cachedOffsetLeft = element.offset().left;
+          cachedOffsetLeft = element.offset().left;
           element.parent().addClass('unselectable');
         });
 

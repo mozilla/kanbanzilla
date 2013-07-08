@@ -19,7 +19,7 @@
       </div>
       <div class="column-body" max-remaining-height="40">
         <div class="column-body-inner">
-          <a ng-repeat="bug in stuff | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+          <a ng-repeat="bug in stuff | filter: 'unconfirmed' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
             <div class="card">
               <div class="card-header">Bug ID: #{{bug.id}}</div>
               <div class="card-body">
@@ -110,18 +110,6 @@
           </div>
         </a>
       </div>
-    </div>
-    <div class="column" horizontally-resizable>
-      <div class="column-header">Something 1</div>
-      <div class="column-body"></div>
-    </div>
-    <div class="column" style="width:700px;" horizontally-resizable>
-      <div class="column-header">Something 2</div>
-      <div class="column-body"></div>
-    </div>
-    <div class="column" horizontally-resizable>
-      <div class="column-header">Something 3</div>
-      <div class="column-body"></div>
     </div>
   </div>
 </div>
