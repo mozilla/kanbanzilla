@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('kanbanzillaApp', ['ui.select2'])
-  .config(function ($routeProvider) {
+  .config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
@@ -18,4 +18,6 @@ angular.module('kanbanzillaApp', ['ui.select2'])
       .otherwise({
         redirectTo: '/'
       });
-  });
+
+    $httpProvider.interceptors.push('bugzillaAuthInterceptor');
+  }]);

@@ -11,12 +11,12 @@ angular.module('kanbanzillaApp')
 
     console.log('Board Controller');
 
-    $scope.stuff = [];
+    $scope.bugs = [];
     $scope.product = $routeParams.id;
 
     // Bugzilla.getBug(35)
     //   .success(function (data) {
-    //     $scope.stuff.push(data);
+    //     $scope.bugs.push(data);
     //     console.log(data);
     //   })
     //   .error(function (data) {
@@ -24,9 +24,9 @@ angular.module('kanbanzillaApp')
     //   });
 
 
-    Bugzilla.getBugsForProduct($routeParams.id)
+    Bugzilla.getBugsForProductId($routeParams.id)
       .success(function(data) {
-        $scope.stuff = data.bugs;
+        $scope.bugs = data.bugs;
       })
       .error(function (data) {
         console.log(data);
@@ -36,6 +36,14 @@ angular.module('kanbanzillaApp')
       .success(function(data) {
         console.log(data);
       });
+
+    // Bugzilla.searchForUsers({match: 'Derek Ries'})
+    //   .success(function(data){
+    //     console.log(data);
+    //   })
+    //   .error(function(data){
+    //     console.log(data);
+    //   });
 
     $scope.goToBugzilla = function (bug) {
       window.location = Bugzilla.getLink(bug.id);

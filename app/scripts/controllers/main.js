@@ -18,9 +18,9 @@ angular.module('kanbanzillaApp')
     //   }
     // });
 
-    Bugzilla.getProducts()
-      .success(function(data) {
-        $scope.products = data;
-      });
+    // Bugzilla.getProducts()
+    //   .success(function(data) {
+    //     $scope.products = data;
+    //   });
 
   }]);

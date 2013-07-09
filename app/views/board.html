@@ -19,7 +19,7 @@
       </div>
       <div class="column-body" max-remaining-height="40">
         <div class="column-body-inner">
-          <a ng-repeat="bug in stuff | filter: 'unconfirmed' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+          <a ng-repeat="bug in bugs | filter: 'unconfirmed' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}" ng-animate="'animated bounceIn'">
             <div class="card">
               <div class="card-header">Bug ID: #{{bug.id}}</div>
               <div class="card-body">
@@ -44,7 +44,7 @@
         New
       </div>
       <div class="column-body" max-remaining-height="40">
-        <a ng-repeat="bug in stuff | filter: 'new' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+        <a ng-repeat="bug in bugs | filter: 'new' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
             <div class="card-body">
@@ -68,7 +68,7 @@
         Assigned
       </div>
       <div class="column-body" max-remaining-height="40">
-        <a ng-repeat="bug in stuff | filter: 'assigned' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+        <a ng-repeat="bug in bugs | filter: 'assigned' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
             <div class="card-body">
@@ -92,7 +92,7 @@
         Resolved
       </div>
       <div class="column-body" max-remaining-height="40">
-        <a ng-repeat="bug in stuff | filter: 'resolved' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+        <a ng-repeat="bug in bugs | filter: 'resolved' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
             <div class="card-body">

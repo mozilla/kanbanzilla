@@ -3,6 +3,13 @@
 angular.module('kanbanzillaApp')
   .factory('Bugzilla', ['$http', '$q', '$timeout', function($http, $q, $timeout) {
 
+    /**
+     * Authentication handled from within the bugzillaAuthInterceptor.
+     * It should intercept all http requests to the bugzilla rest api
+     * and include the authenticated credentials with the request
+     * leaving this service untouched.
+     */
+
     var TEST_URL = 'https://api-dev.bugzilla.mozilla.org/test/1.3',
         PROD_URL = 'https://api-dev.bugzilla.mozilla.org/latest',
         BASE_URL = PROD_URL;
@@ -53,7 +60,7 @@ angular.module('kanbanzillaApp')
         return 'https://bugzilla.mozilla.org/show_bug.cgi?id=' + id;
       },
 
-      getBugsForProduct: function (product) {
+      getBugsForProductId: function (product) {
         console.log('/bug?product=' + product);
         return $http({
           method: 'GET',

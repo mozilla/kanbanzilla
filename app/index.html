@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="components/animate.css/animate.css">
     <link rel="stylesheet" href="components/select2/select2.css">
     <link rel="stylesheet" href="components/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="styles/unitedstrap.min.css">
@@ -26,7 +27,7 @@
     <!-- Add your site or application content here -->
 
 
-    <div class="navbar navbar-inverse navbar-static-top">
+    <div class="navbar navbar-inverse navbar-static-top" ng-controller="HeaderCtrl">
       <div class="navbar-inner">
 
         <ul class="nav">
@@ -43,9 +44,14 @@
         </ul>
 
         <div class="pull-right">
-          <ul class="nav">
+
+          <ul class="nav" ng-if="loggedIn">
             <li><a href="#/settings">Settings</a></li>
             <li><a href="#">Something</a></li>
+          </ul>
+
+          <ul class="nav" ng-if="loggedIn == false">
+            <li><a href="">Login</a></li>
           </ul>
         </div>
 
@@ -57,9 +63,16 @@
     </div>
 
     <script src="components/jquery/jquery.js"></script>
+
+    <script src="components/angular-1.1.5/angular.js"></script>
+    <script src="components/angular-1.1.5/angular-cookies.js"></script>
+    <script src="components/angular-1.1.5/angular-sanitize.js"></script>
+
+<!--
     <script src="components/angular/angular.js"></script>
     <script src="components/angular-cookies/angular-cookies.js"></script>
     <script src="components/angular-sanitize/angular-sanitize.js"></script>
+ -->
 
     <!-- build:js scripts/scripts.js -->
     <script src="components/select2/select2.js"></script>
@@ -76,6 +89,9 @@
     <script src="scripts/directives/fancyScrollHorizontally.js"></script>
     <script src="scripts/directives/maxRemainingHeight.js"></script>
     <script src="scripts/directives/horizontallyResizable.js"></script>
+    <script src="scripts/services/bugzillaAuthInterceptor.js"></script>
+    <script src="scripts/services/bugzillaAuth.js"></script>
+    <script src="scripts/controllers/header.js"></script>
     <!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->

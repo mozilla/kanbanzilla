@@ -7,7 +7,7 @@ angular.module('kanbanzillaApp')
       getBug: function (id) {
         return $http.get('35.json');
       },
-      getBugsForProduct: function (id) {
+      getBugsForProductId: function (id) {
         return $http.get('allbugs.json');
       },
       getAllBugs: function () {
@@ -15,6 +15,9 @@ angular.module('kanbanzillaApp')
       },
       getLink: function (id) {
         return 'https://bugzilla.mozilla.org/show_bug.cgi?id=' + id;
+      },
+      getCommentsForBug: function (id) {
+        return $http.get('35.json');
       }
     };
 
