@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .factory('Bugzilla', ['$http', '$q', '$timeout', function($http, $q, $timeout) {
+  .factory('Bugzilla', ['$http', '$q', '$timeout', 'bugzillaAuth', function($http, $q, $timeout, bugzillaAuth) {
 
     /**
      * Authentication handled from within the bugzillaAuthInterceptor.
@@ -158,6 +158,18 @@ angular.module('kanbanzillaApp')
       getUser: function (id) {
         // - /user/<id> GET
         return $http.get(BASE_URL + '/user/' + id);
+      },
+
+      attemptLogin: function(name, pass) {
+        return $http({
+          method: 'GET',
+          url: BASE_URL + '/user',
+          params: {
+            match: name,
+            username: name,
+            password: pass
+          }
+        });
       }
 
     };

@@ -22,6 +22,15 @@ html, body {
    cursor: ew-resize;
 }
 
+.no-show-btn {
+  width:0;
+  height:0;
+  padding:0;
+  margin:0;
+  overflow:hidden;
+  border:0;
+  display:block;
+}
 
 .myng-view-wrapper {
   width: 100%;

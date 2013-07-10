@@ -45,13 +45,13 @@
 
         <div class="pull-right">
 
-          <ul class="nav" ng-if="loggedIn">
+          <ul class="nav ng-cloak" ng-if="user.loggedIn">
             <li><a href="#/settings">Settings</a></li>
-            <li><a href="#">Something</a></li>
+            <li><a href="#">{{user.username}}</a></li>
           </ul>
 
-          <ul class="nav" ng-if="loggedIn == false">
-            <li><a href="">Login</a></li>
+          <ul class="nav" ng-if="user.loggedIn == false">
+            <li><a href="" ng-click="openLoginDialog()">Login</a></li>
           </ul>
         </div>
 
@@ -77,6 +77,7 @@
     <!-- build:js scripts/scripts.js -->
     <script src="components/select2/select2.js"></script>
     <script src="components/angular-ui-select2/src/select2.js"></script>
+    <script src="components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/main.js"></script>
     <script src="scripts/controllers/board.js"></script>
@@ -89,9 +90,11 @@
     <script src="scripts/directives/fancyScrollHorizontally.js"></script>
     <script src="scripts/directives/maxRemainingHeight.js"></script>
     <script src="scripts/directives/horizontallyResizable.js"></script>
+    <script src="scripts/directives/focuson.js"></script>
     <script src="scripts/services/bugzillaAuthInterceptor.js"></script>
     <script src="scripts/services/bugzillaAuth.js"></script>
     <script src="scripts/controllers/header.js"></script>
+    <script src="scripts/controllers/login.js"></script>
     <!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
