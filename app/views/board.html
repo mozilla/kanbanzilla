@@ -18,6 +18,7 @@
         Unconfirmed
       </div>
       <div class="column-body" max-remaining-height="40">
+        <img width="32" height="32" class="column-loader" ng-show="loading.unconfirmedBugs" src="images/ajax-loader.gif"/>
         <div class="column-body-inner">
           <a ng-repeat="bug in unconfirmedBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
             <div class="card">
@@ -29,9 +30,6 @@
                 <div class="card-hang-right"></div>
               </div>
               <div class="card-footer">
-                <span class="pull-right" ng-click="complete(bug)">
-                  <i class="icon-search"></i>
-                </span>
               </div>
             </div>
           </a>
@@ -43,6 +41,7 @@
         New
       </div>
       <div class="column-body" max-remaining-height="40">
+        <img width="32" height="32" class="column-loader" ng-show="loading.newBugs" src="images/ajax-loader.gif"/>
         <a ng-repeat="bug in newBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
@@ -53,9 +52,6 @@
               <div class="card-hang-right"></div>
             </div>
             <div class="card-footer">
-              <span class="pull-right" ng-click="complete(bug)">
-                <i class="icon-search"></i>
-              </span>
             </div>
           </div>
         </a>
@@ -66,6 +62,7 @@
         Assigned
       </div>
       <div class="column-body" max-remaining-height="40">
+        <img width="32" height="32" class="column-loader" ng-show="loading.assignedBugs" src="images/ajax-loader.gif"/>
         <a ng-repeat="bug in assignedBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
@@ -76,9 +73,6 @@
               <div class="card-hang-right"></div>
             </div>
             <div class="card-footer">
-              <span class="pull-right" ng-click="complete(bug)">
-                <i class="icon-search"></i>
-              </span>
             </div>
           </div>
         </a>
@@ -89,6 +83,7 @@
         Resolved
       </div>
       <div class="column-body" max-remaining-height="40">
+        <img width="32" height="32" class="column-loader" ng-show="loading.resolvedBugs" src="images/ajax-loader.gif"/>
         <a ng-repeat="bug in resolvedBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
@@ -99,9 +94,6 @@
               <div class="card-hang-right"></div>
             </div>
             <div class="card-footer">
-              <span class="pull-right" ng-click="complete(bug)">
-                <i class="icon-search"></i>
-              </span>
             </div>
           </div>
         </a>

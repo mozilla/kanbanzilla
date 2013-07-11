@@ -24,7 +24,8 @@ angular.module('kanbanzillaApp')
 
       getConfig: function () {
         console.log('getting /config');
-        return $http.get(BASE_URL + '/configuration/');
+        // return $http.get(BASE_URL + '/configuration/', {cache: true});
+        return $http.get('config.json');
       },
 
       getProducts: function () {
@@ -81,6 +82,15 @@ angular.module('kanbanzillaApp')
       },
 
       getBugs: function (searchParams) {
+        return $http({
+          method: 'GET',
+          url: BASE_URL + '/bug',
+          params: searchParams
+        });
+      },
+
+      getBugsWithType: function (searchParams, type, id) {
+        searchParams[type] = id;
         return $http({
           method: 'GET',
           url: BASE_URL + '/bug',

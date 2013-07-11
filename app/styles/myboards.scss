@@ -1,0 +1,31 @@
+.product-listing {
+  padding: 10px 0;
+  font-weight: bold;
+  list-style-type: none;
+  background: #ebebeb;
+  margin: 20px 0;
+  padding: 20px;
+}
+
+a.product-listing-title {
+  font-size: 24px;
+  margin-left: 20px;
+  color: darken($purple, 7%);
+}
+
+.board-listing {
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.components-listing {
+  margin-top:10px;
+  margin-left:50px;
+  height: 0;
+  overflow: hidden;
+
+}
+
+.components-listing.visible {
+  height: auto;
+}

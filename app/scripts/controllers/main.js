@@ -10,6 +10,16 @@ angular.module('kanbanzillaApp')
           $scope.products = data.product;
         });
 
+    $scope.toggle = function (product) {
+      console.log(product);
+      if(typeof product.visible === 'undefined'){
+        product.visible = true;
+      }
+      else{
+        product.visible = !product.visible;
+      }
+    };
+
     // Bugzilla.getConfig().success(function (data) {
     //   for(var product in data.product) {
     //     $scope.products.push(product);

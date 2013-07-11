@@ -40,7 +40,7 @@ $column-color: #E2DFDF;
   position: relative;
 
   // @include translate3d(-500px, 0, 0);
-  // @include transition(all 0.15s linear);
+  // @include transition(all 0.05s linear);
 }
 
 .column {
@@ -82,6 +82,12 @@ $column-color: #E2DFDF;
   // max-height: 100%;
   overflow: auto;
   // max-height: 800px;
+}
+
+.column-loader {
+  left: 50%;
+  position: relative;
+  margin-left: -16px;
 }
 
 .card-wrapper {
