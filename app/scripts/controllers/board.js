@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('BoardCtrl', ['$scope', 'Bugzilla', '$routeParams', '$filter',
-  function ($scope, Bugzilla, $routeParams, $filter) {
+  .controller('BoardCtrl', ['$scope', 'Bugzilla', '$routeParams',
+  function ($scope, Bugzilla, $routeParams) {
 
     $scope.bugs = [];
     $scope.unconfirmedBugs = [];

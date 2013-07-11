@@ -32,7 +32,7 @@ angular.module('kanbanzillaApp')
         var deferred = $q.defer();
         deferred.promise.success = deferred.promise.then;
 
-        if(cache['products']) {
+        if(cache.products) {
           console.log('grabbing from cache');
           $timeout(function() {
             deferred.resolve(cache.products);
@@ -45,7 +45,7 @@ angular.module('kanbanzillaApp')
             for(var product in data.product) {
               products.push(product);
             }
-            cache['products'] = products;
+            cache.products = products;
             deferred.resolve(products);
           })
           .error(function(data){

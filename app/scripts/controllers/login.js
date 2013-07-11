@@ -11,7 +11,7 @@ angular.module('kanbanzillaApp')
       $scope.open = dialog._open;
     });
 
-    $scope.closeDialog = function (result) {
+    $scope.closeDialog = function () {
       var response = {};
       response.action = 'close';
       dialog.close(response);
@@ -24,11 +24,13 @@ angular.module('kanbanzillaApp')
         Bugzilla.attemptLogin($scope.login.username, $scope.login.password)
           .success(function (data) {
             response.action = 'login';
+            response.data = data;
             bugzillaAuth.login($scope.login.username, $scope.login.password);
             dialog.close(response);
           })
           .error(function (data) {
             response.action = 'badlogin';
+            response.data = data;
             dialog.close(response);
           });
       }

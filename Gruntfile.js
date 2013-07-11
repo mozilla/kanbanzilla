@@ -250,6 +250,7 @@ module.exports = function (grunt) {
           dest: '<%= yeoman.dist %>',
           src: [
             '*.{ico,txt}',
+            'config.json',
             '.htaccess',
             'components/**/*',
             'images/{,*/}*.{gif,webp}',
@@ -282,8 +283,8 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
-    'jshint',
-    'test',
+    // 'jshint',
+    // 'test',
     // 'coffee',
     'compass:dist',
     'useminPrepare',

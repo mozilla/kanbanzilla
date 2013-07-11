@@ -106,7 +106,7 @@ angular.module('kanbanzillaApp')
           jScrollbarInner.css('left', offset + 'px');
         }
 
-        function resizableResizeHandler (e) {
+        function resizableResizeHandler () {
           calculateWidth();
           resizeDropZone();
           sizeScrollbar();

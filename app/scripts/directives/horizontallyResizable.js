@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .directive('horizontallyResizable', ['$document', function ($document) {
+  .directive('horizontallyResizable', ['$document', '$window', function ($document, $window) {
     return {
       restrict: 'A',
       link: function postLink(scope, element) {
@@ -9,7 +9,7 @@ angular.module('kanbanzillaApp')
         var resizeHandle = angular.element(document.createElement('div'));
         var mouseX;
         var cachedOffsetLeft;
-        var resizeEvent = new CustomEvent("resizableResize", {
+        var resizeEvent = new $window.CustomEvent('resizableResize', {
           bubbles: false,
           cancellable: true,
         });
@@ -21,7 +21,7 @@ angular.module('kanbanzillaApp')
           }
         }
 
-        function horizontalMouseupHandler (e) {
+        function horizontalMouseupHandler () {
           if(resizing){
             element.parent().removeClass('unselectable');
             window.dispatchEvent(resizeEvent);
