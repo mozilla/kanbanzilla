@@ -3,14 +3,12 @@
 angular.module('kanbanzillaApp')
   .controller('MainCtrl', ['$scope', 'Bugzilla',
   function ($scope, Bugzilla) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+    $scope.products = {};
 
-
-    $scope.products = [];
+    Bugzilla.getConfig()
+       .success(function (data) {
+          $scope.products = data.product;
+        });
 
     // Bugzilla.getConfig().success(function (data) {
     //   for(var product in data.product) {
@@ -22,5 +20,4 @@ angular.module('kanbanzillaApp')
     //   .success(function(data) {
     //     $scope.products = data;
     //   });
-
   }]);

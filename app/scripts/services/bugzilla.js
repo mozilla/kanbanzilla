@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .factory('Bugzilla', ['$http', '$q', '$timeout', 'bugzillaAuth', function($http, $q, $timeout, bugzillaAuth) {
+  .factory('Bugzilla', ['$http', '$q', '$timeout', function($http, $q, $timeout) {
 
     /**
      * Authentication handled from within the bugzillaAuthInterceptor.
@@ -54,13 +54,24 @@ angular.module('kanbanzillaApp')
         return deferred.promise;
       },
 
+      getAllComponents: function () {
+        $http.get(BASE_URL + '/configuration')
+          .success(function (data) {
+            console.log(data);
+          });
+      },
+
+      getComponentsForProduct: function () {
+
+      },
+
       /* BUGS=============== */
 
       getLink: function (id) {
         return 'https://bugzilla.mozilla.org/show_bug.cgi?id=' + id;
       },
 
-      getBugsForProductId: function (product) {
+      getBugsForProduct: function (product) {
         console.log('/bug?product=' + product);
         return $http({
           method: 'GET',

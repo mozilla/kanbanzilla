@@ -6,7 +6,7 @@
             class="input-medium search-query"
             placeholder="Search..."
             grow-when-clicked="300"
-            ng-model="query.alias">
+            ng-model="query.summary">
   </div>
 </div>
 
@@ -19,12 +19,11 @@
       </div>
       <div class="column-body" max-remaining-height="40">
         <div class="column-body-inner">
-          <a ng-repeat="bug in bugs | filter: 'unconfirmed' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}" ng-animate="'animated bounceIn'">
+          <a ng-repeat="bug in unconfirmedBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
             <div class="card">
               <div class="card-header">Bug ID: #{{bug.id}}</div>
               <div class="card-body">
                 <div class="card-content">
-                  <strong>{{bug.alias | truncateByCharsAndEndWith : 200 : '...' }}</strong>
                   <p>{{bug.summary | truncateByCharsAndEndWith : 150 : '...' }}</p>
                 </div>
                 <div class="card-hang-right"></div>
@@ -44,12 +43,11 @@
         New
       </div>
       <div class="column-body" max-remaining-height="40">
-        <a ng-repeat="bug in bugs | filter: 'new' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+        <a ng-repeat="bug in newBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
             <div class="card-body">
               <div class="card-content">
-                <strong>{{bug.alias | truncateByCharsAndEndWith : 200 : '...' }}</strong>
                 <p>{{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}</p>
               </div>
               <div class="card-hang-right"></div>
@@ -68,12 +66,11 @@
         Assigned
       </div>
       <div class="column-body" max-remaining-height="40">
-        <a ng-repeat="bug in bugs | filter: 'assigned' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+        <a ng-repeat="bug in assignedBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
             <div class="card-body">
               <div class="card-content">
-                <strong>{{bug.alias | truncateByCharsAndEndWith : 200 : '...' }}</strong>
                 <p>{{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}</p>
               </div>
               <div class="card-hang-right"></div>
@@ -92,12 +89,11 @@
         Resolved
       </div>
       <div class="column-body" max-remaining-height="40">
-        <a ng-repeat="bug in bugs | filter: 'resolved' | filter: query" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+        <a ng-repeat="bug in resolvedBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
             <div class="card-body">
               <div class="card-content">
-                <strong>{{bug.alias | truncateByCharsAndEndWith : 200 : '...' }}</strong>
                 <p>{{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}</p>
               </div>
               <div class="card-hang-right"></div>

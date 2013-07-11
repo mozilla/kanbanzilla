@@ -11,7 +11,7 @@ angular.module('kanbanzillaApp', ['ui.select2', 'ui.bootstrap', 'ngCookies'])
         templateUrl: 'views/settings.html',
         controller: 'SettingsCtrl'
       })
-      .when('/board/:id', {
+      .when('/board/:type/:id', {
         templateUrl: 'views/board.html',
         controller: 'BoardCtrl'
       })

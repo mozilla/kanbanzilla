@@ -46,8 +46,10 @@
         <div class="pull-right">
 
           <ul class="nav ng-cloak" ng-if="user.loggedIn">
+            <li><a href="">{{user.username}}</a></li>
+            <li><a href="" ng-click="logout()">Logout</a></li>
             <li><a href="#/settings">Settings</a></li>
-            <li><a href="#">{{user.username}}</a></li>
+            <li><a href="#/settings">Help</a></li>
           </ul>
 
           <ul class="nav" ng-if="user.loggedIn == false">
@@ -97,12 +99,5 @@
     <script src="scripts/controllers/login.js"></script>
     <!-- endbuild -->
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-    <script>
-      var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-      s.parentNode.insertBefore(g,s)}(document,'script'));
-    </script>
   </body>
 </html>
