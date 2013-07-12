@@ -1,0 +1,69 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="styles/5cce333d.main.css">
+  </head>
+  <body ng-app="kanbanzillaApp">
+    <!--[if lt IE 9]>
+      <script src="components/es5-shim/es5-shim.js"></script>
+      <script src="components/json3/lib/json3.min.js"></script>
+    <![endif]-->
+
+    <!-- Add your site or application content here -->
+
+
+    <div class="navbar navbar-inverse navbar-static-top" ng-controller="HeaderCtrl">
+      <div class="navbar-inner">
+
+        <ul class="nav">
+          <li><a class="brand" href="#">Kanbanzilla</a></li>
+          <li>
+            <select name="" id="product-component-switcher" ui-select2="" ng-model="select2">
+              <option value="">Something</option>
+              <option value="">Project</option>
+              <option value="">Component</option>
+              <option value="">Another</option>
+              <option value="">Something</option>
+            </select>
+          </li>
+        </ul>
+
+        <div class="pull-right">
+
+          <ul class="nav ng-cloak" ng-if="user.loggedIn">
+            <li><a href="">{{user.username}}</a></li>
+            <li><a href="" ng-click="logout()">Logout</a></li>
+            <li><a href="#/settings">Settings</a></li>
+            <li><a href="#/settings">Help</a></li>
+          </ul>
+
+          <ul class="nav" ng-if="user.loggedIn == false">
+            <li><a href="" ng-click="openLoginDialog()">Login</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="myng-view-wrapper">
+      <div ng-view="" class="myng-view"></div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-sanitize.js"></script>
+
+    <script src="scripts/a3d683bf.scripts.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,19 @@
+<div class="container">
+  <h3>My Boards</h3>
+  <h5>You don't have any boards.</h5>
+  <hr>
+  <h3>Products</h3>
+  <ul class="board-listing">
+  <!--   <li ng-repeat="product in products"><a ng-href="#/board/{{product}}">{{product}}</a></li> -->
+
+    <li ng-repeat="(productName, product) in products" class="product-listing" ng-click="toggle(product)">
+      <a class="product-listing-title" ng-href="#/board/product/{{productName}}"><strong>{{productName}}</strong></a>
+      <span class="pull-right"><i ng-if="product.visible != true" class="icon-plus"></i><i class="icon-minus" ng-if="product.visible"></i></span>
+      <ul class="components-listing" ng-class="{visible: product.visible}">
+        <li ng-repeat="(compName, component) in product.component">
+          <a href="#/board/component/{{compName}}">{{compName}}</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
