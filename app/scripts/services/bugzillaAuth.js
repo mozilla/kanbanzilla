@@ -8,11 +8,12 @@ angular.module('kanbanzillaApp')
     // to find out if and what to inject into requests
 
     function persist () {
-      localStorage.setItem('user', JSON.stringify(user));
+      // localStorage.setItem('user', JSON.stringify(user));
     }
 
     function readFromPersisted () {
-      return JSON.parse(localStorage.getItem('user')) || {username: '', password: '', loggedIn: false};
+      return {username: '', password: '', loggedIn: false};
+      // return JSON.parse(localStorage.getItem('user')) || {username: '', password: '', loggedIn: false};
     }
 
     var user = readFromPersisted();
