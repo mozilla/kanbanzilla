@@ -9,10 +9,11 @@
   padding: 20px;
 }
 
-a.product-listing-title {
+.product-listing-title {
   font-size: 24px;
   margin-left: 20px;
   color: darken($purple, 7%);
+  cursor: pointer;
 }
 
 .board-listing {
@@ -23,11 +24,9 @@ a.product-listing-title {
 .components-listing {
   margin-top:10px;
   margin-left:50px;
-  height: 0;
-  overflow: hidden;
-
+  display:none;
 }
 
 .components-listing.visible {
-  height: auto;
+  display: block;
 }

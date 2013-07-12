@@ -4,15 +4,11 @@ angular.module('kanbanzillaApp')
   .controller('BoardCtrl', ['$scope', 'Bugzilla', '$routeParams',
   function ($scope, Bugzilla, $routeParams) {
 
-    $scope.bugs = [];
     $scope.unconfirmedBugs = [];
     $scope.resolvedBugs = [];
     $scope.assignedBugs = [];
     $scope.newBugs = [];
     $scope.product = $routeParams.id;
-
-    var requestParams = {};
-    requestParams[$routeParams.type] = $routeParams.id;
 
     $scope.loading = {
       unconfirmedBugs: true,
@@ -20,17 +16,6 @@ angular.module('kanbanzillaApp')
       newBugs: true,
       assignedBugs: true
     };
-
-    // Bugzilla.getBugs(requestParams)
-    //   .success(function(data) {
-    //     $scope.resolvedBugs = $filter('filter')(data.bugs, 'resolved');
-    //     $scope.unconfirmedBugs = $filter('filter')(data.bugs, 'unconfirmed');
-    //     $scope.newBugs = $filter('filter')(data.bugs, 'new');
-    //     $scope.assignedBugs = $filter('filter')(data.bugs, 'assigned');
-    //   })
-    //   .error(function(data) {
-    //     console.log(data);
-    //   });
 
     Bugzilla.getBugsWithType({status: 'UNCONFIRMED'}, $routeParams.type, $routeParams.id)
       .success(function(data) {

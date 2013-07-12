@@ -94,7 +94,8 @@ angular.module('kanbanzillaApp')
         return $http({
           method: 'GET',
           url: BASE_URL + '/bug',
-          params: searchParams
+          params: searchParams,
+          config: {cache: true}
         });
       },
 
