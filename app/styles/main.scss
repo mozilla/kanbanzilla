@@ -1,4 +1,3 @@
-// @import "compass_twitter_bootstrap";
 @import "compass";
 
 @import "compass_twitter_bootstrap/mixins";
@@ -45,7 +44,7 @@ html, body {
 }
 
 .navbar-static-top {
-  position: fixed;
+  position: fixed !important;
   width: 100%;
 }
 

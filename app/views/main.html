@@ -6,7 +6,7 @@
   <ul class="board-listing">
   <!--   <li ng-repeat="product in products"><a ng-href="#/board/{{product}}">{{product}}</a></li> -->
 
-    <li ng-repeat="(productName, product) in products" ng-animate="'demo'" class="product-listing"  ng-click="toggle(product)">
+    <li ng-repeat="(productName, product) in products" class="product-listing" ng-click="toggle(product)">
       <a class="product-listing-title" ng-href="#/board/product/{{productName}}"><strong>{{productName}}</strong></a>
       <span class="pull-right"><i ng-if="product.visible != true" class="icon-plus"></i><i class="icon-minus" ng-if="product.visible"></i></span>
       <ul class="components-listing" ng-class="{visible: product.visible}">
