@@ -22,10 +22,8 @@ angular.module('kanbanzillaApp')
       }
     };
 
-    $scope.newBoard = function () {
-      var name = prompt('What would you like to name your board?');
-      var board = Boards.create(name)
-      console.log(board);
+    $scope.deleteBoard = function (board) {
+      Boards.remove(board);
     };
 
   }]);

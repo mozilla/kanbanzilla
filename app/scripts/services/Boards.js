@@ -16,13 +16,14 @@ angular.module('kanbanzillaApp')
     var boardCounter = localStorage.getItem('boardCounter') || 0;
 
     return {
-      create: function (name) {
-        var newBoard = {
-          id: ++boardCounter,
-          name: name,
-          components: [],
-          columns: []
-        };
+      create: function (newBoard) {
+        newBoard.id = ++boardCounter;
+        if(!newBoard.hasOwnProperty('components')){
+          newBoard.components = [];
+        }
+        if(!newBoard.hasOwnProperty('columns')){
+          newBoard.columns = [];
+        }
         boards.push(newBoard);
         persist();
         return newBoard;
@@ -44,8 +45,10 @@ angular.module('kanbanzillaApp')
 
       },
 
-      remove: function (name) {
-
+      remove: function (board) {
+        boards.splice(boards.indexOf(board), 1);
+        console.log(board);
+        persist();
       },
 
       update: function (name, params) {

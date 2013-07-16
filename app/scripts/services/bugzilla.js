@@ -10,9 +10,10 @@ angular.module('kanbanzillaApp')
      * leaving this service untouched.
      */
 
-    var TEST_URL = 'https://api-dev.bugzilla.mozilla.org/test/1.3',
+    var TEST_URL = 'https://api-dev.bugzilla.mozilla.org/test/latest',
         PROD_URL = 'https://api-dev.bugzilla.mozilla.org/latest',
         BASE_URL = PROD_URL;
+        // BASE_URL = TEST_URL;
 
     var cache = {};
 
@@ -40,17 +41,17 @@ angular.module('kanbanzillaApp')
         }
         else {
           $http.get(BASE_URL + '/configuration')
-          .success(function (data) {
-            var products = [];
-            for(var product in data.product) {
-              products.push(product);
-            }
-            cache.products = products;
-            deferred.resolve(products);
-          })
-          .error(function(data){
-            deferred.resolve(data);
-          });
+            .success(function (data) {
+              var products = [];
+              for(var product in data.product) {
+                products.push(product);
+              }
+              cache.products = products;
+              deferred.resolve(products);
+            })
+            .error(function(data){
+              deferred.resolve(data);
+            });
         }
         return deferred.promise;
       },

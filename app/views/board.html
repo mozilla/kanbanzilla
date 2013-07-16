@@ -19,6 +19,7 @@
       </div>
       <div class="column-body" max-remaining-height="40">
         <img width="32" height="32" class="column-loader" ng-show="loading.unconfirmedBugs" src="images/ajax-loader.gif"/>
+        <h2 ng-if="loading.unconfirmedBugs == 'wtf'"></h2>
         <div class="column-body-inner">
           <a ng-repeat="bug in unconfirmedBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
             <div class="card">
@@ -42,7 +43,8 @@
       </div>
       <div class="column-body" max-remaining-height="40">
         <img width="32" height="32" class="column-loader" ng-show="loading.newBugs" src="images/ajax-loader.gif"/>
-        <a ng-repeat="bug in newBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+        <h2 ng-if="loading.newBugs == 'wtf'"></h2>
+        <a ng-repeat="bug in newBugs | filter: query | orderBy: 'summary' | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
             <div class="card-body">
@@ -63,6 +65,7 @@
       </div>
       <div class="column-body" max-remaining-height="40">
         <img width="32" height="32" class="column-loader" ng-show="loading.assignedBugs" src="images/ajax-loader.gif"/>
+        <h2 ng-if="loading.assignedBugs == 'wtf'"></h2>
         <a ng-repeat="bug in assignedBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
@@ -84,6 +87,7 @@
       </div>
       <div class="column-body" max-remaining-height="40">
         <img width="32" height="32" class="column-loader" ng-show="loading.resolvedBugs" src="images/ajax-loader.gif"/>
+        <h2 ng-if="loading.resolvedBugs == 'wtf'"></h2>
         <a ng-repeat="bug in resolvedBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
           <div class="card">
             <div class="card-header">Bug ID: #{{bug.id}}</div>
