@@ -1,0 +1,35 @@
+<div class="container">
+  <h2>Create a New Board</h2>
+  <form class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="board-name">Board Name:</label>
+      <div class="controls">
+        <input type="text" id="board-name" class="input-xlarge">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="attached-components">Components</label>
+      <div class="controls">
+        <select class="input-xlarge" name="" ui-select2 multiple ng-model="select2">
+          <option value="">Something</option>
+          <option value="">Project</option>
+          <option value="">Component</option>
+          <option value="">Another</option>
+          <option value="">Something</option>
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="board-description">Description:</label>
+      <div class="controls">
+        <textarea name="" id="board-description" class="input-xlarge" rows="5"></textarea>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a href="#/" class="btn">Cancel</a>
+      </div>
+    </div>
+  </form>
+</div>

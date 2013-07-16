@@ -1,11 +1,16 @@
 <div class="container">
   <h3>My Boards</h3>
-  <h5>You don't have any boards.</h5>
+  <a class="btn btn-primary" href="#/board/new">Create New Board</a>
+  <p ng-show="myBoards.length == 0">You don't have any boards</p>
+  <ul>
+    <li class="product-listing" ng-repeat="board in myBoards track by board.id">
+        <a ng-href="#/board/custom/{{board.name}}" class="product-listing-title">{{board.name}}</a>
+    </li>
+  </ul>
   <hr>
   <h3>Products</h3>
   <ul class="board-listing">
   <!--   <li ng-repeat="product in products"><a ng-href="#/board/{{product}}">{{product}}</a></li> -->
-
     <li ng-repeat="(productName, product) in products | limitTo: 10" class="product-listing" ng-click="toggle(product)">
       <strong class="product-listing-title">{{productName}}</strong>
       <i ng-if="product.visible != true" class="icon-plus pull-right"></i><i class="icon-minus pull-right" ng-if="product.visible"></i>

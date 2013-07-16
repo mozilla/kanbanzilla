@@ -1,14 +1,16 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('MainCtrl', ['$scope', 'Bugzilla',
-  function ($scope, Bugzilla) {
+  .controller('MainCtrl', ['$scope', 'Bugzilla', 'Boards',
+  function ($scope, Bugzilla, Boards) {
     $scope.products = {};
 
     Bugzilla.getConfig()
        .success(function (data) {
           $scope.products = data.product;
         });
+
+    $scope.myBoards = Boards.getAllBoards();
 
     $scope.toggle = function (product) {
       console.log(product);
@@ -19,4 +21,11 @@ angular.module('kanbanzillaApp')
         product.visible = !product.visible;
       }
     };
+
+    $scope.newBoard = function () {
+      var name = prompt('What would you like to name your board?');
+      var board = Boards.create(name)
+      console.log(board);
+    };
+
   }]);
