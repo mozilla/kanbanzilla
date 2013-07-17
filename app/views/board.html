@@ -13,7 +13,7 @@
 <div class="board-dropzone" auto-fill-height>
   <div class="board-dropzone-inner" fancy-scroll-horizontally>
 
-    <div class="column" horizontally-resizable>
+<!--     <div class="column" horizontally-resizable>
       <div class="column-header">
         Unconfirmed
       </div>
@@ -101,5 +101,16 @@
         </a>
       </div>
     </div>
+ -->
+
+
+    <div kbcolumn loading="loading.unconfirmedBugs" display-title="Unconfirmed" ng-model="unconfirmedBugs"></div>
+
+    <div kbcolumn loading="loading.newBugs" display-title="New" ng-model="newBugs"></div>
+
+    <div kbcolumn loading="loading.assignedBugs" display-title="Assigned" ng-model="assignedBugs"></div>
+
+    <div kbcolumn loading="loading.resolvedBugs" display-title="Resolved" ng-model="resolvedBugs"></div>
+
   </div>
 </div>

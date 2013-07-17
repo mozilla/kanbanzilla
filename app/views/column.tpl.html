@@ -1,0 +1,23 @@
+<div class="column" horizontally-resizable>
+  <div class="column-header">
+    {{displayTitle}}
+  </div>
+  <div class="column-body" max-remaining-height="40">
+    <img width="32" height="32" class="column-loader" ng-show="loading" src="images/ajax-loader.gif"/>
+    <a ng-repeat="bug in ngModel | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
+      <div class="card">
+        <div class="card-header">Bug ID: #{{bug.id}}</div>
+        <div class="card-body">
+          <div class="card-content">
+            <p>{{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}</p>
+          </div>
+          <div class="card-hang-right"></div>
+        </div>
+        <div class="card-footer">
+          <i class="icon-comment" ng-click="openComment()"></i>
+          <i class="icon-eye-open"></i>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
