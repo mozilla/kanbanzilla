@@ -91,4 +91,8 @@ angular.module('kanbanzillaApp')
       window.location = Bugzilla.getLink(bug.id);
     };
 
+    $scope.openComment = function () {
+      alert('opening comment');
+    };
+
   }]);

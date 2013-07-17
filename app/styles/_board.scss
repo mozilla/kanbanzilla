@@ -143,8 +143,16 @@ $column-color: #E2DFDF;
 }
 
 .card-footer {
-  font-size:10px;
+  font-size:14px;
   margin-top: 5px;
+  text-align: right;
+  color: #999;
   // background: #F4F2F2;
   // border-top: 1px solid #E0DDDD;
+  i{
+    margin: 0 4px;
+    &:hover {
+      color: #333;
+    }
+  }
 }
