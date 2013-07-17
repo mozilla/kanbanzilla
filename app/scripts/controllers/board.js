@@ -9,36 +9,24 @@ angular.module('kanbanzillaApp')
         .success(function(data) {
           $scope.unconfirmedBugs = data.bugs;
           $scope.loading.unconfirmedBugs = false;
-        })
-        .error(function(data){
-          $scope.loading.unconfirmedBugs = 'wtf';
         });
 
       Bugzilla.getBugsWithType({status: 'RESOLVED'}, $routeParams.type, $routeParams.id)
         .success(function(data) {
           $scope.resolvedBugs = data.bugs;
           $scope.loading.resolvedBugs = false;
-        })
-        .error(function(data){
-          $scope.loading.resolvedBugs = 'wtf';
         });
 
       Bugzilla.getBugsWithType({status: 'NEW'}, $routeParams.type, $routeParams.id)
         .success(function(data) {
           $scope.newBugs = data.bugs;
           $scope.loading.newBugs = false;
-        })
-        .error(function(data){
-          $scope.loading.newBugs = 'wtf';
         });
 
       Bugzilla.getBugsWithType({status: 'ASSIGNED'}, $routeParams.type, $routeParams.id)
         .success(function(data) {
           $scope.assignedBugs = data.bugs;
           $scope.loading.assignedBugs = false;
-        })
-        .error(function(data){
-          $scope.loading.assignedBugs = 'wtf';
         });
     }
 
