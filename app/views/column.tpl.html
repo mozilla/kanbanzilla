@@ -4,15 +4,15 @@
   </div>
   <div class="column-body" max-remaining-height="40">
     <img width="32" height="32" class="column-loader" ng-show="loading" src="images/ajax-loader.gif"/>
-      <div class="card" ng-repeat="bug in ngModel | filter: query.summary | limitTo: 35">
+      <div class="card" ng-repeat="bug in ngModel | filter: query | limitTo: 35" ng-click="goToBug(bug)">
         <div class="card-body">
           {{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}
         </div>
         <div class="card-footer">
           <span class="id-tag">#{{bug.id}}</span>
           <div class="card-actions">
-            <i class="icon-comment" ng-click="openComment(bug)"></i>
-            <i class="icon-eye-open" ng-hover="getDescription(bug)"></i>
+            <i class="icon-comment" ng-click="openComment(bug);$event.stopPropagation()" title="post a comment"></i>
+            <i class="icon-eye-open" popover="{{bugDescription | truncateByCharsAndEndWith : 500 : '...' }}" popover-title="Description:" popover-placement="right" popover-trigger="mouseenter" popover-popup-delay="350" ng-mouseover="getDescription(bug)" ng-mouseout="resetDescription()"></i>
           </div>
         </div>
       </div>

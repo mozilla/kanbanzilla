@@ -126,7 +126,7 @@ angular.module('kanbanzillaApp')
 
       getCommentsForBug: function (id) {
         // - /bug/<id>/comment GET
-        return $http.get(BASE_URL + '/bug/' + id + '/comment');
+        return $http.get(BASE_URL + '/bug/' + id + '/comment', {cache: true});
       },
 
       postComment: function (bugId, data) {

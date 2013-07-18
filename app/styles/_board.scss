@@ -142,6 +142,19 @@ $column-color: #E2DFDF;
   margin-top: 8px;
   color: #999;
   clear:both;
+  .popover {
+    max-width: 500px;
+    min-width:275px;
+    color: #333;
+    @include box-shadow(2px 4px 9px rgba(0,0,0,0.5));
+    z-index: 10100;
+    font-size: 11px;
+  }
+  .popover-title {
+    color: $purple;
+    font-weight: bold;
+    font-size: 13px;
+  }
 }
 
 .card-actions {
