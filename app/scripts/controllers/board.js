@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('BoardCtrl', ['$scope', 'Bugzilla', 'Boards', '$routeParams',
-  function ($scope, Bugzilla, Boards, $routeParams) {
+  .controller('BoardCtrl', ['$scope', 'Bugzilla', 'Boards', '$routeParams', '$window',
+  function ($scope, Bugzilla, Boards, $routeParams, $window) {
 
     function doit () {
       Bugzilla.getBugsWithType({status: 'UNCONFIRMED'}, $routeParams.type, $routeParams.id)
@@ -36,6 +36,7 @@ angular.module('kanbanzillaApp')
       var board = Boards.get($routeParams.id);
       angular.forEach(board.components, function (component) {
         angular.forEach(columns, function (column) {
+
           Bugzilla.getBugs({
             product: component.product,
             component: component.component,
@@ -47,6 +48,7 @@ angular.module('kanbanzillaApp')
             $scope[listName].push.apply($scope[listName], data.bugs);
             console.log($scope[listName]);
           });
+
         });
       });
     }
@@ -74,13 +76,12 @@ angular.module('kanbanzillaApp')
     }
 
 
-
     $scope.goToBugzilla = function (bug) {
       window.location = Bugzilla.getLink(bug.id);
     };
 
     $scope.openComment = function () {
-      alert('opening comment');
+      $window.alert('opening comment');
     };
 
   }]);

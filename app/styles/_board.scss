@@ -84,13 +84,6 @@ $column-color: #E2DFDF;
   &:visited {
     color: #333;
   }
-  &:hover {
-    text-decoration: none;
-    color: #111;
-    .card {
-      border: 1px solid mix(lighten($orange, 10%), #333, 50%);
-    }
-  }
 }
 
 .card {
@@ -100,26 +93,39 @@ $column-color: #E2DFDF;
   border: 1px solid #BAB8B8;
   border-bottom: 1px solid #9E9E9E;
   overflow-x: hidden;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+    color: #111;
+    border: 1px solid mix(lighten($orange, 10%), #333, 50%);
+  }
 
   @include border-radius($roundedness);
 }
 
-.card-header {
+.card-dragged {
+  position: absolute;
+  min-width: 250px;
+  left: 100px;
+  top: 20px;
+  z-index: 10000;
+
+  @include transform(scale3d(1.1, 1.1, 1));
+}
+
+.id-tag {
   display: inline;
   background: $purple;
   color: #FFF;
-  padding: 2px;
+  padding: 2px 3px;
   font-size: 11px;
-  float: right;
+  line-height: 19px;
 }
 
 .card-body {
   padding: 5px;
   position: relative;
-}
-
-.card-content {
-  // width: 80%;
 }
 
 .card-hang-right {
@@ -128,13 +134,18 @@ $column-color: #E2DFDF;
   position: absolute;
   right: 0;
   top: 0;
+  display:none;
 }
 
 .card-footer {
   font-size:14px;
-  margin-top: 5px;
-  text-align: right;
+  margin-top: 8px;
   color: #999;
+  clear:both;
+}
+
+.card-actions {
+  float: right;
   i{
     margin: 0 4px;
     &:hover {

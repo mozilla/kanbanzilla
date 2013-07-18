@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('MainCtrl', ['$scope', 'Bugzilla', 'Boards',
-  function ($scope, Bugzilla, Boards) {
+  .controller('MainCtrl', ['$scope', 'Bugzilla', 'Boards', '$window',
+  function ($scope, Bugzilla, Boards, $window) {
     $scope.products = {};
 
     Bugzilla.getConfig()
@@ -23,7 +23,9 @@ angular.module('kanbanzillaApp')
     };
 
     $scope.deleteBoard = function (board) {
-      Boards.remove(board);
+      if($window.confirm('Are you sure you want to delete this board?')){
+        Boards.remove(board);
+      }
     };
 
   }]);

@@ -10,15 +10,16 @@ angular.module('kanbanzillaApp')
       scope: {
         displayTitle: '@',
         loading: '=',
+        query: '=',
         ngModel: '='
       },
-      link: function postLink(scope, element, attrs, ngModelController) {
-        // element.text('this is the column directive');
-      },
-      controller: ['$scope', function ($scope) {
+      controller: ['$scope', 'Bugzilla', function ($scope, Bugzilla) {
 
-        $scope.openComment = function () {
-          alert('from inside the directive');
+        $scope.getDescription = function (bug) {
+          Bugzilla.getCommentsForBug(bug.id)
+            .success(function (data) {
+              console.log(data.comments[0].text);
+            });
         };
 
       }]

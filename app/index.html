@@ -26,7 +26,6 @@
 
     <!-- Add your site or application content here -->
 
-
     <div class="navbar navbar-inverse navbar-static-top" ng-controller="HeaderCtrl">
       <div class="navbar-inner">
 
@@ -45,7 +44,7 @@
 
         <div class="pull-right">
 
-          <ul class="nav ng-cloak" ng-if="user.loggedIn">
+          <ul class="nav" ng-if="user.loggedIn" ng-cloak>
             <li><a href="">{{user.username}}</a></li>
             <li><a href="" ng-click="logout()">Logout</a></li>
             <li><a href="#/settings">Settings</a></li>

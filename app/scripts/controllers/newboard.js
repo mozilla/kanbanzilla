@@ -6,7 +6,7 @@ angular.module('kanbanzillaApp')
     $scope.select2Options = {
       'multiple': true,
       'simple_tags': true
-    }
+    };
     $scope.products = {};
     $scope.board = {
       name: '',

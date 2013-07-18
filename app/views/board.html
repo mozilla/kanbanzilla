@@ -6,7 +6,7 @@
             class="input-medium search-query"
             placeholder="Search..."
             grow-when-clicked="300"
-            ng-model="query.summary">
+            ng-model="query">
   </div>
 </div>
 
@@ -104,13 +104,13 @@
  -->
 
 
-    <div kbcolumn loading="loading.unconfirmedBugs" display-title="Unconfirmed" ng-model="unconfirmedBugs"></div>
+    <div kbcolumn loading="loading.unconfirmedBugs" display-title="Unconfirmed" ng-model="unconfirmedBugs" query="query"></div>
 
-    <div kbcolumn loading="loading.newBugs" display-title="New" ng-model="newBugs"></div>
+    <div kbcolumn loading="loading.newBugs" display-title="New" ng-model="newBugs" query="query"></div>
 
-    <div kbcolumn loading="loading.assignedBugs" display-title="Assigned" ng-model="assignedBugs"></div>
+    <div kbcolumn loading="loading.assignedBugs" display-title="Assigned" ng-model="assignedBugs" query="query"></div>
 
-    <div kbcolumn loading="loading.resolvedBugs" display-title="Resolved" ng-model="resolvedBugs"></div>
+    <div kbcolumn loading="loading.resolvedBugs" display-title="Resolved" ng-model="resolvedBugs" query="query"></div>
 
   </div>
 </div>

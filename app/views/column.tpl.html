@@ -4,18 +4,16 @@
   </div>
   <div class="column-body" max-remaining-height="40">
     <img width="32" height="32" class="column-loader" ng-show="loading" src="images/ajax-loader.gif"/>
-    <a ng-repeat="bug in ngModel | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
-      <div class="card">
-        <div class="card-header">Bug ID: #{{bug.id}}</div>
+      <div class="card" ng-repeat="bug in ngModel | filter: query.summary | limitTo: 35">
         <div class="card-body">
-          <div class="card-content">
-            <p>{{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}</p>
-          </div>
-          <div class="card-hang-right"></div>
+          {{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}
         </div>
         <div class="card-footer">
-          <i class="icon-comment" ng-click="openComment()"></i>
-          <i class="icon-eye-open"></i>
+          <span class="id-tag">#{{bug.id}}</span>
+          <div class="card-actions">
+            <i class="icon-comment" ng-click="openComment(bug)"></i>
+            <i class="icon-eye-open" ng-hover="getDescription(bug)"></i>
+          </div>
         </div>
       </div>
     </a>
