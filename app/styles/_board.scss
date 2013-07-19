@@ -15,6 +15,17 @@ $column-color: #E2DFDF;
   padding: 0px 20px;
 }
 
+.board-actions {
+  .btn {
+    margin-top: 10px;
+  }
+  i {
+    margin-top: 3px;
+    margin-left: -1px;
+    font-size:17px;
+  }
+}
+
 #board-search {
   margin-top:-5px;
   margin-left: 20px;
@@ -104,14 +115,12 @@ $column-color: #E2DFDF;
   @include border-radius($roundedness);
 }
 
-.card-dragged {
-  position: absolute;
-  min-width: 250px;
-  left: 100px;
-  top: 20px;
-  z-index: 10000;
+.card.over {
+  opacity: 0.2;
+}
 
-  @include transform(scale3d(1.1, 1.1, 1));
+.card-dragged {
+  opacity: 0.2;
 }
 
 .id-tag {
@@ -159,10 +168,40 @@ $column-color: #E2DFDF;
 
 .card-actions {
   float: right;
-  i{
+  i {
     margin: 0 4px;
     &:hover {
       color: #333;
     }
   }
+}
+
+
+.settings-sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100%;
+  background: #EBEBEB;
+  border-left: 1px solid #CCC;
+  z-index: 4;
+
+  @include transition(0.25s all ease-in-out);
+  @include translate3d(401px, 0, 0);
+}
+
+.settings-sidebar.shown {
+  @include translate3d(0,0,0);
+}
+
+.settings-sidebar-inner {
+  padding: 15px;
+  padding-top: 40px;
+}
+
+.settings-close-btn {
+  right: 10px;
+  position: absolute;
+  top: 55px;
 }

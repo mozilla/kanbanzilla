@@ -11,7 +11,7 @@
 html, body {
   width: 100%;
   height: 100%;
-  // overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
@@ -23,6 +23,16 @@ html, body {
    -webkit-user-select: none;
    user-select: none;
    cursor: ew-resize;
+}
+
+[draggable] {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Required to make elements draggable in old WebKit */
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
 }
 
 .no-show-btn {
@@ -49,6 +59,7 @@ html, body {
 .navbar-static-top {
   position: fixed !important;
   width: 100%;
+  z-index: 5;
 }
 
 #product-component-switcher {

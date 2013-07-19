@@ -4,6 +4,10 @@ angular.module('kanbanzillaApp')
   .controller('BoardCtrl', ['$scope', 'Bugzilla', 'Boards', '$routeParams', '$window',
   function ($scope, Bugzilla, Boards, $routeParams, $window) {
 
+    //////////////////////////////////////////
+    // This whole controller is hideous     //
+    // TODO: Clean up doit and customloader //
+    //////////////////////////////////////////
     function doit () {
       Bugzilla.getBugsWithType({status: 'UNCONFIRMED'}, $routeParams.type, $routeParams.id)
         .success(function(data) {
@@ -32,6 +36,8 @@ angular.module('kanbanzillaApp')
 
     var columns = ['UNCONFIRMED', 'NEW', 'ASSIGNED', 'RESOLVED'];
 
+    // for every component send off a request for all the bugs of varying statuses
+    // then we have to join the results for the same status and different component
     function customLoader () {
       var board = Boards.get($routeParams.id);
       angular.forEach(board.components, function (component) {
@@ -68,8 +74,6 @@ angular.module('kanbanzillaApp')
 
     if($routeParams.type === 'custom') {
       customLoader();
-      // for every component send off a request for all the bugs of varying statuses
-      // then we have to join the results for the same status and different component
     }
     else {
       doit();

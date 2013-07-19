@@ -40,4 +40,34 @@ angular.module('kanbanzillaApp')
 
       }]
     };
+  })
+  .directive('kbDraggable', function () {
+
+    var mouseDown = false;
+
+    return {
+      restrict: 'A',
+      link: function (scope, element, attrs) {
+        element.bind('mousedown', function () {
+          mouseDown = true;
+          console.log(scope.$parent);
+          element.addClass('card-dragged');
+        });
+        element.bind('mouseup', function () {
+          if(mouseDown) {
+            element.removeClass('card-dragged');
+          }
+          mouseDown = false;
+        });
+        element.bind('mousemove', function (e) {
+          if(mouseDown) {
+            element.css({
+              left: e.clientX + 'px',
+              top: e.clientY + 'px'
+            });
+          }
+        });
+      }
+    };
+
   });
