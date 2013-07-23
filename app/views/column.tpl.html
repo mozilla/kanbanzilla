@@ -4,7 +4,7 @@
   </div>
   <div class="column-body" max-remaining-height="40">
     <img width="32" height="32" class="column-loader" ng-show="loading" src="images/ajax-loader.gif"/>
-      <ul class="h5sort" h5drop>
+      <ul class="h5sort" ng-model="ngModel" ui-sortable>
         <li class="card" ng-repeat="bug in ngModel | filter: query | limitTo: 35" ng-click="goToBug(bug)">
           <div class="card-body">
             {{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}

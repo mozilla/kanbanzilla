@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('kanbanzillaApp', ['ui.select2', 'ui.bootstrap', 'ngCookies'])
+angular.module('kanbanzillaApp', ['ui.select2', 'ui.bootstrap', 'ui.sortable', 'ngCookies'])
   .config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
     $routeProvider
       .when('/', {
