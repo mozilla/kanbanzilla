@@ -110,14 +110,25 @@ $column-color: #E2DFDF;
   cursor: pointer;
 
   &:hover {
-    text-decoration: none;
-    color: #111;
-    border: 1px solid mix(lighten($orange, 10%), #333, 50%);
     .card-actions {
       opacity: 1;
     }
   }
 
+  @include border-radius($roundedness);
+}
+
+.magic-hidden-card {
+  visibility: hidden;
+  min-height:25px;
+  height: 25px;
+}
+
+.proxy-card {
+  height: 70px;
+  background: #AAA;
+  // border: 2px dashed darken($purple, 10%);
+  margin: 5px;
   @include border-radius($roundedness);
 }
 
@@ -181,7 +192,7 @@ $column-color: #E2DFDF;
       color: #333;
     }
   }
-  @include transition(0.25s opacity ease-in-out);
+  // @include transition(0.25s opacity ease-in-out);
 }
 
 

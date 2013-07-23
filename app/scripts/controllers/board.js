@@ -66,6 +66,11 @@ angular.module('kanbanzillaApp')
       });
     }
 
+    $scope.sortableOptions = {
+      placeholder: 'proxy-card',
+      connectWith: '[ui-sortable]'
+    };
+
     $scope.unconfirmedBugs = [];
     $scope.resolvedBugs = [];
     $scope.assignedBugs = [];

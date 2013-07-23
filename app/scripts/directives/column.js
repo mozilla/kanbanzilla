@@ -11,6 +11,7 @@ angular.module('kanbanzillaApp')
         displayTitle: '@',
         loading: '=',
         query: '=',
+        sortOptions: '=',
         ngModel: '='
       },
       controller: ['$scope', 'Bugzilla', function ($scope, Bugzilla) {

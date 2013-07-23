@@ -8,6 +8,7 @@
             grow-when-clicked="300"
             ng-model="query">
     <div class="board-actions pull-right">
+      <button class="btn"><i class="icon-refresh"></i></button>
       <button class="btn" ng-click="settingsOpen = true"><i class="icon-cog"></i></button>
     </div>
   </div>
@@ -16,6 +17,7 @@
 <div class="settings-sidebar" ng-class="{shown: settingsOpen}">
   <div class="settings-sidebar-inner">
     <h3>Board Settings</h3>
+    <h4>Placeholder Widget</h4>
     <button class="btn settings-close-btn" ng-click="settingsOpen = false">Close</button>
     <hr>
     <ul>
@@ -41,24 +43,28 @@
          loading="loading.unconfirmedBugs"
          display-title="Unconfirmed"
          ng-model="unconfirmedBugs"
+         sort-options="sortableOptions"
          query="query"></div>
 
     <div kbcolumn
          loading="loading.newBugs"
          display-title="New"
          ng-model="newBugs"
+         sort-options="sortableOptions"
          query="query"></div>
 
     <div kbcolumn
          loading="loading.assignedBugs"
          display-title="Assigned"
          ng-model="assignedBugs"
+         sort-options="sortableOptions"
          query="query"></div>
 
     <div kbcolumn
          loading="loading.resolvedBugs"
          display-title="Resolved"
          ng-model="resolvedBugs"
+         sort-options="sortableOptions"
          query="query"></div>
 
   </div>
