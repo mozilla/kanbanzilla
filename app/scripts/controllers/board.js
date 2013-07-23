@@ -49,10 +49,10 @@ angular.module('kanbanzillaApp')
             status: column
           }).success(function(data) {
             var listName = column.toLowerCase() + 'Bugs';
-            console.log(component, listName);
+            // console.log(component, listName);
             $scope.loading[listName] = false;
             $scope[listName].push.apply($scope[listName], data.bugs);
-            console.log($scope[listName]);
+            // console.log($scope[listName]);
           });
 
         });

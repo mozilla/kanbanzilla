@@ -21,8 +21,6 @@ angular.module('kanbanzillaApp')
           Bugzilla.getCommentsForBug(bug.id)
             .success(function (data) {
               $scope.bugDescription = data.comments[0].text.replace(/\n/g,'<br/>');
-              console.log($scope.bugDescription);
-              // console.log(data.comments[0].text);
             });
         };
 

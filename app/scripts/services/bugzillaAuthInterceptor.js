@@ -27,7 +27,6 @@ angular.module('kanbanzillaApp')
       },
       'request': function (request) {
         augmentRequestWithAuth(request);
-        console.log(request);
         return request;
       }
     };

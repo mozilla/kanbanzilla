@@ -188,11 +188,13 @@ $column-color: #E2DFDF;
   z-index: 4;
 
   @include transition(0.25s all ease-in-out);
-  @include translate3d(401px, 0, 0);
+  display:none;
+  // @include translate3d(401px, 0, 0);
 }
 
 .settings-sidebar.shown {
-  @include translate3d(0,0,0);
+  // @include translate3d(0,0,0);
+  display: block;
 }
 
 .settings-sidebar-inner {
