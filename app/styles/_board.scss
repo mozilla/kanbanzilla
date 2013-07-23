@@ -110,6 +110,9 @@ $column-color: #E2DFDF;
     text-decoration: none;
     color: #111;
     border: 1px solid mix(lighten($orange, 10%), #333, 50%);
+    .card-actions {
+      opacity: 1;
+    }
   }
 
   @include border-radius($roundedness);
@@ -167,6 +170,7 @@ $column-color: #E2DFDF;
 }
 
 .card-actions {
+  opacity: 0;
   float: right;
   i {
     margin: 0 4px;
@@ -174,6 +178,7 @@ $column-color: #E2DFDF;
       color: #333;
     }
   }
+  @include transition(0.25s opacity ease-in-out);
 }
 
 

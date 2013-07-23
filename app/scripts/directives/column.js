@@ -16,6 +16,7 @@ angular.module('kanbanzillaApp')
       controller: ['$scope', 'Bugzilla', function ($scope, Bugzilla) {
 
         $scope.bugDescription = 'Loading...';
+        $scope.lastComment = 'Loading...';
 
         $scope.getDescription = function (bug) {
           Bugzilla.getCommentsForBug(bug.id)
@@ -26,6 +27,17 @@ angular.module('kanbanzillaApp')
 
         $scope.resetDescription = function () {
           $scope.bugDescription = 'Loading';
+        };
+
+        $scope.getLastComment = function (bug) {
+          Bugzilla.getCommentsForBug(bug.id)
+            .success(function (data) {
+              $scope.lastComment = data.comments[data.comments.length - 1].text.replace(/\n/g,'<br/>');
+            });
+        };
+
+        $scope.resetLastComment = function () {
+          $scope.lastComment = 'Loading...';
         };
 
         $scope.goToBug = function (bug) {
