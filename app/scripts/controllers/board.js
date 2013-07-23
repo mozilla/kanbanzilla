@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('BoardCtrl', ['$scope', 'Bugzilla', 'Boards', '$routeParams', '$window',
-  function ($scope, Bugzilla, Boards, $routeParams, $window) {
+  .controller('BoardCtrl', ['$scope', '$q','Bugzilla', 'Boards', '$routeParams', '$window',
+  function ($scope, $q, Bugzilla, Boards, $routeParams, $window) {
 
     //////////////////////////////////////////
     // This whole controller is hideous     //
@@ -39,15 +39,17 @@ angular.module('kanbanzillaApp')
     // for every component send off a request for all the bugs of varying statuses
     // then we have to join the results for the same status and different component
     function customLoader () {
+      var loadingPromises = [];
       var board = Boards.get($routeParams.id);
       angular.forEach(board.components, function (component) {
         angular.forEach(columns, function (column) {
 
-          Bugzilla.getBugs({
+          var p = Bugzilla.getBugs({
             product: component.product,
             component: component.component,
             status: column
-          }).success(function(data) {
+          });
+          p.success(function(data) {
             var listName = column.toLowerCase() + 'Bugs';
             // console.log(component, listName);
             $scope.loading[listName] = false;
@@ -55,7 +57,12 @@ angular.module('kanbanzillaApp')
             // console.log($scope[listName]);
           });
 
+          loadingPromises.push(p);
+
         });
+      });
+      $q.all(loadingPromises).then(function (data) {
+
       });
     }
 

@@ -50,4 +50,16 @@ angular.module('kanbanzillaApp')
 
       }]
     };
+  })
+  .directive('h5drop', function () {
+
+    return {
+      restrict: 'A',
+      link: function (scope, elem, attrs) {
+        elem.bind('drop', function (e) {
+          console.log(e);
+        });
+      }
+    };
+
   });

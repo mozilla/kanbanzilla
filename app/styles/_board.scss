@@ -82,6 +82,9 @@ $column-color: #E2DFDF;
 
 .column-body {
   overflow: auto;
+  ul {
+    margin: 0;
+  }
 }
 
 .column-loader {
