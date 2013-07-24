@@ -104,6 +104,10 @@ ul.empty {
   }
 }
 
+.ui-sortable-helper {
+  @include transform(scale3d(1.05, 1.05, 1) rotateZ(5deg));
+}
+
 .card {
   min-height: 50px;
   background: #FFF;
