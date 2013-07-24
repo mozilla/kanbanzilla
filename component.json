@@ -9,7 +9,9 @@
     "angular-sanitize": "~1.0.5",
     "font-awesome": "~3.2.1",
     "angular-ui-select2": "latest",
-    "animate.css": "latest"
+    "animate.css": "latest",
+    "jquery-ui": "latest",
+    "angular-ui-sortable": "latest"
   },
   "devDependencies": {
     "angular-mocks": "~1.0.5",

@@ -4,10 +4,7 @@
   </div>
   <div class="column-body" max-remaining-height="40">
     <img width="32" height="32" class="column-loader" ng-show="loading" src="images/ajax-loader.gif"/>
-      <ul ng-model="ngModel" ui-sortable="sortOptions">
-
-        <!-- This card is only here so the sortable directive works with empty lists -->
-        <li class="card magic-hidden-card" ng-if="ngModel.length == 0"></li>
+      <ul ng-model="ngModel" ui-sortable="sortOptions" ng-class="{empty: ngModel.length == 0}">
 
         <li class="card" ng-repeat="bug in ngModel | filter: query | limitTo: 35" ng-click="goToBug(bug)">
           <div class="card-body">
