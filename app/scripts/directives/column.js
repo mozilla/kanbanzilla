@@ -14,7 +14,7 @@ angular.module('kanbanzillaApp')
         sortOptions: '=',
         ngModel: '='
       },
-      controller: ['$scope', 'Bugzilla', function ($scope, Bugzilla) {
+      controller: ['$scope', 'Bugzilla', 'bugzillaAuth','$dialog', function ($scope, Bugzilla, bugzillaAuth, $dialog) {
 
         $scope.bugDescription = 'Loading...';
         $scope.lastComment = 'Loading...';
@@ -45,22 +45,30 @@ angular.module('kanbanzillaApp')
           window.open('https://bugzilla.mozilla.org/show_bug.cgi?id=' + bug.id, '_blank');
         };
 
-        $scope.openComment = function (test) {
-          console.log(test);
+        $scope.openComment = function (bug) {
+
+          if(!bugzillaAuth.isUserLoggedIn()){
+            console.log('user is not logged in');
+            return;
+          }
+
+          var dialog = $dialog.dialog({
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            templateUrl: 'views/postcomment.html',
+            controller: 'CommentCtrl'
+          });
+          dialog.open().then(function (result) {
+            if(result.action === 'submit'){
+              Bugzilla.postComment(bug.id, {text: result.text})
+              .success(function (data) {
+                console.log(data);
+              });
+            }
+          });
         };
 
       }]
     };
-  })
-  .directive('h5drop', function () {
-
-    return {
-      restrict: 'A',
-      link: function (scope, elem, attrs) {
-        elem.bind('drop', function (e) {
-          console.log(e);
-        });
-      }
-    };
-
   });

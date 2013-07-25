@@ -133,6 +133,8 @@ angular.module('kanbanzillaApp')
 
       postComment: function (bugId, data) {
         // - /bug/<id>/comment POST
+        console.log('posting comment to ' + bugId + ' with text ' + data.text);
+        return $http.post(BASE_URL + '/bug/' + bugId + '/comment', data);
       },
 
       /* HISTORY============= */
