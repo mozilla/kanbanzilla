@@ -3,8 +3,11 @@
 angular.module('kanbanzillaApp')
   .controller('CommentCtrl', ['$scope', 'dialog', function ($scope, dialog) {
 
-    console.log($scope);
     $scope.something = [];
+    $scope.open = dialog._open;
+    $scope.$watch(dialog._open, function () {
+      $scope.open = dialog._open;
+    });
 
     $scope.closeDialog = function () {
       var response = {};

@@ -8,7 +8,6 @@ angular.module('kanbanzillaApp')
     $scope.login.password = '';
     $scope.open = dialog._open;
     $scope.$watch(dialog._open, function () {
-      console.log('watching dialog._open');
       $scope.open = dialog._open;
     });
 

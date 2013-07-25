@@ -66,10 +66,15 @@ angular.module('kanbanzillaApp')
       });
     }
 
+    function sortableUpdateHandler (data) {
+      // console.log(data);
+    }
+
     $scope.sortableOptions = {
       placeholder: 'proxy-card',
       connectWith: '[ui-sortable]',
-      helper: 'clone'
+      helper: 'clone',
+      update: sortableUpdateHandler
     };
 
     $scope.unconfirmedBugs = [];
