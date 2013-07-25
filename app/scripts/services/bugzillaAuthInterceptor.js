@@ -13,11 +13,15 @@ angular.module('kanbanzillaApp')
     }
 
     function augmentRequestWithAuth (request) {
-      if(toBugzillaAPI(request.url) && bugzillaAuth.isUserLoggedIn()) {
-        var user = bugzillaAuth.getUser();
-        request.params = request.params || {};
-        request.params.username = user.username;
-        request.params.password = user.password;
+      if(toBugzillaAPI(request.url)) {
+        request.params['include_fields'] = 'summary,id,keywords,creator,component,creation_time,depends_on,last_change_time,severity,status,assigned_to';
+
+        if(bugzillaAuth.isUserLoggedIn()) {
+          var user = bugzillaAuth.getUser();
+          request.params = request.params || {};
+          request.params.username = user.username;
+          request.params.password = user.password;
+        }
       }
     }
 

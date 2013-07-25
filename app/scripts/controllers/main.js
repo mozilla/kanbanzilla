@@ -11,6 +11,7 @@ angular.module('kanbanzillaApp')
         });
 
     $scope.myBoards = Boards.getAllBoards();
+    console.log($scope.myBoards);
 
     $scope.toggle = function (product) {
       console.log(product);

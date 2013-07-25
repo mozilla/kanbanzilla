@@ -68,7 +68,8 @@ angular.module('kanbanzillaApp')
 
     $scope.sortableOptions = {
       placeholder: 'proxy-card',
-      connectWith: '[ui-sortable]'
+      connectWith: '[ui-sortable]',
+      helper: 'clone'
     };
 
     $scope.unconfirmedBugs = [];
