@@ -83,6 +83,7 @@ angular.module('kanbanzillaApp')
       },
 
       getBugs: function (searchParams) {
+        searchParams['include_fields'] = 'summary,id,keywords,creator,component,creation_time,depends_on,last_change_time,severity,status,assigned_to';
         return $http({
           method: 'GET',
           url: BASE_URL + '/bug',
@@ -92,6 +93,7 @@ angular.module('kanbanzillaApp')
 
       getBugsWithType: function (searchParams, type, id) {
         searchParams[type] = id;
+        searchParams['include_fields'] = 'summary,id,keywords,creator,component,creation_time,depends_on,last_change_time,severity,status,assigned_to';
         return $http({
           method: 'GET',
           url: BASE_URL + '/bug',
