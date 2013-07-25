@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('BoardCtrl', ['$scope', '$q','Bugzilla', 'Boards', '$routeParams', '$window',
-  function ($scope, $q, Bugzilla, Boards, $routeParams, $window) {
+  .controller('BoardCtrl', ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window',
+  function ($scope, $location, $q, Bugzilla, Boards, $routeParams, $window) {
 
     //////////////////////////////////////////
     // This whole controller is hideous     //
@@ -41,35 +41,40 @@ angular.module('kanbanzillaApp')
     function customLoader () {
       var loadingPromises = [];
       var board = Boards.get($routeParams.id);
-      angular.forEach(board.components, function (component) {
-        angular.forEach(columns, function (column) {
+      if(board === undefined) {
+        $location.path('/');
+      }
+      else {
+        angular.forEach(board.components, function (component) {
+          angular.forEach(columns, function (column) {
 
-          var p = Bugzilla.getBugs({
-            product: component.product,
-            component: component.component,
-            status: column
+            var p = Bugzilla.getBugs({
+              product: component.product,
+              component: component.component,
+              status: column
+            });
+            p.success(function(data) {
+              var listName = column.toLowerCase() + 'Bugs';
+              $scope.loading[listName] = false;
+              $scope[listName].push.apply($scope[listName], data.bugs);
+            });
+
+            loadingPromises.push(p);
+
           });
-          p.success(function(data) {
-            var listName = column.toLowerCase() + 'Bugs';
-            // console.log(component, listName);
-            $scope.loading[listName] = false;
-            $scope[listName].push.apply($scope[listName], data.bugs);
-            // console.log($scope[listName]);
-          });
-
-          loadingPromises.push(p);
-
         });
-      });
-      $q.all(loadingPromises).then(function (data) {
-
-      });
+        $q.all(loadingPromises).then(function (data) {
+          // when all requests are done
+        });
+      }
     }
 
     function sortableUpdateHandler (data) {
       // console.log(data);
     }
 
+    // ui-sortable options, placeholder is a class, and helper clone disables
+    // the click event from firing when dropping cards.
     $scope.sortableOptions = {
       placeholder: 'proxy-card',
       connectWith: '[ui-sortable]',
