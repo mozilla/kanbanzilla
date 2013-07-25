@@ -1,98 +1,46 @@
 <div class="board-header">
   <div class="board-header-inner">
     <h1>{{product}}</h1>
-    <input type="text" id="board-search" class="input-medium search-query" placeholder="Search..." grow-when-clicked="300" ng-model="query.summary">
+    <input type="text" id="board-search" class="input-medium search-query" placeholder="Search..." grow-when-clicked="300" ng-model="query">
+    <div class="board-actions pull-right">
+      <button class="btn"><i class="icon-refresh"></i></button>
+      <button class="btn" ng-click="settingsOpen = true"><i class="icon-cog"></i></button>
+    </div>
+  </div>
+</div>
+
+<div class="settings-sidebar" ng-class="{shown: settingsOpen}">
+  <div class="settings-sidebar-inner">
+    <h3>Board Settings</h3>
+    <h4>Placeholder Widget</h4>
+    <button class="btn settings-close-btn" ng-click="settingsOpen = false">Close</button>
+    <hr>
+    <ul>
+      <li>Ability to change components on board</li>
+      <li>change and rename columns</li>
+      <li>see the activity on the board / notifications</li>
+      <li>Turn tooltips on and off</li>
+      <li>Turn other thing on and off</li>
+      <li>more binary values</li>
+      <li>some other setting</li>
+      <li>save button</li>
+      <li></li>
+      <li></li>
+    </ul>
   </div>
 </div>
 
 <div class="board-dropzone" auto-fill-height="">
   <div class="board-dropzone-inner" fancy-scroll-horizontally="">
 
-    <div class="column" horizontally-resizable="">
-      <div class="column-header">
-        Unconfirmed
-      </div>
-      <div class="column-body" max-remaining-height="40">
-        <img width="32" height="32" class="column-loader" ng-show="loading.unconfirmedBugs" src="images/ajax-loader.gif">
-        <div class="column-body-inner">
-          <a ng-repeat="bug in unconfirmedBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
-            <div class="card">
-              <div class="card-header">Bug ID: #{{bug.id}}</div>
-              <div class="card-body">
-                <div class="card-content">
-                  <p>{{bug.summary | truncateByCharsAndEndWith : 150 : '...' }}</p>
-                </div>
-                <div class="card-hang-right"></div>
-              </div>
-              <div class="card-footer">
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="column" horizontally-resizable="">
-      <div class="column-header">
-        New
-      </div>
-      <div class="column-body" max-remaining-height="40">
-        <img width="32" height="32" class="column-loader" ng-show="loading.newBugs" src="images/ajax-loader.gif">
-        <a ng-repeat="bug in newBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
-          <div class="card">
-            <div class="card-header">Bug ID: #{{bug.id}}</div>
-            <div class="card-body">
-              <div class="card-content">
-                <p>{{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}</p>
-              </div>
-              <div class="card-hang-right"></div>
-            </div>
-            <div class="card-footer">
-            </div>
-          </div>
-        </a>
-      </div>
-    </div>
-    <div class="column" horizontally-resizable="">
-      <div class="column-header">
-        Assigned
-      </div>
-      <div class="column-body" max-remaining-height="40">
-        <img width="32" height="32" class="column-loader" ng-show="loading.assignedBugs" src="images/ajax-loader.gif">
-        <a ng-repeat="bug in assignedBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
-          <div class="card">
-            <div class="card-header">Bug ID: #{{bug.id}}</div>
-            <div class="card-body">
-              <div class="card-content">
-                <p>{{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}</p>
-              </div>
-              <div class="card-hang-right"></div>
-            </div>
-            <div class="card-footer">
-            </div>
-          </div>
-        </a>
-      </div>
-    </div>
-    <div class="column" horizontally-resizable="">
-      <div class="column-header">
-        Resolved
-      </div>
-      <div class="column-body" max-remaining-height="40">
-        <img width="32" height="32" class="column-loader" ng-show="loading.resolvedBugs" src="images/ajax-loader.gif">
-        <a ng-repeat="bug in resolvedBugs | filter: query | limitTo: 35" class="card-wrapper" target="_blank" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}">
-          <div class="card">
-            <div class="card-header">Bug ID: #{{bug.id}}</div>
-            <div class="card-body">
-              <div class="card-content">
-                <p>{{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}</p>
-              </div>
-              <div class="card-hang-right"></div>
-            </div>
-            <div class="card-footer">
-            </div>
-          </div>
-        </a>
-      </div>
-    </div>
+
+    <div kbcolumn="" loading="loading.unconfirmedBugs" display-title="Unconfirmed" ng-model="unconfirmedBugs" sort-options="sortableOptions" query="query"></div>
+
+    <div kbcolumn="" loading="loading.newBugs" display-title="New" ng-model="newBugs" sort-options="sortableOptions" query="query"></div>
+
+    <div kbcolumn="" loading="loading.assignedBugs" display-title="Assigned" ng-model="assignedBugs" sort-options="sortableOptions" query="query"></div>
+
+    <div kbcolumn="" loading="loading.resolvedBugs" display-title="Resolved" ng-model="resolvedBugs" sort-options="sortableOptions" query="query"></div>
+
   </div>
 </div>

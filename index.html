@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="styles/5cce333d.main.css">
+    <link rel="stylesheet" href="styles/9749635e.main.css">
   </head>
   <body ng-app="kanbanzillaApp">
     <!--[if lt IE 9]>
@@ -20,29 +20,27 @@
 
     <!-- Add your site or application content here -->
 
-
     <div class="navbar navbar-inverse navbar-static-top" ng-controller="HeaderCtrl">
       <div class="navbar-inner">
 
         <ul class="nav">
           <li><a class="brand" href="#">Kanbanzilla</a></li>
-          <li>
-            <select name="" id="product-component-switcher" ui-select2="" ng-model="select2">
+<!--           <li>
+            <select name="" id="product-component-switcher" ui-select2 ng-model="select2">
               <option value="">Something</option>
               <option value="">Project</option>
               <option value="">Component</option>
               <option value="">Another</option>
               <option value="">Something</option>
             </select>
-          </li>
+          </li> -->
         </ul>
 
         <div class="pull-right">
 
-          <ul class="nav ng-cloak" ng-if="user.loggedIn">
+          <ul class="nav" ng-if="user.loggedIn" ng-cloak="">
             <li><a href="">{{user.username}}</a></li>
             <li><a href="" ng-click="logout()">Logout</a></li>
-            <li><a href="#/settings">Settings</a></li>
             <li><a href="#/settings">Help</a></li>
           </ul>
 
@@ -62,8 +60,13 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-sanitize.js"></script>
+<!--
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular-cookies.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular-sanitize.min.js"></script>
+ -->
 
-    <script src="scripts/a3d683bf.scripts.js"></script>
+    <script src="scripts/a94dc970.scripts.js"></script>
 
   </body>
 </html>

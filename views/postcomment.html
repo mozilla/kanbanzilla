@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h3>Post a Comment</h3>
+</div>
+<div class="modal-body">
+  <p>Please leave a comment on this bug</p>
+
+  <form ng-submit="attemptCommentPost()">
+    <textarea dr-focus-on="{{open}}" style="width: 95%; height: 110px" ng-model="commentText"></textarea>
+  </form>
+
+</div>
+<div class="modal-footer">
+  <button ng-click="attemptCommentPost()" class="btn btn-primary">Submit</button>
+  <button ng-click="closeDialog()" class="btn">Close</button>
+</div>
