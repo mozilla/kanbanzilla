@@ -68,18 +68,12 @@ angular.module('kanbanzillaApp')
         });
       }
     }
-
-    function sortableUpdateHandler (data) {
-      // console.log(data);
-    }
-
     // ui-sortable options, placeholder is a class, and helper clone disables
     // the click event from firing when dropping cards.
     $scope.sortableOptions = {
       placeholder: 'proxy-card',
       connectWith: '[ui-sortable]',
-      helper: 'clone',
-      update: sortableUpdateHandler
+      helper: 'clone'
     };
 
     $scope.unconfirmedBugs = [];

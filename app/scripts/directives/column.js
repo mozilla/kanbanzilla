@@ -46,12 +46,10 @@ angular.module('kanbanzillaApp')
         };
 
         $scope.openComment = function (bug) {
-
           if(!bugzillaAuth.isUserLoggedIn()){
             console.log('user is not logged in');
             return;
           }
-
           var dialog = $dialog.dialog({
             backdrop: true,
             keyboard: true,

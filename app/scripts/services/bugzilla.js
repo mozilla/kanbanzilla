@@ -103,12 +103,10 @@ angular.module('kanbanzillaApp')
       },
 
       getBug: function (id) {
-        // - /bug/<id> GET
         return $http.get(BASE_URL + '/bug/' + id);
       },
 
       countBugs: function (searchParams) {
-        // - /count GET
         return $http({
           method: 'GET',
           url: BASE_URL + '/count',
@@ -127,12 +125,10 @@ angular.module('kanbanzillaApp')
       /* COMMENTS=========== */
 
       getCommentsForBug: function (id) {
-        // - /bug/<id>/comment GET
         return $http.get(BASE_URL + '/bug/' + id + '/comment', {cache: true});
       },
 
       postComment: function (bugId, data) {
-        // - /bug/<id>/comment POST
         console.log('posting comment to ' + bugId + ' with text ' + data.text);
         return $http.post(BASE_URL + '/bug/' + bugId + '/comment', data);
       },
