@@ -1,10 +1,8 @@
 from flask import Flask, request
-from flask.ext import restful
-
 import requests
 import json
+
 app = Flask(__name__)
-# api = restful.Api(app)
 
 # username = 'dries@mozilla.com'
 # password = 'asdas'
@@ -16,29 +14,15 @@ app = Flask(__name__)
 #   'GoAheadAndLogIn': 'Log in'
 # }
 
-# class Board(restful.Resource):
-#   def get(self, board_id):
-#     return 'Hello board {0}'.format(board_id)
-
 # class BoardList(restful.Resource):
 #   def get(self):
-#     r = requestslib.post(login_url, data=login_payload)
-#     # print(r.headers['set-cookie'])
+#     r = requests.post(login_url, data=login_payload)
 #     # store these two cookies and the username in a session if successful
 #     print(r.cookies.has_key('Bugzilla_login'))
 #     print(r.cookies['Bugzilla_login'])
 #     print(r.cookies['Bugzilla_logincookie'])
-#     # return 'kay'
-#     # return r.headers['set-cookie'].split(",")
 #     return {'Bugzilla_login': r.cookies['Bugzilla_login'], 'Bugzilla_logincookie': r.cookies['Bugzilla_logincookie']}
-#     # return r.headers
-#     # return 'oka'
 
-# anything that isn't to /api reroute to index.html
-# anything that isn't to /api/board, proxy through to Bugzilla with Auth info.
-
-# api.add_resource(BoardList, 'api/board')
-# api.add_resource(Board, 'api/board/<int:board_id>')
 
 
 bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
@@ -50,7 +34,6 @@ def board_endpoint(board_id):
 
 @app.route('/api/<path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def api_proxy(path):
-  # requests.send(method=request.method, url=bugzilla_url + path, data=request.form)
   print(request.args)
   print(request.form)
   print(path)
