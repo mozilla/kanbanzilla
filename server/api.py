@@ -24,7 +24,6 @@ app = Flask(__name__)
 #     return {'Bugzilla_login': r.cookies['Bugzilla_login'], 'Bugzilla_logincookie': r.cookies['Bugzilla_logincookie']}
 
 
-
 bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
 
 @app.route('/api/board', defaults={'board_id':''})
