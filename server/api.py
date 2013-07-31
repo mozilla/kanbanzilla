@@ -3,9 +3,6 @@ from flask.ext import restful
 
 import requests
 import json
-
-import bugzilla
-
 app = Flask(__name__)
 # api = restful.Api(app)
 
