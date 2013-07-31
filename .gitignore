@@ -4,3 +4,4 @@ dist
 .sass-cache
 app/components
 libpeerconnection.log
+server/venv
