@@ -11,8 +11,6 @@ angular.module('kanbanzillaApp')
       $scope.open = dialog._open;
     });
 
-    console.log($scope.login.password);
-
     $scope.closeDialog = function () {
       var response = {};
       response.action = 'close';
@@ -21,26 +19,15 @@ angular.module('kanbanzillaApp')
     };
 
     $scope.attemptLogin = function () {
-      var response = {};
       if($scope.login.username !== '' && $scope.login.password !== ''){
-        console.log('attempt login');
         Bugzilla.attemptLogin($scope.login.username, $scope.login.password)
           .success(function (data) {
-            response.action = 'login';
-            response.data = data;
-            bugzillaAuth.login($scope.login.username, $scope.login.password);
-            dialog.close(response);
+            bugzillaAuth.login($scope.login.username);
+            dialog.close(data);
           })
-          .error(function (data) {
-            response.action = 'badlogin';
-            response.data = data;
-            dialog.close(response);
+          .error(function () {
+            dialog.close({result: 'failed'});
           });
-      }
-      else{
-        console.log('stuff is bad');
-        response.action = 'badlogin';
-        dialog.close(response);
       }
     };
 

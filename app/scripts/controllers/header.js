@@ -4,6 +4,7 @@ angular.module('kanbanzillaApp')
   .controller('HeaderCtrl', ['$scope', 'bugzillaAuth', '$window', '$dialog', function ($scope, bugzillaAuth, $window, $dialog) {
 
     $scope.appName = 'Kanbanzilla';
+
     $scope.user = bugzillaAuth.getUser();
 
     $scope.loginDialogOpts = {

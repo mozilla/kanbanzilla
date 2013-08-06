@@ -5,10 +5,10 @@ angular.module('kanbanzillaApp')
   function ($scope, Bugzilla, Boards, $window) {
     $scope.products = {};
 
-    Bugzilla.getConfig()
-       .success(function (data) {
-          $scope.products = data.product;
-        });
+    // Bugzilla.getConfig()
+    //    .success(function (data) {
+    //       $scope.products = data.product;
+    //     });
 
     $scope.myBoards = Boards.getAllBoards();
     console.log($scope.myBoards);

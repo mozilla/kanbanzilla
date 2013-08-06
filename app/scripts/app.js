@@ -23,5 +23,5 @@ angular.module('kanbanzillaApp', ['ui.select2', 'ui.bootstrap', 'ui.sortable', '
         redirectTo: '/'
       });
 
-    $httpProvider.interceptors.push('bugzillaAuthInterceptor');
+    // $httpProvider.interceptors.push('bugzillaAuthInterceptor');
   }]);

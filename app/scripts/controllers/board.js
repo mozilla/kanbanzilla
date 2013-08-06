@@ -68,6 +68,20 @@ angular.module('kanbanzillaApp')
         });
       }
     }
+
+    function init () {
+      $scope.unconfirmedBugs = [];
+      $scope.resolvedBugs = [];
+      $scope.assignedBugs = [];
+      $scope.newBugs = [];
+      $scope.product = $routeParams.id;
+      $scope.loading = {
+        unconfirmedBugs: true,
+        resolvedBugs: true,
+        newBugs: true,
+        assignedBugs: true
+      };
+    }
     // ui-sortable options, placeholder is a class, and helper clone disables
     // the click event from firing when dropping cards.
     $scope.sortableOptions = {
@@ -75,19 +89,7 @@ angular.module('kanbanzillaApp')
       connectWith: '[ui-sortable]',
       helper: 'clone'
     };
-
-    $scope.unconfirmedBugs = [];
-    $scope.resolvedBugs = [];
-    $scope.assignedBugs = [];
-    $scope.newBugs = [];
-    $scope.product = $routeParams.id;
-
-    $scope.loading = {
-      unconfirmedBugs: true,
-      resolvedBugs: true,
-      newBugs: true,
-      assignedBugs: true
-    };
+    init();
 
     if($routeParams.type === 'custom') {
       customLoader();
@@ -104,5 +106,10 @@ angular.module('kanbanzillaApp')
     $scope.openComment = function () {
       $window.alert('opening comment');
     };
+
+    $scope.$on('$destroy', function () {
+      console.log('board destroyed');
+      init();
+    });
 
   }]);

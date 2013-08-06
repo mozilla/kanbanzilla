@@ -18,6 +18,8 @@ module.exports = function (grunt) {
     yeomanConfig.app = require('./component.json').appPath || yeomanConfig.app;
   } catch (e) {}
 
+  grunt.loadNpmTasks('grunt-proxy');
+
   grunt.initConfig({
     yeoman: yeomanConfig,
     watch: {
@@ -43,11 +45,23 @@ module.exports = function (grunt) {
         tasks: ['livereload']
       }
     },
+    proxy: {
+      proxy1: {
+        options: {
+          port: 8050,
+          host: 'localhost',
+          router: {
+            'localhost/api/*': 'localhost:5000',
+            'localhost': 'localhost:9000'
+          }
+        }
+      }
+    },
     connect: {
       options: {
         port: 9000,
         // Change this to '0.0.0.0' to access the server from outside.
-        hostname: 'localhost'
+        hostname: '0.0.0.0'
       },
       livereload: {
         options: {
@@ -73,7 +87,7 @@ module.exports = function (grunt) {
     },
     open: {
       server: {
-        url: 'http://localhost:<%= connect.options.port %>'
+        url: 'http://localhost:<%= proxy.proxy1.options.port %>'
       }
     },
     clean: {
