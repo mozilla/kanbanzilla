@@ -15,7 +15,7 @@ A kanban board integrated with bugzilla
 
 - - - - - - -
 
- ### Installation
+### Installation
 I'll assume you've already got node and ruby installed.
 
 #### Tools
