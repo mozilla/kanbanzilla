@@ -5,7 +5,7 @@ from werkzeug.contrib.cache import MemcachedCache
 import requests
 import uuid
 
-MEMCACHE_URL = os.environ.get('MEMCACHE_URL', '127.0.0.1:11211')
+MEMCACHE_URL = os.environ.get('MEMCACHE_URL', '127.0.0.1:11211').split(',')
 DEBUG = os.environ.get('DEBUG', False) in ('true', '1')
 
 app = Flask(__name__)
@@ -15,7 +15,7 @@ bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
 
 users = {}
 
-cache = MemcachedCache([MEMCACHE_URL])
+cache = MemcachedCache(MEMCACHE_URL)
 boards = [
     {
         "id": 1,
