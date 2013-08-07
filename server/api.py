@@ -1,5 +1,8 @@
+import re
 import json
 import os
+import collections
+
 
 from flask import Flask, request, make_response, abort, jsonify
 from flask.views import MethodView
@@ -10,6 +13,9 @@ import uuid
 
 MEMCACHE_URL = os.environ.get('MEMCACHE_URL', '127.0.0.1:11211').split(',')
 DEBUG = os.environ.get('DEBUG', False) in ('true', '1')
+
+DAY = 60 * 60 * 24
+MONTH = DAY * 30
 
 app = Flask(__name__)
 
@@ -30,6 +36,10 @@ COLUMNS = [
              "statuses": ["RESOLVED"]},
 ]
 
+whiteboard_regexes = dict(
+    (each['name'], re.compile('kanbanzilla[%s]' % re.escape(each['name'])))
+    for each in COLUMNS
+)
 
 
 def cache_set(key, value, *args, **options):
@@ -42,7 +52,7 @@ def cache_get(key, default=None):
     value = cache.get(key)
     if value is None:
         value = default
-    if not isinstance(value, (dict, list, bool)):
+    if value is not None and not isinstance(value, (dict, list, bool)):
         value = json.loads(value)
     return value
 
@@ -72,14 +82,14 @@ class BoardsView(MethodView):
             'creator': user_info['username'],
             'id': board_id
         }
-        cache_set(cache_key, data)  # indefinite
+        cache_set(cache_key, data, MONTH)
 
         boards_key = 'boards:%s' % token  # secure'er
         boards_key = 'boards:%s' % user_info['username']  # dumb'er
 
         previous = cache_get(boards_key, [])
         previous.append(board_id)
-        cache_set(boards_key, previous)
+        cache_set(boards_key, previous, MONTH)
 
         response = make_response(jsonify({'board': board_id}))
         return response
@@ -106,7 +116,7 @@ class BoardsView(MethodView):
 
 class BoardView(MethodView):
 
-    def get(self, board_id):
+    def get(self, id):
         token = request.cookies.get('token')
         if not token:
             abort(403)
@@ -114,14 +124,32 @@ class BoardView(MethodView):
 
         data = {}
 
-        board_cache_key = 'board:%s' % board_id
+        board_cache_key = 'board:%s' % id
         board = cache_get(board_cache_key)
+        assert board
         data['board'] = board
 
         components = board['components']
-        #bug_data = fetch_bugs(components=components, fields=('id', 'summary', 'status', 'whiteboard'))
+        bug_data = fetch_bugs(components=components, fields=('id', 'summary', 'status', 'whiteboard'))
 
-        columns = [
+        bugs_by_column = collections.defaultdict(list)
+
+        for bug in bug_data['bugs']:
+            # which named column should this go into?
+            bug_info = {
+                'id': bug['id'],
+                'summary': bug['summary'],
+            }
+            for each in COLUMNS:
+                if bug['status'] in each['statuses']:
+                    bugs_by_column[each['name']].append(bug_info)
+                    break
+            else:
+                for name, regex in whiteboard_regexes.items():
+                    if regex.findall(bug['whiteboard']):
+                        bugs_by_column[each['name']].append(bug_info)
+
+        xxcolumns = [
             {"name": "Backlog",
              "statuses": ["NEW", "UNCONFIRMED"],
              "bugs": [
@@ -136,6 +164,16 @@ class BoardView(MethodView):
              ]}
         ]
 
+        columns = []
+        for each in COLUMNS:
+            columns.append({
+                'name': each['name'],
+                'bugs': bugs_by_column[each['name']],
+                'statuses': each['statuses'],
+            })
+
+        from pprint import pprint
+        pprint(columns)
         data['columns'] = columns
 
         return make_response(jsonify(data))
@@ -171,7 +209,7 @@ class LoginView(MethodView):
                 'Bugzilla_login': cookies['Bugzilla_login'],
                 'Bugzilla_logincookie': cookies['Bugzilla_logincookie'],
                 'username': request.json['login']
-            })
+            }, MONTH)
             login_response['result'] = 'success'
             login_response['token'] = token
             response = make_response(jsonify(login_response))
@@ -194,6 +232,31 @@ def augment_with_auth(request_arguments, token):
             request_arguments['cookie'] = user_info['Bugzilla_logincookie']
     return request_arguments
 
+
+def fetch_bugs(**options):
+    fields = options.pop('fields')
+    params = {
+        'include_fields': ','.join(fields),
+    }
+    for each in options.get('components', []):
+        p = params.get('product', [])
+        p.append(each['product'])
+        params['product'] = p
+        c = params.get('component', [])
+        c.append(each['component'])
+        params['component'] = c
+
+
+    url = bugzilla_url
+    url += '/bug'
+
+    r = requests.request(
+        'GET',
+        url,
+        params=params,
+    )
+    response_text = r.text
+    return json.loads(response_text)
 
 @app.route('/api/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def api_proxy(path):
@@ -218,7 +281,7 @@ def catch_all(path):
     return 'should be the index.html file, let angular handle the route - {0}'.format(path)
 
 
-app.add_url_rule('/api/board/<int:id>', view_func=BoardView.as_view('board'))
+app.add_url_rule('/api/board/<id>', view_func=BoardView.as_view('board'))
 app.add_url_rule('/api/board', view_func=BoardsView.as_view('boards'))
 app.add_url_rule('/api/logout', view_func=LogoutView.as_view('logout'))
 app.add_url_rule('/api/login', view_func=LoginView.as_view('login'))
