@@ -11,7 +11,8 @@
     "angular-ui-select2": "latest",
     "animate.css": "latest",
     "jquery-ui": "latest",
-    "angular-ui-sortable": "latest"
+    "angular-ui-sortable": "latest",
+    "angular-ui-bootstrap": "latest"
   },
   "devDependencies": {
     "angular-mocks": "~1.0.5",
