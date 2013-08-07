@@ -6,39 +6,24 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title></title>
+    <title>Kanbanzilla</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
     <!-- build:css styles/main.css -->
     <link rel="stylesheet" href="styles/font-awesome.css">
     <link rel="stylesheet" href="styles/unitedstrap.min.css">
     <link rel="stylesheet" href="components/select2/select2.css">
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
+
   </head>
   <body ng-app="kanbanzillaApp">
-    <!--[if lt IE 9]>
-      <script src="components/es5-shim/es5-shim.js"></script>
-      <script src="components/json3/lib/json3.min.js"></script>
-    <![endif]-->
-
-    <!-- Add your site or application content here -->
-
     <div class="navbar navbar-inverse navbar-static-top" ng-controller="HeaderCtrl">
       <div class="navbar-inner">
 
         <ul class="nav">
           <li><a class="brand" href="#">Kanbanzilla</a></li>
-<!--           <li>
-            <select name="" id="product-component-switcher" ui-select2 ng-model="select2">
-              <option value="">Something</option>
-              <option value="">Project</option>
-              <option value="">Component</option>
-              <option value="">Another</option>
-              <option value="">Something</option>
-            </select>
-          </li> -->
         </ul>
 
         <div class="pull-right">
@@ -61,15 +46,11 @@
       <div ng-view class="myng-view"></div>
     </div>
 
-    <script src="scripts/jquery.js"></script>
-    <script src="scripts/angular-1.1.5/angular.js"></script>
-    <script src="scripts/angular-1.1.5/angular-cookies.js"></script>
-    <script src="scripts/angular-1.1.5/angular-sanitize.js"></script>
-<!--
+    <script src="components/jquery/jquery.js"></script>
     <script src="components/angular/angular.js"></script>
     <script src="components/angular-cookies/angular-cookies.js"></script>
     <script src="components/angular-sanitize/angular-sanitize.js"></script>
- -->
+
 
     <!-- build:js scripts/scripts.js -->
     <script src="scripts/jquery-ui-1.10.3.custom.min.js"></script>
