@@ -24,8 +24,9 @@ angular.module('kanbanzillaApp')
         if(!newBoard.hasOwnProperty('columns')){
           newBoard.columns = [];
         }
-        boards.push(newBoard);
-        persist();
+        $http.post('/api/board', newBoard);
+        // boards.push(newBoard);
+        // persist();
         return newBoard;
       },
 
