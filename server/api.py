@@ -1,6 +1,9 @@
+import json
 import os
 
 from flask import Flask, request, make_response, abort, jsonify
+from flask.views import MethodView
+
 from werkzeug.contrib.cache import MemcachedCache
 import requests
 import uuid
@@ -13,7 +16,6 @@ app = Flask(__name__)
 login_url = 'https://bugzilla.mozilla.org/index.cgi'
 bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
 
-users = {}
 
 cache = MemcachedCache(MEMCACHE_URL)
 boards = [
@@ -48,11 +50,70 @@ boards = [
     }
 ]
 
-@app.route('/api/board', defaults={'board_id':''})
-@app.route('/api/board/<board_id>')
-def board_endpoint(board_id):
-    response = make_response(jsonify(boards[0]))
-    return response
+class BoardView(MethodView):
+
+    def post(self):
+        token = request.cookies.get('token')
+        if not token:
+            abort(403)
+            return
+        token_cache_key = 'auth:%s' % token
+        user_info = cache.get(token_cache_key)
+        if not user_info:
+            abort(400, "You have never logged in")
+            return
+        else:
+            user_info = json.loads(user_info)
+
+        name = request.json['name']
+        components = request.json['components']
+        description = request.json['description']
+        board_id = uuid.uuid4().hex
+        cache_key = 'board:%s' % board_id
+        data = {
+            'name': name,
+            'components': components,
+            'description': description,
+            'creator': user_info['username'],
+        }
+        cache.set(cache_key, json.dumps(data))  # infinite
+
+        boards_key = 'boards:%s' % token
+        previous = cache.get(boards_key)
+        if previous:
+            previous = json.loads(previous)
+        else:
+            previous = []
+        previous.append(board_id)
+        cache.set(boards_key, json.dumps(previous))
+
+        response = make_response(jsonify({'board': board_id}))
+        return response
+
+    def get(self, board_id=None):
+        token = request.cookies.get('token')
+        if not token:
+            return make_response(jsonify({'boards': []}))
+
+        boards_key = 'boards:%s' % token
+        board_ids = cache.get(boards_key)
+        if board_ids:
+            board_ids = json.loads(board_ids)
+        else:
+            board_ids = []
+        boards = []
+        for board_id in board_ids:
+            board_key = 'board:%s' % board_id
+            data = cache.get(board_key)
+            if data:
+                data = json.loads(data)
+                boards.append(data)
+        response = make_response(jsonify({'boards': boards}))
+        return response
+
+
+app.add_url_rule('/api/board', view_func=BoardView.as_view('board'))
+
 
 
 @app.route('/api/logintest', methods=['GET'])
@@ -72,9 +133,9 @@ def logout():
     response = make_response('logout')
     response.set_cookie('token', '', expires=0)
     response.set_cookie('username', '', expires=0)
-    if cookie_token is not None:
-        if users.has_key(cookie_token):
-            users.pop(cookie_token, None)
+    # delete from memcache too
+    token_cache_key = 'token:%s' % cookie_token
+    cache.delete(token_cache_key)
     return response
 
 
@@ -91,11 +152,13 @@ def login():
     cookies = requests.utils.dict_from_cookiejar(r.cookies)
     if cookies.has_key('Bugzilla_login'):
         token = str(uuid.uuid4())
-        users[token] = {
+        token_cache_key = 'auth:%s' % token
+        print "SETTING", token_cache_key
+        cache.set(token_cache_key, json.dumps({
             'Bugzilla_login': cookies['Bugzilla_login'],
             'Bugzilla_logincookie': cookies['Bugzilla_logincookie'],
             'username': request.json['login']
-        }
+        }))
         login_response['result'] = 'success'
         login_response['token'] = token
         response = make_response(jsonify(login_response))
@@ -110,11 +173,14 @@ def login():
         return response
 
 
-def augment_with_auth(request_arguments, cookie_token):
-    if cookie_token is not None:
-        if users.has_key(cookie_token):
-            request_arguments['userid'] = users[cookie_token]['Bugzilla_login']
-            request_arguments['cookie'] = users[cookie_token]['Bugzilla_logincookie']
+def augment_with_auth(request_arguments, token):
+    if token is not None:
+        user_cache_key = 'auth:%s' % token
+        user_info = cache.get(user_cache_key)
+        if user_info:
+            user_info = json.loads(user_info)
+            request_arguments['userid'] = user_info['Bugzilla_login']
+            request_arguments['cookie'] = user_info['Bugzilla_logincookie']
     return request_arguments
 
 
