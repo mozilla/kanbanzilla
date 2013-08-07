@@ -1,25 +1,52 @@
-from flask import Flask, request, make_response, abort
+from flask import Flask, request, make_response, abort, jsonify
 from werkzeug.contrib.cache import MemcachedCache
 import requests
-import json
 import uuid
-# import memcache as memcache_module
-
-
 
 app = Flask(__name__)
-
 
 login_url = 'https://bugzilla.mozilla.org/index.cgi'
 bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
 
 users = {}
 cache = MemcachedCache(['127.0.0.1:8989'])
+boards = [
+  {
+    "id": 1,
+    "name": "Kanbanzilla",
+    "description": "Just a small board for showing my kanbanzilla component",
+    "owner": "dries@mozilla.com",
+    "components": [{"product": "WebTools", "component": "kanbanzilla"}],
+    "columns": [
+      {
+        "id": 1,
+        "title": "Backlog",
+        "status": ["UNCONFIRMED", "NEW"]
+      },
+      {
+        "id": 2,
+        "title": "Ready",
+        "status": None
+      },
+      {
+        "id": 3,
+        "title": "Working On",
+        "status": ["ASSIGNED"]
+      },
+      {
+        "id": 4,
+        "title": "Resolved",
+        "status": ["RESOLVED"]
+      }
+    ]
+  }
+]
 
 @app.route('/api/board', defaults={'board_id':''})
 @app.route('/api/board/<board_id>')
 def board_endpoint(board_id):
-  return 'this is the board endpoint'
+  response = make_response(jsonify(boards[0]))
+  return response
 
 
 @app.route('/api/logintest', methods=['GET'])
@@ -65,7 +92,7 @@ def login():
     }
     login_response['result'] = 'success'
     login_response['token'] = token
-    response = make_response(json.dumps(login_response))
+    response = make_response(jsonify(login_response))
     response.set_cookie('token', token)
     response.set_cookie('username', request.json['login'])
     return response

@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('MainCtrl', ['$scope', 'Bugzilla', 'Boards', '$window',
-  function ($scope, Bugzilla, Boards, $window) {
+  .controller('MainCtrl', ['$scope', 'Bugzilla', 'Boards', '$window', '$http',
+  function ($scope, Bugzilla, Boards, $window, $http) {
     $scope.products = {};
 
     // Bugzilla.getConfig()
@@ -11,7 +11,10 @@ angular.module('kanbanzillaApp')
     //     });
 
     $scope.myBoards = Boards.getAllBoards();
-    console.log($scope.myBoards);
+    $http.get('/api/board').
+      success(function (data){
+        console.log(data);
+      });
 
     $scope.toggle = function (product) {
       console.log(product);
