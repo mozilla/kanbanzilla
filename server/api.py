@@ -74,7 +74,9 @@ class BoardsView(MethodView):
         }
         cache_set(cache_key, data)  # indefinite
 
-        boards_key = 'boards:%s' % token
+        boards_key = 'boards:%s' % token  # secure'er
+        boards_key = 'boards:%s' % user_info['username']  # dumb'er
+
         previous = cache_get(boards_key, [])
         previous.append(board_id)
         cache_set(boards_key, previous)
@@ -87,7 +89,10 @@ class BoardsView(MethodView):
         if not token:
             return make_response(jsonify({'boards': []}))
 
-        boards_key = 'boards:%s' % token
+        boards_key = 'boards:%s' % token  # secure'er
+        user_info = cache_get('auth:%s' % token)
+        boards_key = 'boards:%s' % user_info['username']  # dumber
+
         board_ids = cache_get(boards_key, [])
         boards = []
         for board_id in board_ids:
