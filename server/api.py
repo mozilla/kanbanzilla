@@ -37,9 +37,10 @@ COLUMNS = [
 ]
 
 whiteboard_regexes = dict(
-    (each['name'], re.compile('kanbanzilla[%s]' % re.escape(each['name'])))
+    (each['name'], re.compile('kanbanzilla\[%s\]' % re.escape(each['name'])))
     for each in COLUMNS
 )
+#any_whiteboard_tag = re.compile('kanbanzilla\[[^]]+\]')
 
 
 def cache_set(key, value, *args, **options):
@@ -130,7 +131,11 @@ class BoardView(MethodView):
         data['board'] = board
 
         components = board['components']
-        bug_data = fetch_bugs(components=components, fields=('id', 'summary', 'status', 'whiteboard'))
+        bug_data = fetch_bugs(
+            components=components,
+            fields=('id', 'summary', 'status', 'whiteboard'),
+            token=token,
+        )
 
         bugs_by_column = collections.defaultdict(list)
 
@@ -222,15 +227,39 @@ class LoginView(MethodView):
             response = make_response(jsonify(login_response))
             return response
 
+# Commented out until we decide we need a dedicated endpoint here
+# for updating bugs
+#class BugView(MethodView):
+#
+#    def put(self, id):
+#        bug_id = id
+#        status = request.json.get('status')
+#        whiteboard = request.json.get('whiteboard')
+#        sub_select = request.json.get('sub_select')
+#        comment = request.json.get('comment')
+#
+#        assert status or whiteboard, "Must have a new status or a new whiteboard"
+#        if status == 'RESOLVED':
+#            assert sub_select, "Must have chosen a sub select"
+#
+#        #bug_data = fetch_bug(bug_id, refresh=True)
+#        #wiped_whiteboard = any_whiteboard_tag.sub('', bug_data['whiteboard'])
+#
+#        #params = {}
+#        #if status:
+#        #    params['status'] = status
+#        #elif whiteboard:
+#        #    params['whiteboard'] = new_whiteboard
+
+
+
 
 def augment_with_auth(request_arguments, token):
-    if token is not None:
-        user_cache_key = 'auth:%s' % token
-        user_info = cache_get(user_cache_key)
-        if user_info:
-            request_arguments['userid'] = user_info['Bugzilla_login']
-            request_arguments['cookie'] = user_info['Bugzilla_logincookie']
-    return request_arguments
+    user_cache_key = 'auth:%s' % token
+    user_info = cache_get(user_cache_key)
+    if user_info:
+        request_arguments['userid'] = user_info['Bugzilla_login']
+        request_arguments['cookie'] = user_info['Bugzilla_logincookie']
 
 
 def fetch_bugs(**options):
@@ -246,6 +275,8 @@ def fetch_bugs(**options):
         c.append(each['component'])
         params['component'] = c
 
+    if 'token' in options:
+        augment_with_auth(params, options.pop('token'))
 
     url = bugzilla_url
     url += '/bug'
@@ -258,18 +289,21 @@ def fetch_bugs(**options):
     response_text = r.text
     return json.loads(response_text)
 
+
 @app.route('/api/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def api_proxy(path):
     path = str(path)
-    cached_response = cache.get(request.url)
-    if cached_response is None:
-        request_arguments = dict(request.args)
-        cookie_token = str(request.cookies.get('token'))
-        augment_with_auth(request_arguments, cookie_token)
-        r = requests.request(request.method, bugzilla_url + '/{0}'.format(path), params=request_arguments, data=request.form)
-        cache.set(request.url, r.text)
-        cached_response = r.text
-    return cached_response
+    request_arguments = dict(request.args)
+    # str() because it's a Cookie Morsel
+    token = str(request.cookies.get('token'))
+    augment_with_auth(request_arguments, token)
+    r = requests.request(
+        request.method,
+        bugzilla_url + '/{0}'.format(path),
+        params=request_arguments,
+        data=request.form
+    )
+    return r.text
 
 
 @app.route('/', defaults={'path':''})
