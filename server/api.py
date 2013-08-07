@@ -18,37 +18,18 @@ bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
 
 
 cache = MemcachedCache(MEMCACHE_URL)
-boards = [
-    {
-        "id": 1,
-        "name": "Kanbanzilla",
-        "description": "Just a small board for showing my kanbanzilla component",
-        "owner": "dries@mozilla.com",
-        "components": [{"product": "WebTools", "component": "kanbanzilla"}],
-        "columns": [
-            {
-                "id": 1,
-                "title": "Backlog",
-                "status": ["UNCONFIRMED", "NEW"]
-            },
-            {
-                "id": 2,
-                "title": "Ready",
-                "status": None
-            },
-            {
-                "id": 3,
-                "title": "Working On",
-                "status": ["ASSIGNED"]
-            },
-            {
-                "id": 4,
-                "title": "Resolved",
-                "status": ["RESOLVED"]
-            }
-        ]
-    }
+
+COLUMNS = [
+            {"name": "Backlog",
+             "statuses": ["NEW", "UNCONFIRMED"]},
+            {"name": "Ready to work on",
+             "statuses": []},
+            {"name": "Working on",
+             "statuses": ["ASSIGNED"]},
+            {"name": "Done",
+             "statuses": ["RESOLVED"]},
 ]
+
 
 
 def cache_set(key, value, *args, **options):
@@ -66,7 +47,7 @@ def cache_get(key, default=None):
     return value
 
 
-class BoardView(MethodView):
+class BoardsView(MethodView):
 
     def post(self):
         token = request.cookies.get('token')
@@ -100,7 +81,7 @@ class BoardView(MethodView):
         response = make_response(jsonify({'board': board_id}))
         return response
 
-    def get(self, board_id=None):
+    def get(self):
         token = request.cookies.get('token')
         if not token:
             return make_response(jsonify({'boards': []}))
@@ -116,6 +97,42 @@ class BoardView(MethodView):
         response = make_response(jsonify({'boards': boards}))
         return response
 
+
+class BoardView(MethodView):
+
+    def get(self, board_id):
+        token = request.cookies.get('token')
+        if not token:
+            abort(403)
+            return
+
+        data = {}
+
+        board_cache_key = 'board:%s' % board_id
+        board = cache_get(board_cache_key)
+        data['board'] = board
+
+        components = board['components']
+        #bug_data = fetch_bugs(components=components, fields=('id', 'summary', 'status', 'whiteboard'))
+
+        columns = [
+            {"name": "Backlog",
+             "statuses": ["NEW", "UNCONFIRMED"],
+             "bugs": [
+               {"id": "91823", "summary": "PIEJTOIE"},
+               {"id": "91824", "summary": "DPIGJZGE"},
+             ]},
+            {"name": "Ready to work on",
+             "statuses": [],
+             "bugs": [
+               {"id": "1230905", "summary": "Fourth summary"},
+               {"id": "1230906", "summary": "Fifth summary"},
+             ]}
+        ]
+
+        data['columns'] = columns
+
+        return make_response(jsonify(data))
 
 class LogoutView(MethodView):
 
@@ -195,9 +212,11 @@ def catch_all(path):
     return 'should be the index.html file, let angular handle the route - {0}'.format(path)
 
 
-app.add_url_rule('/api/board', view_func=BoardView.as_view('board'))
+app.add_url_rule('/api/board/<int:id>', view_func=BoardView.as_view('board'))
+app.add_url_rule('/api/board', view_func=BoardsView.as_view('boards'))
 app.add_url_rule('/api/logout', view_func=LogoutView.as_view('logout'))
 app.add_url_rule('/api/login', view_func=LoginView.as_view('login'))
+
 
 if __name__ == '__main__':
     app.debug = DEBUG
