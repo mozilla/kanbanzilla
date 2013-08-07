@@ -34,3 +34,19 @@ Now your project should be set up.
   `grunt proxy server` to start running the server
   `. venv/bin/activate` followed by `python api.py` in the server folder
   and start a memcached server running on port 8989
+
+
+### The Server
+
+To start the server run:
+
+    cd server
+    python api.py
+
+To override the memcache URL use:
+
+    MEMCACHE_URL=128.0.0.2:8989 python api.py
+
+To run in debug mode (with fancy reloading):
+
+    DEBUG=true python api.py

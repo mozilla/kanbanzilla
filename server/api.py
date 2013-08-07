@@ -1,7 +1,12 @@
+import os
+
 from flask import Flask, request, make_response, abort, jsonify
 from werkzeug.contrib.cache import MemcachedCache
 import requests
 import uuid
+
+MEMCACHE_URL = os.environ.get('MEMCACHE_URL', '127.0.0.1:11211')
+DEBUG = os.environ.get('DEBUG', False) in ('true', '1')
 
 app = Flask(__name__)
 
@@ -9,7 +14,8 @@ login_url = 'https://bugzilla.mozilla.org/index.cgi'
 bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
 
 users = {}
-cache = MemcachedCache(['127.0.0.1:8989'])
+
+cache = MemcachedCache([MEMCACHE_URL])
 boards = [
     {
         "id": 1,
@@ -135,5 +141,5 @@ def catch_all(path):
     return 'should be the index.html file, let angular handle the route - {0}'.format(path)
 
 if __name__ == '__main__':
-    app.debug = True
+    app.debug = DEBUG
     app.run()
