@@ -1,6 +1,6 @@
 <div class="board-header">
   <div class="board-header-inner">
-    <h1>{{product}}</h1>
+    <h1>{{board.board.name}}</h1>
     <input type="text"
             id="board-search"
             class="input-medium search-query"
@@ -36,9 +36,9 @@
 </div>
 
 <div class="board-dropzone" auto-fill-height>
-  <div class="board-dropzone-inner" fancy-scroll-horizontally>
+  <div class="board-dropzone-inner">
 
-
+<!--
     <div kbcolumn
          loading="loading.unconfirmedBugs"
          display-title="Unconfirmed"
@@ -66,6 +66,15 @@
          ng-model="resolvedBugs"
          sort-options="sortableOptions"
          query="query"></div>
+ -->
+
+    <div kbcolumn
+         ng-repeat="column in board.columns"
+         display-title="{{column.name}}"
+         ng-model="column.bugs"
+         sort-options="sortableOptions"
+         query="query"></div>
+
 
   </div>
 </div>
