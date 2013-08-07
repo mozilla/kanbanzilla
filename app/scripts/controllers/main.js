@@ -10,10 +10,10 @@ angular.module('kanbanzillaApp')
     //       $scope.products = data.product;
     //     });
 
-    $scope.myBoards = Boards.getAllBoards();
-    $http.get('/api/board').
-      success(function (data){
-        console.log(data);
+    Boards.getAllBoards().
+      success(function (data) {
+        $scope.myBoards = data.boards;
+        console.log($scope.myBoards);
       });
 
     $scope.toggle = function (product) {

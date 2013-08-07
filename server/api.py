@@ -70,6 +70,7 @@ class BoardsView(MethodView):
             'components': components,
             'description': description,
             'creator': user_info['username'],
+            'id': board_id
         }
         cache_set(cache_key, data)  # indefinite
 

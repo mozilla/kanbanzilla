@@ -15,7 +15,7 @@ angular.module('kanbanzillaApp', ['ui.select2', 'ui.bootstrap', 'ui.sortable', '
         templateUrl: 'views/newboard.html',
         controller: 'NewboardCtrl'
       })
-      .when('/board/:type/:id', {
+      .when('/board/:id', {
         templateUrl: 'views/board.html',
         controller: 'BoardCtrl'
       })

@@ -17,7 +17,6 @@ angular.module('kanbanzillaApp')
 
     return {
       create: function (newBoard) {
-        newBoard.id = ++boardCounter;
         if(!newBoard.hasOwnProperty('components')){
           newBoard.components = [];
         }
@@ -25,21 +24,15 @@ angular.module('kanbanzillaApp')
           newBoard.columns = [];
         }
         $http.post('/api/board', newBoard);
-        // boards.push(newBoard);
-        // persist();
         return newBoard;
       },
 
-      get: function (name) {
-        for(var i = 0; i < boards.length ; i++){
-          if(boards[i].name === name) {
-            return boards[i];
-          }
-        }
+      get: function (id) {
+        return $http.get('/api/board/' + id);
       },
 
       getAllBoards: function () {
-        return boards;
+        return $http.get('/api/board');
       },
 
       getById: function (id) {

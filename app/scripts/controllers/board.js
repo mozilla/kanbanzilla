@@ -3,37 +3,6 @@
 angular.module('kanbanzillaApp')
   .controller('BoardCtrl', ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window',
   function ($scope, $location, $q, Bugzilla, Boards, $routeParams, $window) {
-
-    //////////////////////////////////////////
-    // This whole controller is hideous     //
-    // TODO: Clean up doit and customloader //
-    //////////////////////////////////////////
-    function doit () {
-      Bugzilla.getBugsWithType({status: 'UNCONFIRMED'}, $routeParams.type, $routeParams.id)
-        .success(function(data) {
-          $scope.unconfirmedBugs = data.bugs;
-          $scope.loading.unconfirmedBugs = false;
-        });
-
-      Bugzilla.getBugsWithType({status: 'RESOLVED'}, $routeParams.type, $routeParams.id)
-        .success(function(data) {
-          $scope.resolvedBugs = data.bugs;
-          $scope.loading.resolvedBugs = false;
-        });
-
-      Bugzilla.getBugsWithType({status: 'NEW'}, $routeParams.type, $routeParams.id)
-        .success(function(data) {
-          $scope.newBugs = data.bugs;
-          $scope.loading.newBugs = false;
-        });
-
-      Bugzilla.getBugsWithType({status: 'ASSIGNED'}, $routeParams.type, $routeParams.id)
-        .success(function(data) {
-          $scope.assignedBugs = data.bugs;
-          $scope.loading.assignedBugs = false;
-        });
-    }
-
     var columns = ['UNCONFIRMED', 'NEW', 'ASSIGNED', 'RESOLVED'];
 
     // for every component send off a request for all the bugs of varying statuses
@@ -89,15 +58,9 @@ angular.module('kanbanzillaApp')
       connectWith: '[ui-sortable]',
       helper: 'clone'
     };
+
     init();
-
-    if($routeParams.type === 'custom') {
-      customLoader();
-    }
-    else {
-      doit();
-    }
-
+    customLoader();
 
     $scope.goToBugzilla = function (bug) {
       window.location = Bugzilla.getLink(bug.id);
