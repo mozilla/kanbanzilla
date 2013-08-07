@@ -35,10 +35,6 @@ angular.module('kanbanzillaApp')
         return $http.get('/api/board');
       },
 
-      getById: function (id) {
-
-      },
-
       remove: function (board) {
         boards.splice(boards.indexOf(board), 1);
         console.log(board);

@@ -38,6 +38,12 @@ angular.module('kanbanzillaApp')
       }
     }
 
+    Boards.get($routeParams.id).
+      success(function (data) {
+        $scope.board = data;
+        console.log($scope.board);
+      });
+
     function init () {
       $scope.unconfirmedBugs = [];
       $scope.resolvedBugs = [];
@@ -60,7 +66,7 @@ angular.module('kanbanzillaApp')
     };
 
     init();
-    customLoader();
+    // customLoader();
 
     $scope.goToBugzilla = function (bug) {
       window.location = Bugzilla.getLink(bug.id);
