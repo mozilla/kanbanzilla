@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .factory('Boards', [function () {
+  .factory('Boards', ['$http', function ($http) {
 
     function persist () {
       localStorage.setItem('boards', JSON.stringify(boards));
