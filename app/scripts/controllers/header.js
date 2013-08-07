@@ -6,6 +6,7 @@ angular.module('kanbanzillaApp')
     $scope.appName = 'Kanbanzilla';
 
     $scope.user = bugzillaAuth.getUser();
+    console.log($scope.user);
 
     $scope.loginDialogOpts = {
       backdrop: true,
