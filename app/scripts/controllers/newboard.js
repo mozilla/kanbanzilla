@@ -5,7 +5,8 @@ angular.module('kanbanzillaApp')
     function ($scope, Bugzilla, $location, Boards) {
     $scope.select2Options = {
       'multiple': true,
-      'simple_tags': true
+      'simple_tags': true,
+      'minimumInputLength': 4
     };
     $scope.products = {};
     $scope.board = {
@@ -37,8 +38,14 @@ angular.module('kanbanzillaApp')
     $scope.createBoard = function () {
       processComponents($scope.board.components);
       console.log($scope.board);
-      Boards.create($scope.board);
-      $location.path('/board/custom/' + $scope.board.name);
+      Boards.create($scope.board)
+        .success(function (data) {
+          console.log(data);
+          $location.path('/board/' + data.board);
+        })
+        .error(function (data) {
+          console.log('error on the server', data);
+        });
     };
 
   }]);

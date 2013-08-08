@@ -23,8 +23,7 @@ angular.module('kanbanzillaApp')
         if(!newBoard.hasOwnProperty('columns')){
           newBoard.columns = [];
         }
-        $http.post('/api/board', newBoard);
-        return newBoard;
+        return $http.post('/api/board', newBoard);
       },
 
       get: function (id) {

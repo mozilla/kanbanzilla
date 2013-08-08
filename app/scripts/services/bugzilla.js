@@ -85,6 +85,11 @@ angular.module('kanbanzillaApp')
 
       updateBug: function (id, data) {
         // - /bug/<id> PUT
+        return $http({
+          method: 'PUT',
+          url: BASE_URL + '/bug/' + id,
+          data: data
+        });
       },
 
       /* COMMENTS=========== */
