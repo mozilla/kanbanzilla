@@ -145,14 +145,19 @@ class BoardView(MethodView):
                 'id': bug['id'],
                 'summary': bug['summary'],
             }
-            for each in COLUMNS:
-                if bug['status'] in each['statuses']:
-                    bugs_by_column[each['name']].append(bug_info)
+            whiteboard_found = False
+            for name, regex in whiteboard_regexes.items():
+                if regex.findall(bug['whiteboard']):
+                    bugs_by_column[name].append(bug_info)
+                    whiteboard_found = True
+
+            if whiteboard_found:
+                continue
+
+            for col in COLUMNS:
+                if bug['status'] in col['statuses']:
+                    bugs_by_column[col['name']].append(bug_info)
                     break
-            else:
-                for name, regex in whiteboard_regexes.items():
-                    if regex.findall(bug['whiteboard']):
-                        bugs_by_column[each['name']].append(bug_info)
 
         xxcolumns = [
             {"name": "Backlog",
