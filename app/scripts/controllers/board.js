@@ -16,18 +16,27 @@ angular.module('kanbanzillaApp')
       var bug = ui.item.sortable.moved;
       var columnName = data.target.parentNode.parentNode.attributes['display-title'].nodeValue;
       var column = getColumn(columnName);
-      if(column.statuses.length > 1) {
-        console.log('choose between these statuses', column.statuses);
-      }
-      else if(column.statuses[0] === 'RESOLVED') {
-        console.log('choose between these statuses', ['FIXED', 'INVALID', 'WONTFIX', 'DUPLICATE', 'WORKSFORME', 'INCOMPLETE']);
-      }
-      else if(column.statuses.length === 1) {
-        console.log('change the status on bug: #' + bug.id + ' to ' + column.statuses[0]);
-      }
-      else {
-        console.log('change the whiteboard on bug: #' + bug.id + ' to kanbanzilla[' + columnName + ']');
-      }
+
+      Bugzilla.getBug(bug.id)
+        .success(function (freshBug) {
+          console.log(freshBug);
+
+          if(column.statuses.length > 1) {
+            console.log('choose between these statuses', column.statuses);
+          }
+          else if(column.statuses[0] === 'RESOLVED') {
+            console.log('choose between these statuses', ['FIXED', 'INVALID', 'WONTFIX', 'DUPLICATE', 'WORKSFORME', 'INCOMPLETE']);
+          }
+          else if(column.statuses.length === 1) {
+            console.log('change the status on bug: #' + bug.id + ' to ' + column.statuses[0]);
+            bug.status = column.statuses[0];
+          }
+          else {
+            console.log('change the whiteboard on bug: #' + bug.id + ' to kanbanzilla[' + columnName + ']');
+          }
+          // Bugzilla.updateBug(bug.id, freshBug);
+        });
+
     }
 
 
