@@ -129,8 +129,8 @@ class BoardsView(MethodView):
         db.session.add(board)
         for each in components:
             cp = ProductComponent(
-                each['component'],
                 each['product'],
+                each['component'],
                 board
             )
             db.session.add(cp)
@@ -178,18 +178,29 @@ class BoardView(MethodView):
 
     def get(self, id):
         token = request.cookies.get('token')
-        if not token:
-            abort(403)
-            return
-
         data = {}
 
-        board_cache_key = 'board:%s' % id
-        board = cache_get(board_cache_key)
+        #board_cache_key = 'board:%s' % id
+        #board = cache_get(board_cache_key)
+        #assert board
+        board, = Board.query.filter_by(identifier=id)
         assert board
-        data['board'] = board
+        data['board'] = {
+            'name': board.name,
+            'description': board.description,
+            'creator': board.creator,
+        }
+        #print "BOARD", board
 
-        components = board['components']
+        #components = board['components']
+        components = []
+        for pc in ProductComponent.query.filter_by(board=board):
+            components.append({
+                'component': pc.component,
+                'product': pc.product,
+            })
+
+        print "components", components
         bug_data = fetch_bugs(
             components=components,
             fields=('id', 'summary', 'status', 'whiteboard'),
@@ -197,7 +208,6 @@ class BoardView(MethodView):
         )
 
         bugs_by_column = collections.defaultdict(list)
-
         for bug in bug_data['bugs']:
             # which named column should this go into?
             bug_info = {
@@ -342,6 +352,13 @@ def fetch_bugs(**options):
 
     url = bugzilla_url
     url += '/bug'
+
+    print "URL", url
+    print params
+    print
+    import urllib
+
+    print url +'?'+ urllib.urlencode(params, True)
 
     r = requests.request(
         'GET',
