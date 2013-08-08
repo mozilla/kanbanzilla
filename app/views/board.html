@@ -1,6 +1,6 @@
 <div class="board-header">
   <div class="board-header-inner">
-    <h1>{{board.board.name}}</h1>
+    <h1>{{boardInfo.board.name}}</h1>
     <input type="text"
             id="board-search"
             class="input-medium search-query"
@@ -69,7 +69,7 @@
  -->
 
     <div kbcolumn
-         ng-repeat="column in board.columns"
+         ng-repeat="column in boardInfo.columns"
          display-title="{{column.name}}"
          ng-model="column.bugs"
          sort-options="sortableOptions"

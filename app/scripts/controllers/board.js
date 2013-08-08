@@ -13,8 +13,8 @@ angular.module('kanbanzillaApp')
 
     Boards.get($routeParams.id).
       success(function (data) {
-        $scope.board = data;
-        console.log($scope.board);
+        $scope.boardInfo = data;
+        console.log($scope.boardInfo);
       });
 
     $scope.goToBugzilla = function (bug) {
