@@ -182,6 +182,7 @@ class BoardView(MethodView):
     def get(self, id):
         token = request.cookies.get('token')
         data = {}
+        changed_after = request.args.get('since')
 
         try:
             board, = Board.query.filter_by(identifier=id)
@@ -203,22 +204,37 @@ class BoardView(MethodView):
             })
 
         bug_data = fetch_bugs(
-            components=components,
-            fields=('id', 'summary', 'status', 'whiteboard'),
+            components,
+            ('id', 'summary', 'status', 'whiteboard', 'last_change_time'),
             token=token,
+            changed_after=changed_after,
         )
 
         bugs_by_column = collections.defaultdict(list)
-        for bug in bug_data['bugs']:
-            # which named column should this go into?
+        latest_change_time = None
+
+        def keep(column_name, bug):
             bug_info = {
                 'id': bug['id'],
                 'summary': bug['summary'],
             }
+            bugs_by_column[column_name].append(bug_info)
+
+        for bug in bug_data['bugs']:
+            last_change_time = bug.pop('last_change_time')
+            if changed_after and last_change_time == changed_after:
+                # bugzilla is silly in that if you pass
+                # changed_after=2013-08-08T20:26:27Z to the query
+                # it will return bugs that have that last_change_time
+                # or greater rather than just greater
+                continue
+            if last_change_time > latest_change_time:
+                latest_change_time = last_change_time
+            # which named column should this go into?
             whiteboard_found = False
             for name, regex in whiteboard_regexes.items():
                 if regex.findall(bug['whiteboard']):
-                    bugs_by_column[name].append(bug_info)
+                    keep(name, bug)
                     whiteboard_found = True
 
             if whiteboard_found:
@@ -226,7 +242,7 @@ class BoardView(MethodView):
 
             for col in COLUMNS:
                 if bug['status'] in col['statuses']:
-                    bugs_by_column[col['name']].append(bug_info)
+                    keep(col['name'], bug)
                     break
 
         columns = []
@@ -237,9 +253,9 @@ class BoardView(MethodView):
                 'statuses': each['statuses'],
             })
 
-        from pprint import pprint
-        pprint(columns)
         data['columns'] = columns
+        if latest_change_time:
+            data['latest_change_time'] = latest_change_time
 
         return make_response(jsonify(data))
 
@@ -323,12 +339,28 @@ def augment_with_auth(request_arguments, token):
         request_arguments['cookie'] = user_info['Bugzilla_logincookie']
 
 
-def fetch_bugs(**options):
-    fields = options.pop('fields')
+def fetch_bugs(components, fields, token=None, bucket_requests=3,
+               changed_after=None):
+    combined = collections.defaultdict(list)
+    for i in range(0, len(components), bucket_requests):
+        some_components = components[i:i + bucket_requests]
+        bug_data = _fetch_bugs(
+            some_components,
+            fields,
+            token=token,
+            changed_after=changed_after,
+        )
+        for key in bug_data:
+            combined[key].extend(bug_data[key])
+
+    return combined
+
+
+def _fetch_bugs(components, fields, token=None, changed_after=None):
     params = {
         'include_fields': ','.join(fields),
     }
-    for each in options.get('components', []):
+    for each in components:
         p = params.get('product', [])
         p.append(each['product'])
         params['product'] = p
@@ -336,18 +368,13 @@ def fetch_bugs(**options):
         c.append(each['component'])
         params['component'] = c
 
-    if 'token' in options:
-        augment_with_auth(params, options.pop('token'))
+    if token:
+        augment_with_auth(params, token)
+    if changed_after:
+        params['changed_after'] = changed_after
 
     url = bugzilla_url
     url += '/bug'
-
-    print "URL", url
-    print params
-    print
-    import urllib
-
-    print url +'?'+ urllib.urlencode(params, True)
 
     r = requests.request(
         'GET',
