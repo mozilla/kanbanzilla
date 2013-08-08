@@ -34,14 +34,14 @@ bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
 cache = MemcachedCache(MEMCACHE_URL)
 
 COLUMNS = [
-            {"name": "Backlog",
-             "statuses": ["NEW", "UNCONFIRMED"]},
-            {"name": "Ready to work on",
-             "statuses": []},
-            {"name": "Working on",
-             "statuses": ["ASSIGNED"]},
-            {"name": "Done",
-             "statuses": ["RESOLVED"]},
+    {"name": "Backlog",
+     "statuses": ["NEW", "UNCONFIRMED"]},
+    {"name": "Ready to work on",
+     "statuses": []},
+    {"name": "Working on",
+     "statuses": ["ASSIGNED"]},
+    {"name": "Done",
+     "statuses": ["RESOLVED"]},
 ]
 
 whiteboard_regexes = dict(
@@ -61,7 +61,8 @@ class Board(db.Model):
     creator = db.Column(db.String(100), index=True)
     date = db.Column(db.DateTime(timezone=True))
 
-    def __init__(self, identifier, name, description='', creator='', date=None):
+    def __init__(self, identifier, name, description='', creator='',
+                 date=None):
         self.identifier = identifier
         self.name = name
         self.description = description
@@ -70,8 +71,10 @@ class Board(db.Model):
             date = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
         self.date = date
 
+
 class ProductComponent(db.Model):
     __tablename__ = 'productcomponents'
+
     id = db.Column(db.Integer, primary_key=True)
     product = db.Column(db.String(50))
     component = db.Column(db.String(50))
@@ -180,19 +183,18 @@ class BoardView(MethodView):
         token = request.cookies.get('token')
         data = {}
 
-        #board_cache_key = 'board:%s' % id
-        #board = cache_get(board_cache_key)
-        #assert board
-        board, = Board.query.filter_by(identifier=id)
+        try:
+            board, = Board.query.filter_by(identifier=id)
+        except ValueError:
+            abort(404)
+            return
+
         assert board
         data['board'] = {
             'name': board.name,
             'description': board.description,
             'creator': board.creator,
         }
-        #print "BOARD", board
-
-        #components = board['components']
         components = []
         for pc in ProductComponent.query.filter_by(board=board):
             components.append({
@@ -200,7 +202,6 @@ class BoardView(MethodView):
                 'product': pc.product,
             })
 
-        print "components", components
         bug_data = fetch_bugs(
             components=components,
             fields=('id', 'summary', 'status', 'whiteboard'),
@@ -228,21 +229,6 @@ class BoardView(MethodView):
                     bugs_by_column[col['name']].append(bug_info)
                     break
 
-        xxcolumns = [
-            {"name": "Backlog",
-             "statuses": ["NEW", "UNCONFIRMED"],
-             "bugs": [
-               {"id": "91823", "summary": "PIEJTOIE"},
-               {"id": "91824", "summary": "DPIGJZGE"},
-             ]},
-            {"name": "Ready to work on",
-             "statuses": [],
-             "bugs": [
-               {"id": "1230905", "summary": "Fourth summary"},
-               {"id": "1230906", "summary": "Fifth summary"},
-             ]}
-        ]
-
         columns = []
         for each in COLUMNS:
             columns.append({
@@ -256,6 +242,7 @@ class BoardView(MethodView):
         data['columns'] = columns
 
         return make_response(jsonify(data))
+
 
 class LogoutView(MethodView):
 
@@ -324,7 +311,9 @@ class LoginView(MethodView):
 #        #    params['status'] = status
 #        #elif whiteboard:
 #        #    params['whiteboard'] = new_whiteboard
-
+         # Update the bug meta data
+#        put_bug(bug_id, *.....)
+#
 
 def augment_with_auth(request_arguments, token):
     user_cache_key = 'auth:%s' % token
