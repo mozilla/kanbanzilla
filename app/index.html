@@ -19,6 +19,10 @@
 
   </head>
   <body ng-app="kanbanzillaApp">
+    <div class="loading-indicator" ng-show="routeLoading">
+        <img src="images/loadersmall.gif" alt="">
+        Loading...
+    </div>
     <div class="navbar navbar-inverse navbar-static-top" ng-controller="HeaderCtrl">
       <div class="navbar-inner">
 

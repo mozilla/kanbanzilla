@@ -1,4 +1,3 @@
-$roundedness: 5px;
 $column-color: #E2DFDF;
 
 .board-header {
@@ -115,7 +114,7 @@ ul.empty {
   border: 1px solid #BAB8B8;
   border-bottom: 1px solid #9E9E9E;
   overflow-x: hidden;
-  cursor: pointer;
+  cursor: move;
 
   &:hover {
     .card-actions {
@@ -151,6 +150,7 @@ ul.empty {
 .id-tag {
   display: inline;
   background: $purple;
+  cursor: pointer;
   color: #FFF;
   padding: 2px 3px;
   font-size: 11px;

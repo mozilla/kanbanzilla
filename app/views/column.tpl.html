@@ -6,12 +6,12 @@
     <img width="32" height="32" class="column-loader" ng-show="loading" src="images/ajax-loader.gif"/>
       <ul ng-model="ngModel" ui-sortable="sortOptions" ng-class="{empty: ngModel.length == 0}">
 
-        <li class="card" ng-repeat="bug in ngModel | filter: query | limitTo: 35" ng-click="goToBug(bug)">
+        <li class="card" ng-repeat="bug in ngModel | filter: query | limitTo: 35">
           <div class="card-body">
             {{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}
           </div>
           <div class="card-footer">
-            <span class="id-tag">#{{bug.id}}</span>
+            <span class="id-tag" ng-click="goToBug(bug)">#{{bug.id}}</span>
             <div class="card-actions">
               <i class="icon-comment" ng-click="openComment(bug);$event.stopPropagation()" title="post a comment"></i>
 

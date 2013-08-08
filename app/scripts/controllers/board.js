@@ -1,8 +1,10 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('BoardCtrl', ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window',
-  function ($scope, $location, $q, Bugzilla, Boards, $routeParams, $window) {
+  .controller('BoardCtrl', ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', 'board',
+  function ($scope, $location, $q, Bugzilla, Boards, $routeParams, $window, board) {
+
+    $scope.boardInfo = board.data; // the resolve from the routeProvider
 
     function getColumn (name) {
       for (var i = 0 ; i < $scope.boardInfo.columns.length ; i++){
@@ -48,13 +50,6 @@ angular.module('kanbanzillaApp')
       helper: 'clone',
       receive: receiveHandler
     };
-
-
-    Boards.get($routeParams.id).
-      success(function (data) {
-        $scope.boardInfo = data;
-        console.log($scope.boardInfo);
-      });
 
     $scope.goToBugzilla = function (bug) {
       window.location = Bugzilla.getLink(bug.id);
