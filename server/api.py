@@ -1,11 +1,13 @@
+import datetime
 import re
 import json
 import os
 import collections
 
-
+import pytz
 from flask import Flask, request, make_response, abort, jsonify
 from flask.views import MethodView
+from flask.ext.sqlalchemy import SQLAlchemy
 
 from werkzeug.contrib.cache import MemcachedCache
 import requests
@@ -13,11 +15,17 @@ import uuid
 
 MEMCACHE_URL = os.environ.get('MEMCACHE_URL', '127.0.0.1:11211').split(',')
 DEBUG = os.environ.get('DEBUG', False) in ('true', '1')
+SQLALCHEMY_DATABASE_URI = os.environ.get(
+    'DATABASE_URI',
+    'sqlite:////tmp/kanbanzilla.db'
+)
 
 DAY = 60 * 60 * 24
 MONTH = DAY * 30
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+db = SQLAlchemy(app)
 
 login_url = 'https://bugzilla.mozilla.org/index.cgi'
 bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
@@ -41,6 +49,42 @@ whiteboard_regexes = dict(
     for each in COLUMNS
 )
 #any_whiteboard_tag = re.compile('kanbanzilla\[[^]]+\]')
+
+
+class Board(db.Model):
+    __tablename__ = 'boards'
+
+    id = db.Column(db.Integer, primary_key=True)
+    identifier = db.Column(db.String(32), index=True, unique=True)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
+    creator = db.Column(db.String(100), index=True)
+    date = db.Column(db.DateTime(timezone=True))
+
+    def __init__(self, identifier, name, description='', creator='', date=None):
+        self.identifier = identifier
+        self.name = name
+        self.description = description
+        self.creator = creator
+        if not date:
+            date = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
+        self.date = date
+
+class ProductComponent(db.Model):
+    __tablename__ = 'productcomponents'
+    id = db.Column(db.Integer, primary_key=True)
+    product = db.Column(db.String(50))
+    component = db.Column(db.String(50))
+    board_id = db.Column(db.Integer, db.ForeignKey('boards.id'))
+    board = db.relationship(
+        'Board',
+        backref=db.backref('productcomponents', lazy='dynamic')
+    )
+
+    def __init__(self, product, component, board):
+        self.product = product
+        self.component = component
+        self.board = board
 
 
 def cache_set(key, value, *args, **options):
@@ -75,22 +119,22 @@ class BoardsView(MethodView):
         components = request.json['components']
         description = request.json['description']
         board_id = uuid.uuid4().hex
-        cache_key = 'board:%s' % board_id
-        data = {
-            'name': name,
-            'components': components,
-            'description': description,
-            'creator': user_info['username'],
-            'id': board_id
-        }
-        cache_set(cache_key, data, MONTH)
 
-        boards_key = 'boards:%s' % token  # secure'er
-        boards_key = 'boards:%s' % user_info['username']  # dumb'er
-
-        previous = cache_get(boards_key, [])
-        previous.append(board_id)
-        cache_set(boards_key, previous, MONTH)
+        board = Board(
+            board_id,
+            name,
+            description,
+            user_info['username'],
+        )
+        db.session.add(board)
+        for each in components:
+            cp = ProductComponent(
+                each['component'],
+                each['product'],
+                board
+            )
+            db.session.add(cp)
+        db.session.commit()
 
         response = make_response(jsonify({'board': board_id}))
         return response
@@ -99,19 +143,34 @@ class BoardsView(MethodView):
         token = request.cookies.get('token')
         if not token:
             return make_response(jsonify({'boards': []}))
-
-        boards_key = 'boards:%s' % token  # secure'er
         user_info = cache_get('auth:%s' % token)
-        boards_key = 'boards:%s' % user_info['username']  # dumber
+        if not user_info:
+            return make_response(jsonify({'boards': []}))
 
-        board_ids = cache_get(boards_key, [])
-        boards = []
-        for board_id in board_ids:
-            board_key = 'board:%s' % board_id
-            data = cache_get(board_key)
-            if data:
-                boards.append(data)
-        response = make_response(jsonify({'boards': boards}))
+        boards = (
+            Board.query
+            .filter_by(creator=user_info['username'])
+            .order_by(Board.date)
+        )
+
+        all_boards = []
+        for board in boards:
+            data = {
+                'id': board.identifier,
+                'name': board.name,
+                'creator': board.creator,
+                'description': board.description,
+                'components': [],
+            }
+            components = []
+            for pc in ProductComponent.query.filter_by(board=board):
+                components.append({
+                    'component': pc.component,
+                    'product': pc.product,
+                })
+            data['components'] = components
+            all_boards.append(data)
+        response = make_response(jsonify({'boards': all_boards}))
         return response
 
 
@@ -257,8 +316,6 @@ class LoginView(MethodView):
 #        #    params['whiteboard'] = new_whiteboard
 
 
-
-
 def augment_with_auth(request_arguments, token):
     user_cache_key = 'auth:%s' % token
     user_info = cache_get(user_cache_key)
@@ -327,5 +384,6 @@ app.add_url_rule('/api/login', view_func=LoginView.as_view('login'))
 
 
 if __name__ == '__main__':
+    db.create_all()
     app.debug = DEBUG
     app.run()
