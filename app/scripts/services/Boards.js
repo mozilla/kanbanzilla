@@ -27,17 +27,18 @@ angular.module('kanbanzillaApp')
       },
 
       get: function (id) {
-        return $http.get('/api/board/' + id);
+        return $http.get('/api/board/' + id, {cache: true});
       },
 
       getAllBoards: function () {
-        return $http.get('/api/board');
+        return $http.get('/api/board', {cache: true});
       },
 
-      remove: function (board) {
-        boards.splice(boards.indexOf(board), 1);
-        console.log(board);
-        persist();
+      remove: function (id) {
+        return $http({
+          method: 'DELETE',
+          url: '/api/board/' + id
+        });
       },
 
       update: function (name, params) {

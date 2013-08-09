@@ -259,6 +259,16 @@ class BoardView(MethodView):
 
         return make_response(jsonify(data))
 
+    def delete(self, id):
+        # Have to remove the ProductComponent's associated with this board still
+        try:
+            board, = Board.query.filter_by(identifier=id)
+        except ValueError:
+            abort(404)
+            return
+        db.session.delete(board)
+        db.session.commit()
+        return 'should delete %s' % id
 
 class LogoutView(MethodView):
 

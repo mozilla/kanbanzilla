@@ -5,4 +5,5 @@ dist
 app/components
 libpeerconnection.log
 server/venv
+server/api.pyc
 npm-debug.log

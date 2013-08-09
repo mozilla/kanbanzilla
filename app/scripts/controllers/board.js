@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('BoardCtrl', ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', 'board',
-  function ($scope, $location, $q, Bugzilla, Boards, $routeParams, $window, board) {
+  .controller('BoardCtrl', ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', '$dialog', 'board',
+  function ($scope, $location, $q, Bugzilla, Boards, $routeParams, $window, $dialog, board) {
 
     $scope.boardInfo = board.data; // the resolve from the routeProvider
+    console.log($scope.boardInfo);
 
     function getColumn (name) {
       for (var i = 0 ; i < $scope.boardInfo.columns.length ; i++){
@@ -18,6 +19,19 @@ angular.module('kanbanzillaApp')
       var bug = ui.item.sortable.moved;
       var columnName = data.target.parentNode.parentNode.attributes['display-title'].nodeValue;
       var column = getColumn(columnName);
+
+      var dialog = $dialog.dialog({
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            templateUrl: 'views/postcomment.html',
+            controller: 'CommentCtrl'
+          });
+          dialog.open().then(function (result) {
+            if(result.action === 'submit'){
+              console.log(result);
+            }
+          });
 
       Bugzilla.getBug(bug.id)
         .success(function (freshBug) {

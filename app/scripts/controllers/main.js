@@ -28,7 +28,11 @@ angular.module('kanbanzillaApp')
 
     $scope.deleteBoard = function (board) {
       if($window.confirm('Are you sure you want to delete this board?')){
-        Boards.remove(board);
+        $scope.myBoards.splice($scope.myBoards.indexOf(board), 1);
+        Boards.remove(board.id)
+          .success(function (data) {
+            console.log(data);
+          });
       }
     };
 
