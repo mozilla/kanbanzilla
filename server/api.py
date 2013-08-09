@@ -34,14 +34,14 @@ bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
 cache = MemcachedCache(MEMCACHE_URL)
 
 COLUMNS = [
-            {"name": "Backlog",
-             "statuses": ["NEW", "UNCONFIRMED"]},
-            {"name": "Ready to work on",
-             "statuses": []},
-            {"name": "Working on",
-             "statuses": ["ASSIGNED"]},
-            {"name": "Done",
-             "statuses": ["RESOLVED"]},
+    {"name": "Backlog",
+     "statuses": ["NEW", "UNCONFIRMED"]},
+    {"name": "Ready to work on",
+     "statuses": []},
+    {"name": "Working on",
+     "statuses": ["ASSIGNED"]},
+    {"name": "Done",
+     "statuses": ["RESOLVED"]},
 ]
 
 whiteboard_regexes = dict(
@@ -61,7 +61,8 @@ class Board(db.Model):
     creator = db.Column(db.String(100), index=True)
     date = db.Column(db.DateTime(timezone=True))
 
-    def __init__(self, identifier, name, description='', creator='', date=None):
+    def __init__(self, identifier, name, description='', creator='',
+                 date=None):
         self.identifier = identifier
         self.name = name
         self.description = description
@@ -70,8 +71,10 @@ class Board(db.Model):
             date = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
         self.date = date
 
+
 class ProductComponent(db.Model):
     __tablename__ = 'productcomponents'
+
     id = db.Column(db.Integer, primary_key=True)
     product = db.Column(db.String(50))
     component = db.Column(db.String(50))
@@ -179,20 +182,20 @@ class BoardView(MethodView):
     def get(self, id):
         token = request.cookies.get('token')
         data = {}
+        changed_after = request.args.get('since')
 
-        #board_cache_key = 'board:%s' % id
-        #board = cache_get(board_cache_key)
-        #assert board
-        board, = Board.query.filter_by(identifier=id)
+        try:
+            board, = Board.query.filter_by(identifier=id)
+        except ValueError:
+            abort(404)
+            return
+
         assert board
         data['board'] = {
             'name': board.name,
             'description': board.description,
             'creator': board.creator,
         }
-        #print "BOARD", board
-
-        #components = board['components']
         components = []
         for pc in ProductComponent.query.filter_by(board=board):
             components.append({
@@ -200,24 +203,38 @@ class BoardView(MethodView):
                 'product': pc.product,
             })
 
-        print "components", components
         bug_data = fetch_bugs(
-            components=components,
-            fields=('id', 'summary', 'status', 'whiteboard'),
+            components,
+            ('id', 'summary', 'status', 'whiteboard', 'last_change_time'),
             token=token,
+            changed_after=changed_after,
         )
 
         bugs_by_column = collections.defaultdict(list)
-        for bug in bug_data['bugs']:
-            # which named column should this go into?
+        latest_change_time = None
+
+        def keep(column_name, bug):
             bug_info = {
                 'id': bug['id'],
                 'summary': bug['summary'],
             }
+            bugs_by_column[column_name].append(bug_info)
+
+        for bug in bug_data['bugs']:
+            last_change_time = bug.pop('last_change_time')
+            if changed_after and last_change_time == changed_after:
+                # bugzilla is silly in that if you pass
+                # changed_after=2013-08-08T20:26:27Z to the query
+                # it will return bugs that have that last_change_time
+                # or greater rather than just greater
+                continue
+            if last_change_time > latest_change_time:
+                latest_change_time = last_change_time
+            # which named column should this go into?
             whiteboard_found = False
             for name, regex in whiteboard_regexes.items():
                 if regex.findall(bug['whiteboard']):
-                    bugs_by_column[name].append(bug_info)
+                    keep(name, bug)
                     whiteboard_found = True
 
             if whiteboard_found:
@@ -225,23 +242,8 @@ class BoardView(MethodView):
 
             for col in COLUMNS:
                 if bug['status'] in col['statuses']:
-                    bugs_by_column[col['name']].append(bug_info)
+                    keep(col['name'], bug)
                     break
-
-        xxcolumns = [
-            {"name": "Backlog",
-             "statuses": ["NEW", "UNCONFIRMED"],
-             "bugs": [
-               {"id": "91823", "summary": "PIEJTOIE"},
-               {"id": "91824", "summary": "DPIGJZGE"},
-             ]},
-            {"name": "Ready to work on",
-             "statuses": [],
-             "bugs": [
-               {"id": "1230905", "summary": "Fourth summary"},
-               {"id": "1230906", "summary": "Fifth summary"},
-             ]}
-        ]
 
         columns = []
         for each in COLUMNS:
@@ -251,11 +253,12 @@ class BoardView(MethodView):
                 'statuses': each['statuses'],
             })
 
-        from pprint import pprint
-        pprint(columns)
         data['columns'] = columns
+        if latest_change_time:
+            data['latest_change_time'] = latest_change_time
 
         return make_response(jsonify(data))
+
 
 class LogoutView(MethodView):
 
@@ -324,7 +327,9 @@ class LoginView(MethodView):
 #        #    params['status'] = status
 #        #elif whiteboard:
 #        #    params['whiteboard'] = new_whiteboard
-
+         # Update the bug meta data
+#        put_bug(bug_id, *.....)
+#
 
 def augment_with_auth(request_arguments, token):
     user_cache_key = 'auth:%s' % token
@@ -334,12 +339,28 @@ def augment_with_auth(request_arguments, token):
         request_arguments['cookie'] = user_info['Bugzilla_logincookie']
 
 
-def fetch_bugs(**options):
-    fields = options.pop('fields')
+def fetch_bugs(components, fields, token=None, bucket_requests=3,
+               changed_after=None):
+    combined = collections.defaultdict(list)
+    for i in range(0, len(components), bucket_requests):
+        some_components = components[i:i + bucket_requests]
+        bug_data = _fetch_bugs(
+            some_components,
+            fields,
+            token=token,
+            changed_after=changed_after,
+        )
+        for key in bug_data:
+            combined[key].extend(bug_data[key])
+
+    return combined
+
+
+def _fetch_bugs(components, fields, token=None, changed_after=None):
     params = {
         'include_fields': ','.join(fields),
     }
-    for each in options.get('components', []):
+    for each in components:
         p = params.get('product', [])
         p.append(each['product'])
         params['product'] = p
@@ -347,18 +368,13 @@ def fetch_bugs(**options):
         c.append(each['component'])
         params['component'] = c
 
-    if 'token' in options:
-        augment_with_auth(params, options.pop('token'))
+    if token:
+        augment_with_auth(params, token)
+    if changed_after:
+        params['changed_after'] = changed_after
 
     url = bugzilla_url
     url += '/bug'
-
-    print "URL", url
-    print params
-    print
-    import urllib
-
-    print url +'?'+ urllib.urlencode(params, True)
 
     r = requests.request(
         'GET',
