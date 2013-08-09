@@ -27,11 +27,11 @@ angular.module('kanbanzillaApp')
       },
 
       get: function (id) {
-        return $http.get('/api/board/' + id, {cache: true});
+        return $http.get('/api/board/' + id);
       },
 
       getAllBoards: function () {
-        return $http.get('/api/board', {cache: true});
+        return $http.get('/api/board');
       },
 
       remove: function (id) {

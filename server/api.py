@@ -261,8 +261,13 @@ class BoardView(MethodView):
 
     def delete(self, id):
         # Have to remove the ProductComponent's associated with this board still
+        token = request.cookies.get('token')
+        if not token:
+            abort(403)
+            return
+        user_info = cache_get('auth:%s' % token)
         try:
-            board, = Board.query.filter_by(identifier=id)
+            board, = Board.query.filter_by(identifier=id, creator=user_info['username'])
         except ValueError:
             abort(404)
             return
