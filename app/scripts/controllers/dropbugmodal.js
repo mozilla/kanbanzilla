@@ -5,6 +5,7 @@ angular.module('kanbanzillaApp')
 
     console.log(dialog.options.selectables);
     $scope.selectables = dialog.options.selectables;
+    $scope.status = $scope.selectables[0];
 
     $scope.closeDialog = function () {
       var response = {};

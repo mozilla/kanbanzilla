@@ -46,11 +46,15 @@ angular.module('kanbanzillaApp')
         controller: 'DropBugModalCtrl',
         selectables: selectables
       });
-      dialog.open().then(function (result) {
-        if(result.action === 'submit'){
-          console.log(result);
-        }
-      });
+
+
+      if(selectables.length > 1){
+        dialog.open().then(function (result) {
+          if(result.action === 'submit'){
+            console.log(result);
+          }
+        });
+      }
 
 
     }

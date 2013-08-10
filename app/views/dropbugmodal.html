@@ -3,22 +3,22 @@
 </div>
 <div class="modal-body">
 
-  <form ng-submit>
-    <select name="droplocation" id="" ng-show="selectables.length" ng-model="status">
-      <option ng-repeat="select in selectables" value="{{select}}">{{select}}</option>
-    </select>
-    <label for=""><i class="icon-open"></i>Optional Comment</label>
-    <textarea style="width: 95%; height: 110px;" ng-model="commentText"></textarea>
+  <form>
+    <fieldset ng-show="selectables.length">
+      <label for="droplocation">Status:</label>
+      <select name="droplocation" id="droplocation" ng-model="status" ng-options="select for select in selectables"></select>
+    </fieldset>
+    <fieldset >
+      <label for="">Optional Comment</label>
+      <textarea style="width: 95%; height: 110px;" ng-model="commentText"></textarea>
+    </fieldset>
   </form>
 
 <!--   <form ng-submit="attemptCommentPost()">
   </form>
  -->
-
-
-
 </div>
 <div class="modal-footer">
   <button ng-click="attemptCommentPost()" class="btn btn-primary" >Submit</button>
-  <button ng-click="closeDialog()" class="btn" >Close</button>
+  <button ng-click="closeDialog()" class="btn" >Cancel</button>
 </div>
