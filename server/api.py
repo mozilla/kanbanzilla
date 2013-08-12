@@ -3,6 +3,7 @@ import re
 import json
 import os
 import collections
+import urllib
 
 import pytz
 from flask import Flask, request, make_response, abort, jsonify
@@ -52,7 +53,7 @@ whiteboard_regexes = dict(
     (each['name'], re.compile('kanbanzilla\[%s\]' % re.escape(each['name'])))
     for each in COLUMNS
 )
-#any_whiteboard_tag = re.compile('kanbanzilla\[[^]]+\]')
+any_whiteboard_tag = re.compile('kanbanzilla\[[^]]+\]')
 
 
 class Board(db.Model):
@@ -323,32 +324,74 @@ class LoginView(MethodView):
             response = make_response(jsonify(login_response))
             return response
 
-# Commented out until we decide we need a dedicated endpoint here
-# for updating bugs
-#class BugView(MethodView):
-#
-#    def put(self, id):
-#        bug_id = id
-#        status = request.json.get('status')
-#        whiteboard = request.json.get('whiteboard')
-#        sub_select = request.json.get('sub_select')
-#        comment = request.json.get('comment')
-#
-#        assert status or whiteboard, "Must have a new status or a new whiteboard"
-#        if status == 'RESOLVED':
-#            assert sub_select, "Must have chosen a sub select"
-#
-#        #bug_data = fetch_bug(bug_id, refresh=True)
-#        #wiped_whiteboard = any_whiteboard_tag.sub('', bug_data['whiteboard'])
-#
-#        #params = {}
-#        #if status:
-#        #    params['status'] = status
-#        #elif whiteboard:
-#        #    params['whiteboard'] = new_whiteboard
-         # Update the bug meta data
-#        put_bug(bug_id, *.....)
-#
+class BugView(MethodView):
+
+    def put(self, id):
+        status = request.json.get('status')
+        whiteboard = request.json.get('whiteboard')
+        resolution = request.json.get('resolution')
+        assign = request.json.get('assign') or status == 'ASSIGNED'
+        assignee = request.json.get('assignee')
+
+        assert status or whiteboard
+        if status == 'RESOLVED':
+            assert resolution, "Must have chosen a sub select"
+
+        token = request.cookies.get('token')
+        if not token:
+            abort(403)
+            return
+
+        bug_data = fetch_bug(
+            id,
+            refresh=True,
+            token=token,
+            fields=(
+                'status',
+                'whiteboard',
+                'resolution',
+                'update_token',
+                'assigned_to',
+            )
+        )
+        wiped_whiteboard = any_whiteboard_tag.sub('', bug_data['whiteboard'])
+
+        if bug_data['status'] == 'RESOLVED' and status == 'ASSIGNED':
+            # if you really want to do this, perhaps we can do two updates;
+            # one to REOPENED and *then* one to ASSIGNED
+            abort(400, "Can't move from RESOLVED to ASSIGNED")
+            return
+
+        params = {
+            'update_token': bug_data['update_token'],
+        }
+
+        if wiped_whiteboard:
+            # something's left
+            wiped_whiteboard = '%s ' % wiped_whiteboard.rstrip()
+        if whiteboard:
+            params['whiteboard'] = wiped_whiteboard + 'kanbanzilla[%s]' % whiteboard
+        elif status:
+            params['status'] = status
+            resolution = resolution or ''  #bug_data.get('resolution')
+            params['resolution'] = resolution
+
+        if assign and not assignee:
+            user_info = cache_get('auth:%s' % token)
+            if not user_info:
+                abort(403)
+            assignee = user_info['username']
+
+        if assignee:
+            #params['assigned_to'] = assignee
+            params['assigned_to'] = {
+                'name': assignee,
+            }
+
+        # Update the bug meta data
+        result = update_bug(id, params, token)
+        return make_response(jsonify(result))
+
 
 def augment_with_auth(request_arguments, token):
     user_cache_key = 'auth:%s' % token
@@ -364,8 +407,8 @@ def fetch_bugs(components, fields, token=None, bucket_requests=3,
     for i in range(0, len(components), bucket_requests):
         some_components = components[i:i + bucket_requests]
         bug_data = _fetch_bugs(
-            some_components,
-            fields,
+            components=some_components,
+            fields=fields,
             token=token,
             changed_after=changed_after,
         )
@@ -375,25 +418,37 @@ def fetch_bugs(components, fields, token=None, bucket_requests=3,
     return combined
 
 
-def _fetch_bugs(components, fields, token=None, changed_after=None):
-    params = {
-        'include_fields': ','.join(fields),
-    }
-    for each in components:
-        p = params.get('product', [])
-        p.append(each['product'])
-        params['product'] = p
-        c = params.get('component', [])
-        c.append(each['component'])
-        params['component'] = c
+def fetch_bug(id, token=None, refresh=False, fields=None):
+    # @refresh is currently not implemented
+    return _fetch_bugs(id=id, token=token, fields=fields)
+
+
+def _fetch_bugs(id=None, components=None, fields=None, token=None, changed_after=None):
+    params = {}
+
+    if fields:
+        params['include_fields'] = ','.join(fields)
+
+    if components:
+        for each in components:
+            p = params.get('product', [])
+            p.append(each['product'])
+            params['product'] = p
+            c = params.get('component', [])
+            c.append(each['component'])
+            params['component'] = c
 
     if token:
         augment_with_auth(params, token)
+
     if changed_after:
         params['changed_after'] = changed_after
 
     url = bugzilla_url
     url += '/bug'
+
+    if id:
+        url += '/%s' % id
 
     r = requests.request(
         'GET',
@@ -402,6 +457,23 @@ def _fetch_bugs(components, fields, token=None, changed_after=None):
     )
     response_text = r.text
     return json.loads(response_text)
+
+
+def update_bug(id, params, token):
+    augment_with_auth(params, token)
+    url = bugzilla_url
+    url += '/bug/%s' % id
+    url += '?' + urllib.urlencode({'cookie': params.pop('cookie'), 'userid': params.pop('userid')})
+
+    r = requests.put(
+        url,
+        data=json.dumps(params)
+    )
+    response_text = r.text
+    try:
+        return json.loads(response_text)
+    except ValueError:
+        return response_text
 
 
 @app.route('/api/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
@@ -431,6 +503,7 @@ def catch_all(path):
 
 app.add_url_rule('/api/board/<id>', view_func=BoardView.as_view('board'))
 app.add_url_rule('/api/board', view_func=BoardsView.as_view('boards'))
+app.add_url_rule('/api/bug/<int:id>', view_func=BugView.as_view('bug'))
 app.add_url_rule('/api/logout', view_func=LogoutView.as_view('logout'))
 app.add_url_rule('/api/login', view_func=LoginView.as_view('login'))
 
