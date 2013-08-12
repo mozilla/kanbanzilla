@@ -1,24 +1,25 @@
 <div class="modal-header">
-  <h3>Update Bug</h3>
+  <h3>{{title}}</h3>
 </div>
 <div class="modal-body">
 
   <form>
-    <fieldset ng-show="selectables.length">
+    <!-- <p>Please select a {{type}} for this bug.</p> -->
+    <fieldset ng-show="statuses.length > 1">
       <label for="droplocation">Status:</label>
-      <select name="droplocation" id="droplocation" ng-model="status" ng-options="select for select in selectables"></select>
+      <select name="droplocation" id="droplocation" ng-model="status" ng-options="select for select in statuses" class="input-xxlarge"></select>
     </fieldset>
-    <fieldset >
-      <label for="">Optional Comment</label>
-      <textarea style="width: 95%; height: 110px;" ng-model="commentText"></textarea>
+
+    <fieldset ng-show="status == 'RESOLVED'">
+      <label for="dropresolve">Resolution:</label>
+      <select name="dropresolve" id="dropresolve" ng-model="bugResolution" ng-options="resolution for resolution in resolutions" class="input-xxlarge"></select>
     </fieldset>
   </form>
 
-<!--   <form ng-submit="attemptCommentPost()">
-  </form>
- -->
+
+
 </div>
 <div class="modal-footer">
-  <button ng-click="attemptCommentPost()" class="btn btn-primary" >Submit</button>
-  <button ng-click="closeDialog()" class="btn" >Cancel</button>
+  <button ng-click="attemptCommentPost()" class="btn btn-info" >Complete</button>
+  <button ng-click="closeDialog()" class="btn" >Undo Move</button>
 </div>

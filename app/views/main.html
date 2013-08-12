@@ -7,20 +7,12 @@
         <a ng-href="#/board/{{board.id}}" class="product-listing-title">{{board.name}}</a>
         <span class="pull-right" ng-click="deleteBoard(board)"><i class="icon-trash"></i></span>
         <p>{{board.description}}</p>
+        <p class="label-list">
+          <span class="label label-info" ng-repeat="component in board.components">
+            {{component.product}}:{{component.component}}
+          </span>
+        </p>
     </li>
   </ul>
   <hr>
-  <!-- <h3>Products</h3>
-  <ul class="board-listing">
-  <li ng-repeat="product in products"><a ng-href="#/board/{{product}}">{{product}}</a></li>
-    <li ng-repeat="(productName, product) in products" class="product-listing" ng-click="toggle(product)">
-      <strong class="product-listing-title">{{productName}}</strong>
-      <i ng-if="product.visible != true" class="icon-plus pull-right"></i><i class="icon-minus pull-right" ng-if="product.visible"></i>
-      <ul class="components-listing" ng-class="{visible: product.visible}">
-        <li ng-repeat="(compName, component) in product.component">
-          <a href="#/board/component/{{compName}}">{{compName}}</a>
-        </li>
-      </ul>
-    </li>
-  </ul> -->
 </div>

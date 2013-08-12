@@ -36,10 +36,14 @@ cache = MemcachedCache(MEMCACHE_URL)
 COLUMNS = [
     {"name": "Backlog",
      "statuses": ["NEW", "UNCONFIRMED"]},
+    {"name": "Needs Investigation",
+     "statuses": []},
     {"name": "Ready to work on",
      "statuses": []},
     {"name": "Working on",
      "statuses": ["ASSIGNED"]},
+    # {"name": "Testing",
+    #  "statuses": ["REOPENED", "RESOLVED"]},
     {"name": "Done",
      "statuses": ["RESOLVED"]},
 ]

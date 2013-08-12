@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('NewboardCtrl', ['$scope', 'Bugzilla', '$location', 'Boards',
-    function ($scope, Bugzilla, $location, Boards) {
+  .controller('NewboardCtrl', ['$scope', 'Bugzilla', '$location', 'Boards', '$timeout',
+    function ($scope, Bugzilla, $location, Boards, $timeout) {
     $scope.select2Options = {
       'multiple': true,
       'simple_tags': true,
@@ -16,10 +16,15 @@ angular.module('kanbanzillaApp')
       columns: []
     };
 
-    Bugzilla.getConfig()
-       .success(function (data) {
-          $scope.products = data.product;
-        });
+    function resetCreate () {
+      $scope.creating = false;
+      $scope.createText = 'Create';
+    }
+
+    function makeCreating () {
+      $scope.creating = true;
+      $scope.createText = 'Creating...';
+    }
 
     function componentStringToObject (component) {
       var compObject = {};
@@ -35,17 +40,26 @@ angular.module('kanbanzillaApp')
       }
     }
 
+    Bugzilla.getConfig()
+       .success(function (data) {
+          $scope.products = data.product;
+        });
+
     $scope.createBoard = function () {
+      makeCreating();
       processComponents($scope.board.components);
-      console.log($scope.board);
       Boards.create($scope.board)
         .success(function (data) {
+          resetCreate();
           console.log(data);
           $location.path('/board/' + data.board);
         })
         .error(function (data) {
+          resetCreate();
           console.log('error on the server', data);
         });
     };
+
+    resetCreate();
 
   }]);
