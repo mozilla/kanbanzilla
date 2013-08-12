@@ -375,6 +375,9 @@ class BugView(MethodView):
             params['status'] = status
             resolution = resolution or ''  #bug_data.get('resolution')
             params['resolution'] = resolution
+            if wiped_whiteboard != bug_data['whiteboard']:
+                # it has changed!
+                params['whiteboard'] = wiped_whiteboard.strip()
 
         if assign and not assignee:
             user_info = cache_get('auth:%s' % token)
