@@ -5,7 +5,7 @@ angular.module('kanbanzillaApp')
   function ($scope, $location, $q, Bugzilla, Boards, $routeParams, $window, $dialog, board) {
 
     $scope.boardInfo = board.data; // the resolve from the routeProvider
-    // console.log($scope.boardInfo);
+    console.log($scope.boardInfo);
 
     function getColumn (name) {
       for (var i = 0 ; i < $scope.boardInfo.columns.length ; i++){

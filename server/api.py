@@ -207,6 +207,7 @@ class BoardView(MethodView):
                 'component': pc.component,
                 'product': pc.product,
             })
+        data['board']['components'] = components
 
         bug_data = fetch_bugs(
             components,
