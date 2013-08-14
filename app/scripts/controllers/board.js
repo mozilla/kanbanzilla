@@ -73,6 +73,10 @@ angular.module('kanbanzillaApp')
 
     }
 
+    function updateBoardWith (data) {
+      console.log(data);
+    }
+
 
     // ui-sortable options, placeholder is a class, and helper clone disables
     // the click event from firing when dropping cards.
@@ -89,6 +93,19 @@ angular.module('kanbanzillaApp')
 
     $scope.openComment = function () {
       $window.alert('opening comment');
+    };
+
+    $scope.refresh = function () {
+      Boards.getUpdates($scope.boardInfo.board.id, $scope.boardInfo.latest_change_time)
+        .success(function (data) {
+          if(data.latest_change_time !== undefined) {
+            console.log('theres been an update');
+            updateBoardWith(data);
+          }
+          else {
+            console.log('no update');
+          }
+        });
     };
 
     $scope.$on('$destroy', function () {

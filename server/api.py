@@ -6,11 +6,12 @@ import collections
 import urllib
 
 import pytz
-from flask import Flask, request, make_response, abort, jsonify
+from flask import Flask, request, make_response, abort, jsonify, send_file
 from flask.views import MethodView
 from flask.ext.sqlalchemy import SQLAlchemy
 
 from werkzeug.contrib.cache import MemcachedCache
+from werkzeug.routing import BaseConverter
 import requests
 import uuid
 
@@ -55,6 +56,14 @@ whiteboard_regexes = dict(
 )
 any_whiteboard_tag = re.compile('kanbanzilla\[[^]]+\]')
 
+
+
+class RegexConverter(BaseConverter):
+    def __init__(self, url_map, *items):
+        super(RegexConverter, self).__init__(url_map)
+        self.regex = items[0]
+
+app.url_map.converters['regex'] = RegexConverter
 
 class Board(db.Model):
     __tablename__ = 'boards'
@@ -200,6 +209,7 @@ class BoardView(MethodView):
             'name': board.name,
             'description': board.description,
             'creator': board.creator,
+            'id': board.identifier
         }
         components = []
         for pc in ProductComponent.query.filter_by(board=board):
@@ -397,6 +407,16 @@ class BugView(MethodView):
         return make_response(jsonify(result))
 
 
+class ConfigView(MethodView):
+    def get(self):
+        config = cache_get('config')
+        if config is None:
+            print "cache miss"
+            r = requests.get(bugzilla_url + '/configuration')
+            config = r.text
+            cache_set('config', config)
+        return json.dumps(config)
+
 def augment_with_auth(request_arguments, token):
     user_cache_key = 'auth:%s' % token
     user_info = cache_get(user_cache_key)
@@ -496,17 +516,26 @@ def api_proxy(path):
     return r.text
 
 
+"""
+Workaround for grunt/yeoman being very no friendly towards a static-folder. Will try to fix this
+issue at some point in the future.
+"""
+@app.route('/<regex("styles|scripts|views|images|font"):start>/<path:path>')
+def static_stuff(start, path):
+    return send_file('../dist/%s/%s' % (start, path))
+
+
 @app.route('/', defaults={'path':''})
 @app.route('/<path:path>')
 def catch_all(path):
-    # when returning the index file if there is a cookie set that doesn't match a
-    # key in the users dict then the response should remove all cookies so that
-    # in the app users don't see they are logged in, if they aren't.
-    return 'should be the index.html file, let angular handle the route - {0}'.format(path)
+    # path = path or 'index.html'
+    # return send_file('../dist/%s' % path)
+    return send_file('../dist/index.html')
 
 
 app.add_url_rule('/api/board/<id>', view_func=BoardView.as_view('board'))
 app.add_url_rule('/api/board', view_func=BoardsView.as_view('boards'))
+app.add_url_rule('/api/configuration', view_func=ConfigView.as_view('config'))
 app.add_url_rule('/api/bug/<int:id>', view_func=BugView.as_view('bug'))
 app.add_url_rule('/api/logout', view_func=LogoutView.as_view('logout'))
 app.add_url_rule('/api/login', view_func=LoginView.as_view('login'))

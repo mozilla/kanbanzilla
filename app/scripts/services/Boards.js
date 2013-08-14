@@ -21,6 +21,10 @@ angular.module('kanbanzillaApp')
         return $http.get('/api/board');
       },
 
+      getUpdates: function (id, lastChangeTime) {
+        return $http.get('/api/board/' + id, {params: {'since': lastChangeTime}});
+      },
+
       remove: function (id) {
         return $http({
           method: 'DELETE',

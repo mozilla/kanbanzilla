@@ -10,7 +10,7 @@
     <div class="control-group">
       <label class="control-label" for="attached-components">Components</label>
       <div class="controls">
-        <select class="input-xxlarge" ui-select2="select2Options" multiple ng-model="board.components" minimum-input-length="2" ng-required="true">
+        <select class="input-xxlarge" ui-select2="select2Options" multiple ng-model="board.components" ng-required="true">
           <optgroup ng-repeat="(productName, product) in products" label="{{productName}}">
             <option ng-repeat="(compName, component) in product.component" value="{{productName}}@&:{{compName}}">
               {{productName}}: {{compName}}
