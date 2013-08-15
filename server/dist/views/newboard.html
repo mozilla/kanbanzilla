@@ -1,0 +1,35 @@
+<div class="container">
+  <h2>Create a New Board</h2>
+  <form class="form-horizontal" ng-submit="createBoard()">
+    <div class="control-group">
+      <label class="control-label" for="board-name">Board Name:</label>
+      <div class="controls">
+        <input type="text" class="input-xxlarge" id="board-name" ng-model="board.name" ng-required="true">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="attached-components">Components</label>
+      <div class="controls">
+        <select class="input-xxlarge" ui-select2="select2Options" multiple="multiple" ng-model="board.components" ng-required="true">
+          <optgroup ng-repeat="(productName, product) in products" label="{{productName}}">
+            <option ng-repeat="(compName, component) in product.component" value="{{productName}}@&:{{compName}}">
+              {{productName}}: {{compName}}
+            </option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="board-description">Description:</label>
+      <div class="controls">
+        <textarea name="" id="board-description" class="input-xxlarge" rows="5" ng-model="board.description"></textarea>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit" class="btn btn-info" ng-disabled="creating">{{createText}}</button>
+        <a href="#/" class="btn">Cancel</a>
+      </div>
+    </div>
+  </form>
+</div>

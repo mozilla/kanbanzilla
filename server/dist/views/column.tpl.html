@@ -1,0 +1,30 @@
+<div class="column">
+  <div class="column-header">
+    {{displayTitle}}
+  </div>
+  <div class="column-body" max-remaining-height="40">
+    <img width="32" height="32" class="column-loader" ng-show="loading" src="images/ajax-loader.gif">
+      <ul ng-model="ngModel" ui-sortable="sortOptions" ng-class="{empty: ngModel.length == 0}">
+
+        <li class="card" ng-repeat="bug in ngModel | filter: query | limitTo: 35">
+          <div class="card-body">
+            {{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}
+          </div>
+          <div class="card-footer">
+            <span class="id-tag" ng-click="goToBug(bug)">#{{bug.id}}</span>
+            <div class="card-actions">
+              <i class="icon-comment" ng-click="openComment(bug);$event.stopPropagation()" title="post a comment"></i>
+
+              <i class="icon-comments" ng-mouseover="getLastComment(bug)" ng-mouseout="resetLastComment()" popover="{{lastComment | truncateByCharsAndEndWith : 500 : '...' }}" popover-title="Last Comment:" popover-placement="right" popover-trigger="mouseenter" popover-popup-delay="250"></i>
+
+              <i class="icon-eye-open" popover="{{bugDescription | truncateByCharsAndEndWith : 500 : '...' }}" popover-title="Description:" popover-placement="right" popover-trigger="mouseenter" popover-popup-delay="250" ng-mouseover="getDescription(bug)" ng-mouseout="resetDescription()"></i>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <!-- <div class="card">
+
+      </div> -->
+    
+  </div>
+</div>

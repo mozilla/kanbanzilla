@@ -1,0 +1,18 @@
+<div class="container">
+  <h3>My Boards</h3>
+  <a class="btn btn-info" href="#/board/new">Create New Board</a>
+  <p ng-show="myBoards.length == 0">You don't have any boards</p>
+  <ul>
+    <li class="product-listing" ng-repeat="board in myBoards">
+        <a ng-href="#/board/{{board.id}}" class="product-listing-title">{{board.name}}</a>
+        <span class="pull-right" ng-click="deleteBoard(board)"><i class="icon-trash"></i></span>
+        <p>{{board.description}}</p>
+        <p class="label-list">
+          <span class="label label-info" ng-repeat="component in board.components">
+            {{component.product}}:{{component.component}}
+          </span>
+        </p>
+    </li>
+  </ul>
+  <hr>
+</div>

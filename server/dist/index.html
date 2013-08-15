@@ -1,0 +1,57 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Kanbanzilla</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="styles/5e686ffa.main.css">
+
+  </head>
+  <body ng-app="kanbanzillaApp">
+    <div class="loading-indicator" ng-show="routeLoading">
+        <img src="images/loadersmall.gif" alt="">
+        Loading...
+    </div>
+    <div class="navbar navbar-inverse navbar-static-top" ng-controller="HeaderCtrl">
+      <div class="navbar-inner">
+
+        <ul class="nav">
+          <li><a class="brand" href="#">Kanbanzilla</a></li>
+        </ul>
+
+        <div class="pull-right">
+
+          <ul class="nav" ng-show="user.loggedIn" ng-cloak="">
+            <li><a href="">{{user.username}}</a></li>
+            <li><a href="" ng-click="logout()">Logout</a></li>
+            <li><a href="#/settings">Help</a></li>
+          </ul>
+
+          <ul class="nav" ng-show="user.loggedIn == false">
+            <li><a href="" ng-click="openLoginDialog()">Login</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="myng-view-wrapper">
+      <div ng-view="" class="myng-view"></div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-cookies.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-sanitize.min.js"></script>
+
+
+    <script src="scripts/e94f3766.scripts.js"></script>
+
+  </body>
+</html>
