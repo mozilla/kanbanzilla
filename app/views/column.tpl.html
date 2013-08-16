@@ -3,8 +3,7 @@
     {{displayTitle}}
   </div>
   <div class="column-body" max-remaining-height="40">
-    <img width="32" height="32" class="column-loader" ng-show="loading" src="images/ajax-loader.gif"/>
-      <ul ng-model="ngModel" ui-sortable="sortOptions" ng-class="{empty: ngModel.length == 0}">
+      <ul ng-model="ngModel" ui-sortable="sortOptions" class="col-drop-zone">
 
         <li class="card" ng-repeat="bug in ngModel | filter: query | limitTo: 35">
           <div class="card-body">

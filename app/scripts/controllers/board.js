@@ -84,6 +84,7 @@ angular.module('kanbanzillaApp')
       placeholder: 'proxy-card',
       connectWith: '[ui-sortable]',
       helper: 'clone',
+      revert: 100,
       receive: receiveHandler
     };
 

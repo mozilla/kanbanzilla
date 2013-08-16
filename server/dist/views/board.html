@@ -32,36 +32,6 @@
 <div class="board-dropzone" auto-fill-height="">
   <div class="board-dropzone-inner">
 
-<!--
-    <div kbcolumn
-         loading="loading.unconfirmedBugs"
-         display-title="Unconfirmed"
-         ng-model="unconfirmedBugs"
-         sort-options="sortableOptions"
-         query="query"></div>
-
-    <div kbcolumn
-         loading="loading.newBugs"
-         display-title="New"
-         ng-model="newBugs"
-         sort-options="sortableOptions"
-         query="query"></div>
-
-    <div kbcolumn
-         loading="loading.assignedBugs"
-         display-title="Assigned"
-         ng-model="assignedBugs"
-         sort-options="sortableOptions"
-         query="query"></div>
-
-    <div kbcolumn
-         loading="loading.resolvedBugs"
-         display-title="Resolved"
-         ng-model="resolvedBugs"
-         sort-options="sortableOptions"
-         query="query"></div>
- -->
-
     <div kbcolumn="" ng-repeat="column in boardInfo.columns" display-title="{{column.name}}" ng-model="column.bugs" sort-options="sortableOptions" query="query"></div>
 
 

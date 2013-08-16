@@ -2,11 +2,6 @@
 
 angular.module('kanbanzillaApp')
   .factory('bugzillaAuth', ['$cookies', '$http', function ($cookies, $http) {
-    // this service should actually handle the logic
-    // to authenticate users and remember that information
-    // the bugzillaAuthInterceptor should use this service
-    // to find out if and what to inject into requests
-
 
     function readFromPersisted () {
       if($cookies.token !== undefined && $cookies.username !== undefined) {
