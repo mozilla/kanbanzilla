@@ -360,7 +360,7 @@ class BugView(MethodView):
                 'assigned_to',
             )
         )
-        wiped_whiteboard = any_whiteboard_tag.sub('', bug_data['whiteboard'])
+        wiped_whiteboard = any_whiteboard_tag.sub('', bug_data.get('whiteboard', ''))
 
         if bug_data['status'] == 'RESOLVED' and status == 'ASSIGNED':
             # if you really want to do this, perhaps we can do two updates;

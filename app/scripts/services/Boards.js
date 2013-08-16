@@ -14,7 +14,7 @@ angular.module('kanbanzillaApp')
       },
 
       get: function (id) {
-        return $http.get('/api/board/' + id, {cache: true});
+        return $http.get('/api/board/' + id);
       },
 
       getAllBoards: function () {

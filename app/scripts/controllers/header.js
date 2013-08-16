@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('HeaderCtrl', ['$scope', 'bugzillaAuth', '$window', '$dialog', function ($scope, bugzillaAuth, $window, $dialog) {
+  .controller('HeaderCtrl', ['$scope', 'bugzillaAuth', '$window', '$dialog', '$route',
+    function ($scope, bugzillaAuth, $window, $dialog, $route) {
 
     $scope.appName = 'Kanbanzilla';
 
@@ -18,8 +19,10 @@ angular.module('kanbanzillaApp')
 
     $scope.openLoginDialog = function () {
       var dialog = $dialog.dialog($scope.loginDialogOpts);
-      dialog.open().then(function (result) {
-        console.log(result);
+      dialog.open().then(function (data) {
+        if(data.result === 'success'){
+          $route.reload();
+        }
       });
     };
 
@@ -27,6 +30,7 @@ angular.module('kanbanzillaApp')
       var userConfirmedLogout = $window.confirm('Are you sure you want to logout');
       if(userConfirmedLogout){
         bugzillaAuth.logout();
+        $route.reload();
       }
     };
 
