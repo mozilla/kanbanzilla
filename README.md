@@ -10,13 +10,22 @@ A kanban board integrated with bugzilla
   - Compass
   - Generator-Angular
   - Karma
- - Python virtualenv
- - Memcached
+ - Python
+ - Python database drivers optional
 
 - - - - - - -
 
 ### Installation
-I'll assume you've already got node and ruby installed.
+We'll assume you've already got node and ruby installed.
+
+For the server side install the requirements with:
+
+    cd server
+    pip install -r requirements.txt
+    
+If you intend to use, for example PostgreSQL instead of SQLite (which is default) then additionally install psycopg2:
+
+    pip install psycopg2
 
 #### Tools
 If you don't have any of these front-end tools installed do so
