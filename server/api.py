@@ -553,4 +553,6 @@ app.add_url_rule('/api/login', view_func=LoginView.as_view('login'))
 if __name__ == '__main__':
     db.create_all()
     app.debug = DEBUG
-    app.run()
+    port = int(os.environ.get('PORT', 5000))
+    host = os.environ.get('HOST', '0.0.0.0')
+    app.run(host=host, port=port)
