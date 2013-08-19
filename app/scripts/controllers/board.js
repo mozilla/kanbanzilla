@@ -109,6 +109,16 @@ angular.module('kanbanzillaApp')
         });
     };
 
+    $scope.updateBoard = function () {
+      Boards.update($scope.boardInfo.board.id, {
+        "name": "heheh",
+        "components": [1,2,3]
+      })
+        .success(function (data) {
+          console.log(data);
+        });
+    };
+
     $scope.$on('$destroy', function () {
       console.log('board destroyed');
     });

@@ -32,8 +32,8 @@ angular.module('kanbanzillaApp')
         });
       },
 
-      update: function (name, params) {
-        // update existing params with the new ones
+      update: function (id, data) {
+        return $http.put('/api/board/' + id, data);
       }
     }
 

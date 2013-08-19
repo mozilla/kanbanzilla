@@ -40,7 +40,12 @@ angular.module('kanbanzillaApp')
 
         function calculateWidth () {
           // This method breaks when resizing columns more than the width of your window
-          width = element[0].children[element[0].children.length - 1].offsetLeft + element[0].children[element[0].children.length - 1].offsetWidth;
+          try {
+            width = element[0].children[element[0].children.length - 1].offsetLeft + element[0].children[element[0].children.length - 1].offsetWidth;
+          }
+          catch (e) {
+            width = windowWidth;
+          }
         }
 
         function addScrollbar () {

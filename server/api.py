@@ -95,7 +95,7 @@ class ProductComponent(db.Model):
     board_id = db.Column(db.Integer, db.ForeignKey('boards.id'))
     board = db.relationship(
         'Board',
-        backref=db.backref('productcomponents', lazy='dynamic')
+        backref=db.backref('productcomponents', lazy='dynamic', cascade='all,delete')
     )
 
     def __init__(self, product, component, board):
@@ -286,6 +286,10 @@ class BoardView(MethodView):
         db.session.commit()
         return 'should delete %s' % id
 
+    def put(self, id):
+        print request.json['components']
+        return make_response(jsonify(request.json))
+
 class LogoutView(MethodView):
 
     def post(self):
@@ -381,7 +385,7 @@ class BugView(MethodView):
             params['status'] = status
             resolution = resolution or ''  #bug_data.get('resolution')
             params['resolution'] = resolution
-            if wiped_whiteboard != bug_data['whiteboard']:
+            if wiped_whiteboard != bug_data.get('whiteboard', ''):
                 # it has changed!
                 params['whiteboard'] = wiped_whiteboard.strip()
 

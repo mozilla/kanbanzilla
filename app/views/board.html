@@ -28,14 +28,13 @@
       <li>more binary values</li>
       <li>some other setting</li>
       <li>save button</li>
-      <li></li>
-      <li></li>
     </ul>
+    <button class="btn btn-primary" ng-click="updateBoard()">Update</button>
   </div>
 </div>
 
 <div class="board-dropzone" auto-fill-height>
-  <div class="board-dropzone-inner">
+  <div class="board-dropzone-inner" fancy-scroll-horizontally>
 
     <div kbcolumn
          ng-repeat="column in boardInfo.columns"
