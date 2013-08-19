@@ -19,6 +19,13 @@
     <h3>Board Settings</h3>
     <button class="btn settings-close-btn" ng-click="settingsOpen = false">Close</button>
     <hr>
+    <select class="input-large" ui-select2="select2Options" multiple ng-model="components" ng-required="true">
+      <optgroup ng-repeat="(productName, product) in products" label="{{productName}}">
+        <option ng-repeat="(compName, component) in product.component" value="{{productName}}@&:{{compName}}">
+          {{productName}}: {{compName}}
+        </option>
+      </optgroup>
+    </select>
     <ul>
       <li>Ability to change components on board</li>
       <li>change and rename columns</li>

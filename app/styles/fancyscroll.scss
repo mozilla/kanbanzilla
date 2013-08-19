@@ -10,12 +10,6 @@
   bottom: 10px;
 
   cursor: pointer;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: moz-none;
-  -ms-user-select: none;
-  user-select: none;
   @include border-radius(30px);
 }
 
@@ -32,6 +26,5 @@
   &:hover {
     background: darken($purple, 6%);
   }
-
   @include transition(all 0.1s linear)
 }

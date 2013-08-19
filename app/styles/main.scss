@@ -24,6 +24,10 @@ html, body {
    cursor: ew-resize;
 }
 
+.scrollbar-moving {
+  cursor: move !important;
+}
+
 [draggable] {
   -moz-user-select: none;
   -khtml-user-select: none;

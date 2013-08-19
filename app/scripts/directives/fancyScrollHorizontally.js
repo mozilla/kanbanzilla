@@ -14,12 +14,17 @@ angular.module('kanbanzillaApp')
         var scrollbar = document.createElement('div');
         var scrollbarInner = document.createElement('div');
         var jScrollbarInner = angular.element(scrollbarInner);
+        var body = angular.element($document[0].body);
+        var startMousePosX = 0;
+        var startOffsetX = 0;
 
         function init () {
           calculateWidth();
           resizeDropZone();
           addScrollbar();
 
+          jScrollbarInner.bind('mousedown', mouseDownHandler);
+          $document.bind('mouseup', mouseUpHandler);
           element.bind('mousewheel', fancyScrollWheelHandler);
           $document.bind('keydown', fancyKeyHandler);
           // angular.element(window).bind('resize', sizeScrollbar);
@@ -34,16 +39,44 @@ angular.module('kanbanzillaApp')
           window.removeEventListener('resizableResize', resizableResizeHandler);
         }
 
+        function mouseDownHandler (e) {
+          console.log($document);
+          body.addClass('scrollbar-moving');
+          startMousePosX = e.clientX;
+          startOffsetX = jScrollbarInner[0].offsetLeft;
+          $document.bind('mousemove', mouseMoveHandler);
+        }
+
+        function mouseUpHandler (e) {
+          body.removeClass('scrollbar-moving');
+          $document.unbind('mousemove', mouseMoveHandler);
+        }
+
+        function mouseMoveHandler (e) {
+          var difX = e.clientX - startMousePosX;
+          var offset = startOffsetX + difX;
+          var scrollBarInnerWidth = scrollbarInnerWidthPercent * windowWidth;
+          offset = clamp(offset, 0, windowWidth - scrollBarInnerWidth);
+          var completion = offset / (windowWidth - scrollBarInnerWidth);
+          position = (-width + windowWidth) * completion * 1.01;
+          jScrollbarInner.css('left', offset + 'px');
+          render();
+        }
+
+        function clamp (offset, min, max) {
+          return Math.min(Math.max(min,offset), max);
+        }
+
         function resizeDropZone () {
-          element.css('width', width + windowWidth + 'px');
+          element.css('width', width * .5 + windowWidth + 'px');
         }
 
         function calculateWidth () {
-          // This method breaks when resizing columns more than the width of your window
           try {
             width = element[0].children[element[0].children.length - 1].offsetLeft + element[0].children[element[0].children.length - 1].offsetWidth;
           }
           catch (e) {
+            console.log('window width');
             width = windowWidth;
           }
         }
@@ -108,6 +141,7 @@ angular.module('kanbanzillaApp')
           var remainderScrollbarWidth = (1 - scrollbarInnerWidthPercent);
           var offset = Math.min(completion, 1) * remainderScrollbarWidth * (windowWidth * 0.99);
           // jScrollbarInner.css(cssPrefix('transform', 'translate3d(' + offset + 'px, 0, 0)'));
+
           jScrollbarInner.css('left', offset + 'px');
         }
 
@@ -134,7 +168,9 @@ angular.module('kanbanzillaApp')
           }
         }
 
-        init();
+        setTimeout(function () {
+          init();
+        }, 100);
         scope.$on('$destroy', destroy);
 
       }

@@ -6,6 +6,15 @@ angular.module('kanbanzillaApp')
 
     $scope.boardInfo = board.data; // the resolve from the routeProvider
     console.log($scope.boardInfo);
+    $scope.components = makeSelect2Components($scope.boardInfo.board.components);
+
+    function makeSelect2Components (components) {
+      var data = [];
+      for(var i = 0; i < components.length ; i++){
+        data.push(components[i].product + '@&:' + components[i].component);
+      }
+      return data;
+    }
 
     function getColumn (name) {
       for (var i = 0 ; i < $scope.boardInfo.columns.length ; i++){
@@ -57,6 +66,11 @@ angular.module('kanbanzillaApp')
         title: title
       });
 
+      $scope.select2Options = {
+        'multiple': true,
+        'simple_tags': true,
+        'minimumInputLength': 4
+      };
 
       if(open){
         dropModalDialog.open().then(function (result) {
@@ -110,6 +124,7 @@ angular.module('kanbanzillaApp')
     };
 
     $scope.updateBoard = function () {
+      console.log($scope.components);
       Boards.update($scope.boardInfo.board.id, {
         "name": "heheh",
         "components": [1,2,3]
