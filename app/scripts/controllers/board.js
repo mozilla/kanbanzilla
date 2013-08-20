@@ -102,14 +102,6 @@ angular.module('kanbanzillaApp')
       receive: receiveHandler
     };
 
-    $scope.goToBugzilla = function (bug) {
-      window.location = Bugzilla.getLink(bug.id);
-    };
-
-    $scope.openComment = function () {
-      $window.alert('opening comment');
-    };
-
     $scope.refresh = function () {
       Boards.getUpdates($scope.boardInfo.board.id, $scope.boardInfo.latest_change_time)
         .success(function (data) {

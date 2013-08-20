@@ -1,7 +1,10 @@
 'use strict';
 
 angular.module('kanbanzillaApp', ['ui.select2', 'ui.bootstrap', 'ui.sortable', 'ngCookies'])
-  .config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
+  .config(['$routeProvider', '$httpProvider', '$locationProvider', function ($routeProvider, $httpProvider, $locationProvider) {
+
+    $locationProvider.html5Mode(true).hashPrefix('!');
+
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',

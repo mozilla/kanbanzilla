@@ -19,6 +19,7 @@
 
   </head>
   <body ng-app="kanbanzillaApp">
+    <base href="/">
     <div class="loading-indicator" ng-show="routeLoading">
         <img src="images/loadersmall.gif" alt="">
         Loading...
@@ -27,7 +28,7 @@
       <div class="navbar-inner">
 
         <ul class="nav">
-          <li><a class="brand" href="#">Kanbanzilla</a></li>
+          <li><a class="brand" href="/">Kanbanzilla</a></li>
         </ul>
 
         <div class="pull-right">
@@ -68,7 +69,6 @@
     <script src="scripts/services/bugzilla.js"></script>
     <script src="scripts/directives/autofillheight.js"></script>
     <script src="scripts/directives/growwhenclicked.js"></script>
-    <script src="scripts/services/bugzillamock.js"></script>
     <script src="scripts/controllers/settings.js"></script>
     <script src="scripts/filters/truncate.js"></script>
     <script src="scripts/directives/fancyScrollHorizontally.js"></script>
@@ -85,6 +85,8 @@
     <script src="scripts/controllers/Comment.js"></script>
     <script src="scripts/controllers/dropbugmodal.js"></script>
     <!-- endbuild -->
-
+    <!-- ref:remove -->
+    <script src="scripts/decorators/h5modeDecorator.js"></script>
+    <!-- endref -->
   </body>
 </html>

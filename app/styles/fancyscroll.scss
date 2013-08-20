@@ -26,5 +26,5 @@
   &:hover {
     background: darken($purple, 6%);
   }
-  @include transition(all 0.1s linear)
+  // @include transition(all 0.1s linear)
 }

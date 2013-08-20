@@ -40,7 +40,6 @@ angular.module('kanbanzillaApp')
         }
 
         function mouseDownHandler (e) {
-          console.log($document);
           body.addClass('scrollbar-moving');
           startMousePosX = e.clientX;
           startOffsetX = jScrollbarInner[0].offsetLeft;
@@ -53,6 +52,7 @@ angular.module('kanbanzillaApp')
         }
 
         function mouseMoveHandler (e) {
+          e.originalEvent.preventDefault();
           var difX = e.clientX - startMousePosX;
           var offset = startOffsetX + difX;
           var scrollBarInnerWidth = scrollbarInnerWidthPercent * windowWidth;
@@ -76,7 +76,6 @@ angular.module('kanbanzillaApp')
             width = element[0].children[element[0].children.length - 1].offsetLeft + element[0].children[element[0].children.length - 1].offsetWidth;
           }
           catch (e) {
-            console.log('window width');
             width = windowWidth;
           }
         }

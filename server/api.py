@@ -297,6 +297,8 @@ class BoardView(MethodView):
             abort(404)
             return
         print board.name
+        # need to go through and change the components in the PC child rows to the new components
+        # and if necessary remove or add rows.
         print request.json['components']
         return make_response(jsonify(request.json))
 

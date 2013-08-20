@@ -19,6 +19,7 @@ module.exports = function (grunt) {
   } catch (e) {}
 
   grunt.loadNpmTasks('grunt-proxy');
+  grunt.loadNpmTasks('grunt-htmlrefs');
 
   grunt.initConfig({
     yeoman: yeomanConfig,
@@ -61,7 +62,7 @@ module.exports = function (grunt) {
       options: {
         port: 9000,
         // Change this to '0.0.0.0' to access the server from outside.
-        hostname: '0.0.0.0'
+        // hostname: '0.0.0.0'
       },
       livereload: {
         options: {
@@ -271,6 +272,12 @@ module.exports = function (grunt) {
           ]
         }]
       }
+    },
+    htmlrefs: {
+      dist: {
+        src: '<%= yeoman.dist %>/index.html',
+        dest: '<%= yeoman.dist %>'
+      }
     }
   });
 
@@ -307,6 +314,7 @@ module.exports = function (grunt) {
     // 'ngmin',
     'uglify',
     // 'rev',
+    'htmlrefs',
     'usemin'
   ]);
 

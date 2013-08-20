@@ -25,7 +25,8 @@
     "matchdep": "~0.1.1",
     "grunt-google-cdn": "~0.2.2",
     "grunt-ngmin": "~0.0.2",
-    "grunt-proxy": "~0.0.*"
+    "grunt-proxy": "~0.0.*",
+    "grunt-htmlrefs": "~0.4.2"
   },
   "engines": {
     "node": ">=0.8.0"
