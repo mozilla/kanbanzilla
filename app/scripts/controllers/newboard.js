@@ -6,7 +6,7 @@ angular.module('kanbanzillaApp')
     $scope.select2Options = {
       'multiple': true,
       'simple_tags': true,
-      'minimumInputLength': 4
+      'minimumInputLength': 3
     };
     $scope.products = config.data.product;
 

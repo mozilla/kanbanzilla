@@ -5,6 +5,7 @@ angular.module('kanbanzillaApp')
   function ($scope, $location, $q, Bugzilla, Boards, $routeParams, $window, $dialog, board) {
 
     $scope.boardInfo = board.data; // the resolve from the routeProvider
+    console.log($scope.boardInfo);
 
     Bugzilla.getConfig()
       .success(function (data) {
@@ -123,9 +124,25 @@ angular.module('kanbanzillaApp')
     };
 
     $scope.addComponent = function () {
-
       $scope.boardInfo.board.components.push({component: $scope.newComponent});
       $scope.newComponent = '';
+    };
+
+    function queryString (data) {
+      var str = '?';
+      for(var key in data) {
+        if(data.hasOwnProperty(key) && key !== '$$hashKey'){
+          str += key + "=" + data[key] + '&';
+        }
+      }
+      str = str.slice(0,-1);
+      return str;
+    }
+
+    $scope.newBug = function () {
+      var url = 'https://bugzilla.mozilla.org/enter_bug.cgi';
+      url += queryString($scope.boardInfo.board.components[0]);
+      window.open(url, '_blank');
     };
 
 

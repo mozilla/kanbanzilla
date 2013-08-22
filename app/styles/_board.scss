@@ -108,6 +108,7 @@ $column-color: #E2DFDF;
 }
 
 .card {
+  position: relative;
   min-height: 50px;
   background: #FFF;
   margin: 5px;
@@ -203,4 +204,3 @@ $column-color: #E2DFDF;
   }
   // @include transition(0.25s opacity ease-in-out);
 }
-
