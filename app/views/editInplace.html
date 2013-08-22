@@ -1,0 +1,13 @@
+<div>
+  <div ng-hide="editing">
+    <span ng-click="switchToEditMode()" class="pointer">{{editValue}} <small class="inplace-edit-icon"><i class="icon-pencil"></i></small></span>
+  </div>
+
+  <div class="inplace-edit-block" ng-show="editing">
+    <input ng-hide="type == 'textarea'" type="text" class="inplace-input" ng-model="editValue" dr-focus-on="{{editing}}">
+    <textarea ng-show="type == 'textarea'" class="inplace-input" ng-model="editValue" dr-focus-on="{{editing}}" rows="6" style="width:95%"></textarea>
+    <br>
+    <button class="btn btn-info btn-small" ng-click="saveEdits()">Save</button>
+    <button class="btn btn-link btn-small" ng-click="cancelEdits()">Cancel</button>
+  </div>
+</div>

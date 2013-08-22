@@ -10,13 +10,14 @@ angular.module('kanbanzillaApp', ['ui.select2', 'ui.bootstrap', 'ui.sortable', '
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
-      .when('/settings', {
-        templateUrl: 'views/settings.html',
-        controller: 'SettingsCtrl'
-      })
       .when('/board/new', {
         templateUrl: 'views/newboard.html',
-        controller: 'NewboardCtrl'
+        controller: 'NewboardCtrl',
+        resolve: {
+          config: ['Bugzilla', function (Bugzilla) {
+            return Bugzilla.getConfig();
+          }]
+        }
       })
       .when('/board/:id', {
         templateUrl: 'views/board.html',
@@ -30,7 +31,6 @@ angular.module('kanbanzillaApp', ['ui.select2', 'ui.bootstrap', 'ui.sortable', '
       .otherwise({
         redirectTo: '/'
       });
-    // $httpProvider.interceptors.push('bugzillaAuthInterceptor');
   }])
   .run(['$rootScope', '$location', function ($rootScope, $location) {
 

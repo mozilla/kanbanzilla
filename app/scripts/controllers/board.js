@@ -5,16 +5,18 @@ angular.module('kanbanzillaApp')
   function ($scope, $location, $q, Bugzilla, Boards, $routeParams, $window, $dialog, board) {
 
     $scope.boardInfo = board.data; // the resolve from the routeProvider
-    console.log($scope.boardInfo);
-    $scope.components = makeSelect2Components($scope.boardInfo.board.components);
 
-    function makeSelect2Components (components) {
-      var data = [];
-      for(var i = 0; i < components.length ; i++){
-        data.push(components[i].product + '@&:' + components[i].component);
-      }
-      return data;
-    }
+    Bugzilla.getConfig()
+      .success(function (data) {
+        var components = [];
+        var products = data.product;
+        for(var productName in products) {
+          for(var componentName in products[productName].component) {
+            components.push(productName + ': ' + componentName);
+          }
+        }
+        $scope.components = components;
+      });
 
     function getColumn (name) {
       for (var i = 0 ; i < $scope.boardInfo.columns.length ; i++){
@@ -36,23 +38,19 @@ angular.module('kanbanzillaApp')
       var open = false;
 
       if(column.statuses.length > 1) {
-        // console.log('choose between these statuses', column.statuses);
         title = 'Move Bug to ' + columnName;
         statuses = column.statuses;
         open = true;
       }
       else if(column.statuses[0] === 'RESOLVED') {
-        // console.log('choose between these statuses', ['FIXED', 'INVALID', 'WONTFIX', 'DUPLICATE', 'WORKSFORME', 'INCOMPLETE']);
         title = 'Move Bug to Resolved';
         statuses = ['RESOLVED'];
         open = true;
       }
       else if(column.statuses.length === 1) {
-        // console.log('change the status on bug: #' + bug.id + ' to ' + column.statuses[0]);
         Bugzilla.updateBug(bug.id, { status: column.statuses[0] });
       }
       else {
-        // console.log('change the whiteboard on bug: #' + bug.id + ' to kanbanzilla[' + columnName + ']');
         Bugzilla.updateBug(bug.id, { whiteboard: columnName });
       }
 
@@ -67,15 +65,13 @@ angular.module('kanbanzillaApp')
       });
 
       $scope.select2Options = {
-        'multiple': true,
         'simple_tags': true,
-        'minimumInputLength': 4
+        'minimumInputLength': 3
       };
 
       if(open){
         dropModalDialog.open().then(function (result) {
           if(result.action === 'submit'){
-            // console.log(result.data);
             Bugzilla.updateBug(bug.id, result.data);
           }
           else if (result.action === 'close'){
@@ -125,6 +121,13 @@ angular.module('kanbanzillaApp')
           console.log(data);
         });
     };
+
+    $scope.addComponent = function () {
+
+      $scope.boardInfo.board.components.push({component: $scope.newComponent});
+      $scope.newComponent = '';
+    };
+
 
     $scope.$on('$destroy', function () {
       console.log('board destroyed');

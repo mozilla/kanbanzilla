@@ -1,24 +1,24 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('NewboardCtrl', ['$scope', 'Bugzilla', '$location', 'Boards', '$timeout',
-    function ($scope, Bugzilla, $location, Boards, $timeout) {
+  .controller('NewboardCtrl', ['$scope', 'Bugzilla', '$location', 'Boards', '$timeout', 'config',
+    function ($scope, Bugzilla, $location, Boards, $timeout, config) {
     $scope.select2Options = {
       'multiple': true,
       'simple_tags': true,
       'minimumInputLength': 4
     };
-    $scope.products = {};
-    $scope.board = {
-      name: '',
-      description: '',
-      components: [],
-      columns: []
-    };
+    $scope.products = config.data.product;
 
     function resetCreate () {
       $scope.creating = false;
       $scope.createText = 'Create';
+      $scope.board = {
+        name: '',
+        description: '',
+        components: [],
+        columns: []
+      };
     }
 
     function makeCreating () {
@@ -40,10 +40,10 @@ angular.module('kanbanzillaApp')
       }
     }
 
-    Bugzilla.getConfig()
-       .success(function (data) {
-          $scope.products = data.product;
-        });
+    // Bugzilla.getConfig()
+    //    .success(function (data) {
+    //       $scope.products = data.product;
+    //     });
 
     $scope.createBoard = function () {
       makeCreating();

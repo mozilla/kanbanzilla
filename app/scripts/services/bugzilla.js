@@ -26,9 +26,7 @@ angular.module('kanbanzillaApp')
     return {
 
       getConfig: function () {
-        console.log('getting /config');
         return $http.get(BASE_URL + '/configuration');
-        // return $http.get('config.json');
       },
 
       /* BUGS=============== */

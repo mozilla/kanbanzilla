@@ -1,0 +1,68 @@
+
+.settings-sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100%;
+  background: #EBEBEB;
+  border-left: 1px solid #CCC;
+  z-index: 4;
+
+  @include transition(0.25s all ease-in-out);
+  display:none;
+  // @include translate3d(401px, 0, 0);
+}
+
+.settings-sidebar.shown {
+  // @include translate3d(0,0,0);
+  display: block;
+}
+
+.settings-sidebar-inner {
+  padding: 15px;
+  padding-top: 40px;
+}
+
+.settings-close-btn {
+  right: 10px;
+  position: absolute;
+  top: 55px;
+}
+
+.sidebar-board-title {
+  font-size: 20px;
+  font-weight: bold;
+  display: inline-block;
+  margin-bottom:20px;
+}
+
+.sidebar-components {
+  list-style-type: none;
+  margin: 0 0 15px 0;
+}
+
+.sidebar-component {
+  background: white;
+  // background: #fafafa;
+  margin: 3px 0;
+  padding: 7px;
+  border: 1px solid darken(#ebebeb, 5%);
+  border-left:2px solid $purple;
+  // @include border-radius($roundedness);
+
+  i {
+    opacity: 0;
+    visibility: hidden;
+    @include transition(0.3s all ease-in-out);
+    cursor: pointer;
+  }
+
+  &:hover {
+    border-left: 2px solid lighten($purple, 20%);
+    i {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}

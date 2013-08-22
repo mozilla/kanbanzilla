@@ -13,25 +13,23 @@
   <div class="settings-sidebar-inner">
     <h3>Board Settings</h3>
     <button class="btn settings-close-btn" ng-click="settingsOpen = false">Close</button>
-    <hr>
-    <select class="input-large" ui-select2="select2Options" multiple="multiple" ng-model="components" ng-required="true">
-      <optgroup ng-repeat="(productName, product) in products" label="{{productName}}">
-        <option ng-repeat="(compName, component) in product.component" value="{{productName}}@&:{{compName}}">
-          {{productName}}: {{compName}}
-        </option>
-      </optgroup>
-    </select>
-    <ul>
-      <li>Ability to change components on board</li>
-      <li>change and rename columns</li>
-      <li>see the activity on the board / notifications</li>
-      <li>Turn tooltips on and off</li>
-      <li>Turn other thing on and off</li>
-      <li>more binary values</li>
-      <li>some other setting</li>
-      <li>save button</li>
+
+    <span class="sidebar-board-title" edit-inplace="boardInfo.board.name"></span><br>
+
+    <strong>Description:</strong><br>
+    <p edit-inplace="boardInfo.board.description" type="textarea"></p>
+    <br>
+    <h4>Components</h4>
+    <ul class="sidebar-components">
+      <li ng-repeat="component in boardInfo.board.components" class="sidebar-component">
+        {{component.product}}: {{component.component}} <i class="icon-remove pull-right"></i>
+      </li>
     </ul>
-    <button class="btn btn-primary" ng-click="updateBoard()">Update</button>
+    <label>Add a Component:</label>
+    <div class="input-append">
+      <input type="text" class="input-xlarge" ng-model="newComponent" typeahead="component for component in components | filter:$viewValue | limitTo: 6">
+      <button class="btn btn-primary" ng-click="addComponent()">Add</button>
+    </div>
   </div>
 </div>
 
