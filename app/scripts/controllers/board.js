@@ -7,15 +7,30 @@ angular.module('kanbanzillaApp')
     $scope.boardInfo = board.data; // the resolve from the routeProvider
     console.log($scope.boardInfo);
 
+    function boardComponentsContain(componentName, productName) {
+      for(var i = 0; i < $scope.boardInfo.board.components.length ; i++){
+        if($scope.boardInfo.board.components[i].component === componentName &&
+          $scope.boardInfo.board.components[i].product === productName){
+          return true;
+        }
+      }
+      return false;
+    }
+    // For the editing board sidebar to edit components
     Bugzilla.getConfig()
       .success(function (data) {
-        var components = [];
+        var components = {};
+        var componentsKeys = [];
         var products = data.product;
         for(var productName in products) {
           for(var componentName in products[productName].component) {
-            components.push(productName + ': ' + componentName);
+            components[productName + ': ' + componentName] = {component: componentName, product: productName};
+            if(!boardComponentsContain(componentName, productName)){
+              componentsKeys.push(productName + ': ' + componentName);
+            }
           }
         }
+        $scope.componentsKeys = componentsKeys;
         $scope.components = components;
       });
 
@@ -80,14 +95,11 @@ angular.module('kanbanzillaApp')
           }
         });
       }
-
-
     }
 
     function updateBoardWith (data) {
       console.log(data);
     }
-
 
     // ui-sortable options, placeholder is a class, and helper clone disables
     // the click event from firing when dropping cards.
@@ -112,39 +124,53 @@ angular.module('kanbanzillaApp')
         });
     };
 
-    $scope.updateBoard = function () {
-      console.log($scope.components);
-      Boards.update($scope.boardInfo.board.id, {
-        "name": "heheh",
-        "components": [1,2,3]
-      })
-        .success(function (data) {
-          console.log(data);
-        });
+    $scope.updateBoard = function (data) {
+      if(safeWaitFlag) {
+        Boards.update($scope.boardInfo.board.id, data)
+          .success(function (respData) {
+            console.log(respData);
+          });
+      }
     };
 
     $scope.addComponent = function () {
-      $scope.boardInfo.board.components.push({component: $scope.newComponent});
+      var index = $scope.componentsKeys.indexOf($scope.newComponent);
+      var componentObject = $scope.components[$scope.newComponent];
+      if(index >= 0) {
+        $scope.componentsKeys.splice(index, 1);
+      }
+      $scope.boardInfo.board.components.push(componentObject);
       $scope.newComponent = '';
     };
 
-    function queryString (data) {
-      var str = '?';
-      for(var key in data) {
-        if(data.hasOwnProperty(key) && key !== '$$hashKey'){
-          str += key + "=" + data[key] + '&';
+    $scope.removeComponent = function (removedComponent) {
+      $scope.componentsKeys.push(removedComponent.product + ': ' + removedComponent.component);
+      for(var i = 0; i < $scope.boardInfo.board.components.length ; i++){
+        if($scope.boardInfo.board.components[i] === removedComponent) {
+          $scope.boardInfo.board.components.splice(i, 1);
+          break;
         }
       }
-      str = str.slice(0,-1);
-      return str;
-    }
+    };
 
     $scope.newBug = function () {
-      var url = 'https://bugzilla.mozilla.org/enter_bug.cgi';
-      url += queryString($scope.boardInfo.board.components[0]);
+      var url = Bugzilla.getPostBugPageForComponent($scope.boardInfo.board.components[0]);
       window.open(url, '_blank');
     };
 
+    // watch individual changes, and only send those changes to be updated
+    // $scope.$watch fires immediately, so the safeWaitFlag is so the update
+    // function knows not to send the PUT immediately.
+    var safeWaitFlag = false;
+    setTimeout(function() {
+      safeWaitFlag = true;
+    }, 1);
+    $scope.$watch('boardInfo.board.name', function (data) {
+      $scope.updateBoard({name: data});
+    });
+    $scope.$watch('boardInfo.board.description', function (data) {
+      $scope.updateBoard({description: data});
+    });
 
     $scope.$on('$destroy', function () {
       console.log('board destroyed');

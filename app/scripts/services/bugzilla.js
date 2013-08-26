@@ -22,6 +22,16 @@ angular.module('kanbanzillaApp')
     // $http.defaults.headers.jsonp['Content-Type'] = 'application/json';
     // $http.defaults.headers.jsonp['Accept'] = 'application/javascript';
 
+    function queryString (data) {
+      var str = '?';
+      for(var key in data) {
+        if(data.hasOwnProperty(key) && key !== '$$hashKey'){
+          str += key + "=" + data[key] + '&';
+        }
+      }
+      str = str.slice(0,-1);
+      return str;
+    }
 
     return {
 
@@ -151,17 +161,13 @@ angular.module('kanbanzillaApp')
         return $http.get(BASE_URL + '/user/' + id);
       },
 
-      // attemptLogin: function(name, pass) {
-      //   this.attemptServerLogin(name, pass);
-
-      //   return $http({
-      //     method: 'GET',
-      //     url: BASE_URL + '/user',
-      //     params: {
-      //       match: name,
-      //     }
-      //   });
-      // },
+      // Additional Bugzilla functionality not provided by API
+      // Either through Bugzilla website features or our api proxy
+      getPostBugPageForComponent: function (component) {
+        var url = 'https://bugzilla.mozilla.org/enter_bug.cgi';
+        url += queryString(component);
+        return url;
+      },
 
       attemptLogin: function (name, pass) {
         return $http.post(BASE_URL + '/login', {login: name, password: pass});

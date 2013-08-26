@@ -36,9 +36,6 @@ $column-color: #E2DFDF;
   display: block;
   width: 100%;
   overflow-x: hidden;
-  // possible non-javascript solution
-  // height: 100%;
-  // overflow-y: hidden;
 }
 
 .board-dropzone-inner {
@@ -108,7 +105,6 @@ $column-color: #E2DFDF;
 }
 
 .card {
-  position: relative;
   min-height: 50px;
   background: #FFF;
   margin: 5px;
@@ -135,7 +131,6 @@ $column-color: #E2DFDF;
 .proxy-card {
   height: 70px;
   background: #AAA;
-  // border: 2px dashed darken($purple, 10%);
   margin: 5px;
   @include border-radius($roundedness);
 }

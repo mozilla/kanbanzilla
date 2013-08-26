@@ -124,7 +124,7 @@ class BoardsView(MethodView):
     def post(self):
         token = request.cookies.get('token')
         if not token:
-            abort(403)
+            abort(403, "Not logged in any more")
             return
         token_cache_key = 'auth:%s' % token
         user_info = cache_get(token_cache_key)
@@ -201,7 +201,7 @@ class BoardView(MethodView):
         try:
             board, = Board.query.filter_by(identifier=id)
         except ValueError:
-            abort(404)
+            abort(404, 'Board not found')
             return
 
         assert board
@@ -296,10 +296,12 @@ class BoardView(MethodView):
         except ValueError:
             abort(404)
             return
-        print board.name
+        # print board.name
         # need to go through and change the components in the PC child rows to the new components
         # and if necessary remove or add rows.
-        print request.json['components']
+        board.name = request.json.get('name', board.name)
+        board.description = request.json.get('description', board.description)
+        db.session.commit()
         return make_response(jsonify(request.json))
 
 class LogoutView(MethodView):
@@ -422,6 +424,7 @@ class ConfigView(MethodView):
     def get(self):
         config = cache_get('config')
         if config is None:
+            print 'cache miss'
             r = requests.get(bugzilla_url + '/configuration')
             config = json.loads(r.text)
             cache_set('config', config, DAY)
