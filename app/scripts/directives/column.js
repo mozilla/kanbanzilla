@@ -14,7 +14,7 @@ angular.module('kanbanzillaApp')
         sortOptions: '=',
         ngModel: '='
       },
-      controller: ['$scope', 'Bugzilla', 'bugzillaAuth','$dialog', function ($scope, Bugzilla, bugzillaAuth, $dialog) {
+      controller: ['$scope', 'Bugzilla', 'bugzillaAuth','$dialog', '$window', function ($scope, Bugzilla, bugzillaAuth, $dialog, $window) {
 
         $scope.bugDescription = 'Loading...';
         $scope.lastComment = 'Loading...';
@@ -29,6 +29,9 @@ angular.module('kanbanzillaApp')
 
         $scope.archiveBug = function (bug) {
           // archive an individual bug.
+          if(!$window.confirm('Archiving a Bug will mark it as VERIFIED with the resolution it currently has. Are you sure you want to do archive this bug?')){
+            return;
+          }
           var index = $scope.ngModel.bugs.indexOf(bug);
           $scope.ngModel.bugs.splice(index, 1);
           Bugzilla.updateBug(bug.id, {status: 'VERIFIED'})
@@ -37,8 +40,8 @@ angular.module('kanbanzillaApp')
                 $scope.ngModel.bugs.splice(index, 0, bug);
               }
             })
-            .error(function (data) {
-                $scope.ngModel.bugs.splice(index, 0, bug);
+            .error(function () {
+              $scope.ngModel.bugs.splice(index, 0, bug);
             });
         };
 
