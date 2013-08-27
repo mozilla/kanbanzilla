@@ -29,11 +29,16 @@ angular.module('kanbanzillaApp')
 
         $scope.archiveBug = function (bug) {
           // archive an individual bug.
+          var index = $scope.ngModel.bugs.indexOf(bug);
+          $scope.ngModel.bugs.splice(index, 1);
           Bugzilla.updateBug(bug.id, {status: 'VERIFIED'})
             .success(function (data) {
-              if(data.ok === 1) {
-                $scope.ngModel.bugs.splice($scope.ngModel.bugs.indexOf(bug), 1);
+              if(data.ok !== 1) {
+                $scope.ngModel.bugs.splice(index, 0, bug);
               }
+            })
+            .error(function (data) {
+                $scope.ngModel.bugs.splice(index, 0, bug);
             });
         };
 
