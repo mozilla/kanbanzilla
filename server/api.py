@@ -446,7 +446,7 @@ class BugView(MethodView):
             params['whiteboard'] = wiped_whiteboard + 'kanbanzilla[%s]' % whiteboard
         elif status:
             params['status'] = status
-            resolution = resolution or ''  #bug_data.get('resolution')
+            resolution = resolution or bug_data.get('resolution')
             params['resolution'] = resolution
             if wiped_whiteboard != bug_data.get('whiteboard', ''):
                 # it has changed!

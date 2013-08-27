@@ -18,6 +18,24 @@ angular.module('kanbanzillaApp')
 
         $scope.bugDescription = 'Loading...';
         $scope.lastComment = 'Loading...';
+        $scope.archiveable = $scope.ngModel.statuses.indexOf('RESOLVED') !== -1;
+        console.log($scope.archiveable);
+
+
+        $scope.archiveAll = function () {
+          // should only apply to the done column. Take all cards and archive
+          // them, thus cleaning up the done column.
+        };
+
+        $scope.archiveBug = function (bug) {
+          // archive an individual bug.
+          Bugzilla.updateBug(bug.id, {status: 'VERIFIED'})
+            .success(function (data) {
+              if(data.ok === 1) {
+                $scope.ngModel.bugs.splice($scope.ngModel.bugs.indexOf(bug), 1);
+              }
+            });
+        };
 
         $scope.getDescription = function (bug) {
           Bugzilla.getCommentsForBug(bug.id)
