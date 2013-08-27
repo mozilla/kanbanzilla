@@ -3,7 +3,7 @@
     {{displayTitle}}
   </div>
   <div class="column-body" max-remaining-height="40">
-      <ul ng-model="ngModel" ui-sortable="sortOptions" class="col-drop-zone">
+      <ul ng-model="ngModel.bugs" ui-sortable="sortOptions" class="col-drop-zone">
 
         <li class="card" ng-repeat="bug in ngModel.bugs | filter: query | limitTo: 35">
           <div class="card-body">
