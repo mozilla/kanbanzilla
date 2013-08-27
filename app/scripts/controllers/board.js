@@ -80,11 +80,6 @@ angular.module('kanbanzillaApp')
         title: title
       });
 
-      $scope.select2Options = {
-        'simple_tags': true,
-        'minimumInputLength': 3
-      };
-
       if(open){
         dropModalDialog.open().then(function (result) {
           if(result.action === 'submit'){

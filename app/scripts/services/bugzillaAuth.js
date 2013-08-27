@@ -28,7 +28,7 @@ angular.module('kanbanzillaApp')
       logout: function () {
         user.username = '';
         user.loggedIn = false;
-        removeCookies();
+        return removeCookies();
       },
 
       isUserLoggedIn: function () {

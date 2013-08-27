@@ -3,15 +3,17 @@
     {{displayTitle}}
   </div>
   <div class="column-body" max-remaining-height="40">
-      <ul ng-model="ngModel" ui-sortable="sortOptions" class="col-drop-zone">
+      <ul ng-model="ngModel.bugs" ui-sortable="sortOptions" class="col-drop-zone">
 
-        <li class="card" ng-repeat="bug in ngModel | filter: query | limitTo: 35">
+        <li class="card" ng-repeat="bug in ngModel.bugs | filter: query | limitTo: 35">
           <div class="card-body">
             {{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}
           </div>
           <div class="card-footer">
             <span class="id-tag" ng-click="goToBug(bug)">#{{bug.id}}</span>
             <div class="card-actions">
+              <i class="icon-briefcase" ng-click="archiveBug(bug);$event.stopPropogation()" ng-show="archiveable" title="archive bug"></i>
+
               <i class="icon-comment" ng-click="openComment(bug);$event.stopPropagation()" title="post a comment"></i>
 
               <i class="icon-comments" ng-mouseover="getLastComment(bug)" ng-mouseout="resetLastComment()" popover="{{lastComment | truncateByCharsAndEndWith : 500 : '...' }}" popover-title="Last Comment:" popover-placement="right" popover-trigger="mouseenter" popover-popup-delay="250"></i>
@@ -21,9 +23,6 @@
           </div>
         </li>
       </ul>
-      <!-- <div class="card">
-
-      </div> -->
     
   </div>
 </div>

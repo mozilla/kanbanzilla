@@ -29,8 +29,10 @@ angular.module('kanbanzillaApp')
     $scope.logout = function () {
       var userConfirmedLogout = $window.confirm('Are you sure you want to logout');
       if(userConfirmedLogout){
-        bugzillaAuth.logout();
-        $route.reload();
+        bugzillaAuth.logout()
+          .success(function (data) {
+            $route.reload();
+          });
       }
     };
 
