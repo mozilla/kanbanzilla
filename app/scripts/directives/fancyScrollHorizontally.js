@@ -68,7 +68,7 @@ angular.module('kanbanzillaApp')
         }
 
         function resizeDropZone () {
-          element.css('width', width * .5 + windowWidth + 'px');
+          element.css('width', width * 0.5 + windowWidth + 'px');
         }
 
         function calculateWidth () {
@@ -167,6 +167,8 @@ angular.module('kanbanzillaApp')
           }
         }
 
+        // have to wait for the columns to be rendered before trying to size the drop zone.
+        // or else it will fail.
         setTimeout(function () {
           init();
         }, 100);
