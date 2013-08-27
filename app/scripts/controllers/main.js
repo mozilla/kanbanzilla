@@ -1,20 +1,10 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('MainCtrl', ['$scope', 'Bugzilla', 'Boards', '$window', '$http',
-  function ($scope, Bugzilla, Boards, $window, $http) {
+  .controller('MainCtrl', ['$scope', 'Bugzilla', 'Boards', '$window', '$http', 'boardsResolve',
+  function ($scope, Bugzilla, Boards, $window, $http, boardsResolve) {
     $scope.products = {};
-
-    // Bugzilla.getConfig()
-    //    .success(function (data) {
-    //       $scope.products = data.product;
-    //     });
-
-    Boards.getAllBoards().
-      success(function (data) {
-        $scope.myBoards = data.boards;
-        console.log($scope.myBoards);
-      });
+    $scope.myBoards = boardsResolve.data.boards; // the resolve from the router
 
     $scope.toggle = function (product) {
       console.log(product);

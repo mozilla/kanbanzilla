@@ -141,6 +141,10 @@ angular.module('kanbanzillaApp')
       }
       $scope.boardInfo.board.components.push(componentObject);
       $scope.newComponent = '';
+      Boards.addComponent($scope.boardInfo.board.id, componentObject)
+        .success(function (data) {
+          console.log(data);
+        });
     };
 
     $scope.removeComponent = function (removedComponent) {
@@ -151,6 +155,10 @@ angular.module('kanbanzillaApp')
           break;
         }
       }
+      Boards.removeComponent($scope.boardInfo.board.id, removedComponent)
+        .success(function (data) {
+          console.log(data);
+        });
     };
 
     $scope.newBug = function () {

@@ -304,6 +304,55 @@ class BoardView(MethodView):
         db.session.commit()
         return make_response(jsonify(request.json))
 
+
+class BoardComponentsView(MethodView):
+# /board/<id>/component
+
+    def post(self, id):
+        token = request.cookies.get('token')
+        if not token:
+            abort(403)
+            return
+        user_info = cache_get('auth:%s' % token)
+        try:
+            board, = Board.query.filter_by(identifier=id)
+        except ValueError:
+            abort(404)
+            return
+        if board.creator != user_info['username']:
+            abort(403)
+            return
+        comp = request.json.get('component',  '')
+        prod = request.json.get('product', '')
+        pc = ProductComponent(prod, comp, board)
+        db.session.add(pc)
+        db.session.commit()
+        print 'Should add a new component to this board'
+        print 'Component: {0}, Product: {1} - should be added to board {2}'.format(comp, prod, id)
+        return make_response(jsonify(request.json))
+
+    def delete(self, id):
+        token = request.cookies.get('token')
+        if not token:
+            abort(403)
+            return
+        user_info = cache_get('auth:%s' % token)
+        try:
+            board, = Board.query.filter_by(identifier=id)
+        except ValueError:
+            abort(404)
+            return
+        if board.creator != user_info['username']:
+            abort(403)
+            return
+        comp = request.json.get('component',  '')
+        prod = request.json.get('product', '')
+
+        db.session.query(ProductComponent).filter_by(product=prod, component=comp, board=board).delete()
+        db.session.commit()
+        return make_response(jsonify({'status': 'success'}))
+
+
 class LogoutView(MethodView):
 
     def post(self):
@@ -562,6 +611,7 @@ def catch_all(path):
 
 
 app.add_url_rule('/api/board/<id>', view_func=BoardView.as_view('board'))
+app.add_url_rule('/api/board/<id>/component', view_func=BoardComponentsView.as_view('components'))
 app.add_url_rule('/api/board', view_func=BoardsView.as_view('boards'))
 app.add_url_rule('/api/configuration', view_func=ConfigView.as_view('config'))
 app.add_url_rule('/api/bug/<int:id>', view_func=BugView.as_view('bug'))

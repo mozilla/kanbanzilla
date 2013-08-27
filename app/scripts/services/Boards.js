@@ -34,6 +34,19 @@ angular.module('kanbanzillaApp')
 
       update: function (id, data) {
         return $http.put('/api/board/' + id, data);
+      },
+
+      addComponent: function (id, data) {
+        return $http.post('/api/board/' + id + '/component', data);
+      },
+
+      removeComponent: function (id, data) {
+        return $http.delete('/api/board/' + id + '/component', {
+          data: data,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
       }
     }
 
