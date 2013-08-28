@@ -40,6 +40,7 @@ angular.module('kanbanzillaApp')
         for(var productName in products) {
           for(var componentName in products[productName].component) {
             components[productName + ': ' + componentName] = {component: componentName, product: productName};
+            // don't include components that are already a part of the board.
             if(!boardComponentsContain(componentName, productName)){
               componentsKeys.push(productName + ': ' + componentName);
             }
@@ -102,11 +103,15 @@ angular.module('kanbanzillaApp')
             Bugzilla.updateBug(bug.id, result.data);
           }
           else if (result.action === 'close'){
-            revertInfo.column.bugs.splice(revertInfo.index, 0, bug);
-            column.bugs.splice(column.bugs.indexOf(bug), 1);
+            revert(column, bug);
           }
         });
       }
+    }
+
+    function revert (dropColumn, bug) {
+      revertInfo.column.bugs.splice(revertInfo.index, 0, bug);
+      dropColumn.bugs.splice(dropColumn.bugs.indexOf(bug), 1);
     }
 
     function updateBoardWith (data) {
@@ -179,9 +184,8 @@ angular.module('kanbanzillaApp')
     // $scope.$watch fires immediately, so the safeWaitFlag is so the update
     // function knows not to send the PUT immediately.
     var safeWaitFlag = false;
-    setTimeout(function() {
-      safeWaitFlag = true;
-    }, 1);
+    setTimeout(function() { safeWaitFlag = true; }, 1);
+
     $scope.$watch('boardInfo.board.name', function (data) {
       $scope.updateBoard({name: data});
     });
