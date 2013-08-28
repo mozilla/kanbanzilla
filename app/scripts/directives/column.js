@@ -19,7 +19,6 @@ angular.module('kanbanzillaApp')
         $scope.bugDescription = 'Loading...';
         $scope.lastComment = 'Loading...';
         $scope.archiveable = $scope.ngModel.statuses.indexOf('RESOLVED') !== -1;
-        console.log($scope.archiveable);
 
 
         $scope.archiveAll = function () {

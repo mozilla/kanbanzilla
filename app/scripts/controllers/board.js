@@ -4,8 +4,23 @@ angular.module('kanbanzillaApp')
   .controller('BoardCtrl', ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', '$dialog', 'board',
   function ($scope, $location, $q, Bugzilla, Boards, $routeParams, $window, $dialog, board) {
 
+    var revertInfo = {
+      index: undefined,
+      column: undefined
+    };
+
     $scope.boardInfo = board.data; // the resolve from the routeProvider
     console.log($scope.boardInfo);
+    // ui-sortable options, placeholder is a class, and helper clone disables
+    // the click event from firing when dropping cards.
+    $scope.sortableOptions = {
+      placeholder: 'proxy-card',
+      connectWith: '[ui-sortable]',
+      helper: 'clone',
+      revert: 100,
+      receive: receiveHandler,
+      start: startHandler
+    };
 
     function boardComponentsContain(componentName, productName) {
       for(var i = 0; i < $scope.boardInfo.board.components.length ; i++){
@@ -80,13 +95,15 @@ angular.module('kanbanzillaApp')
         title: title
       });
 
+      // the cases where there is more than one status/resolution to pick take another step
       if(open){
         dropModalDialog.open().then(function (result) {
           if(result.action === 'submit'){
             Bugzilla.updateBug(bug.id, result.data);
           }
           else if (result.action === 'close'){
-            console.log('need to undo and send bug back to intial column');
+            revertInfo.column.bugs.splice(revertInfo.index, 0, bug);
+            column.bugs.splice(column.bugs.indexOf(bug), 1);
           }
         });
       }
@@ -96,15 +113,12 @@ angular.module('kanbanzillaApp')
       console.log(data);
     }
 
-    // ui-sortable options, placeholder is a class, and helper clone disables
-    // the click event from firing when dropping cards.
-    $scope.sortableOptions = {
-      placeholder: 'proxy-card',
-      connectWith: '[ui-sortable]',
-      helper: 'clone',
-      revert: 100,
-      receive: receiveHandler
-    };
+    function startHandler (data, ui) {
+      var columnName = data.target.parentNode.parentNode.attributes['display-title'].nodeValue;
+      var column = getColumn(columnName);
+      revertInfo.column = column;
+      revertInfo.index = ui.item.sortable.index; // index of the bug in the column
+    }
 
     $scope.refresh = function () {
       Boards.getUpdates($scope.boardInfo.board.id, $scope.boardInfo.latest_change_time)
