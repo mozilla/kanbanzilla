@@ -25,7 +25,7 @@ angular.module('kanbanzillaApp')
 
           jScrollbarInner.bind('mousedown', mouseDownHandler);
           $document.bind('mouseup', mouseUpHandler);
-          element.bind('mousewheel', fancyScrollWheelHandler);
+          $document.bind('mousewheel', fancyScrollWheelHandler);
           $document.bind('keydown', fancyKeyHandler);
           // angular.element(window).bind('resize', sizeScrollbar);
           window.addEventListener('resize', sizeScrollbar);
@@ -33,7 +33,7 @@ angular.module('kanbanzillaApp')
         }
 
         function destroy () {
-          element.unbind('mousewheel');
+          $document.unbind('mousewheel');
           $document.unbind('keydown');
           window.removeEventListener('resize', sizeScrollbar);
           window.removeEventListener('resizableResize', resizableResizeHandler);
@@ -153,7 +153,7 @@ angular.module('kanbanzillaApp')
         function fancyScrollWheelHandler (e) {
           // only scroll when mouse is over the board-dropzone-inner
           // and not any of the columns or cards
-          if(e.target === e.currentTarget){
+          if(e.target === element[0] || e.target === scrollbar || e.target === scrollbarInner){
             moveElement(e.originalEvent.wheelDelta / 3);
           }
         }
