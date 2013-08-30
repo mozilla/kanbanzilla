@@ -13,7 +13,8 @@
     "animate.css": "latest",
     "jquery-ui": "latest",
     "angular-ui-sortable": "latest",
-    "angular-bootstrap": "latest"
+    "angular-bootstrap": "latest",
+    "test-angular-notifications": "latest"
   },
   "devDependencies": {
     "angular-mocks": "~1.0.5",
