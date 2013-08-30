@@ -1,6 +1,6 @@
 <div class="column">
   <div class="column-header">
-    {{displayTitle}}
+    {{displayTitle}} <span class="bug-count">({{ngModel.bugs.length}})</span>
   </div>
   <div class="column-body" max-remaining-height="40">
       <ul ng-model="ngModel.bugs" ui-sortable="sortOptions" class="col-drop-zone">

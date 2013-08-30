@@ -392,7 +392,7 @@ class LoginView(MethodView):
             response.set_cookie('username', request.json['login'])
             return response
         else:
-            abort(401)
+            abort(401, "Either your username or password was incorrect")
             login_response['result'] = 'failed'
             response = make_response(jsonify(login_response))
             return response
@@ -412,7 +412,7 @@ class BugView(MethodView):
 
         token = request.cookies.get('token')
         if not token:
-            abort(403)
+            abort(403, "You are not logged in")
             return
 
         bug_data = fetch_bug(
@@ -455,7 +455,7 @@ class BugView(MethodView):
         if assign and not assignee:
             user_info = cache_get('auth:%s' % token)
             if not user_info:
-                abort(403)
+                abort(403, "You are not logged in")
             assignee = user_info['username']
 
         if assignee:

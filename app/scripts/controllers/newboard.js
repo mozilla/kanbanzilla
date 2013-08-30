@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('NewboardCtrl', ['$scope', 'Bugzilla', '$location', 'Boards', '$timeout', 'config',
-    function ($scope, Bugzilla, $location, Boards, $timeout, config) {
+  .controller('NewboardCtrl', ['$scope', 'Bugzilla', '$location', 'Boards', '$timeout', 'config', '$notification',
+    function ($scope, Bugzilla, $location, Boards, $timeout, config, $notification) {
     $scope.select2Options = {
       'multiple': true,
       'simple_tags': true,
@@ -41,23 +41,18 @@ angular.module('kanbanzillaApp')
       }
     }
 
-    // Bugzilla.getConfig()
-    //    .success(function (data) {
-    //       $scope.products = data.product;
-    //     });
-
     $scope.createBoard = function () {
       makeCreating();
       processComponents($scope.board.components);
       Boards.create($scope.board)
         .success(function (data) {
+          $notification.success('Board Created', 'Your board has been successfully created');
           resetCreate();
           console.log(data);
           $location.path('/board/' + data.board);
         })
         .error(function (data) {
           resetCreate();
-          console.log('error on the server', data);
         });
     };
 

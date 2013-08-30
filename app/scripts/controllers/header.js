@@ -23,6 +23,9 @@ angular.module('kanbanzillaApp')
         if(data.result === 'success'){
           $route.reload();
         }
+        else if(data.result === 'failed'){
+          $scope.openLoginDialog();
+        }
       });
     };
 

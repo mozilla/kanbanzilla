@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('kanbanzillaApp', ['ui.select2', 'ui.bootstrap', 'ui.sortable', 'ngCookies'])
+angular.module('kanbanzillaApp',
+  ['ui.select2', 'ui.bootstrap', 'ui.sortable', 'ngCookies', 'notifications'])
   .config(['$routeProvider', '$httpProvider', '$locationProvider', function ($routeProvider, $httpProvider, $locationProvider) {
 
     $locationProvider.html5Mode(true).hashPrefix('!');
@@ -39,19 +40,26 @@ angular.module('kanbanzillaApp', ['ui.select2', 'ui.bootstrap', 'ui.sortable', '
       .otherwise({
         redirectTo: '/'
       });
-  }])
-  .run(['$rootScope', '$location', function ($rootScope, $location) {
 
+    $httpProvider.responseInterceptors.push('globalErrorHandling');
+  }])
+  .run(['$rootScope', '$location', '$timeout', function ($rootScope, $location, $timeout) {
+
+    var routeLoadingDelay = 75, // time in ms to delay showing the route loading spinner
+        routeLoadingTimeout;
     $rootScope.routeLoading = false;
 
     $rootScope.$on('$routeChangeStart',
       function () {
-      $rootScope.routeLoading = true;
+      routeLoadingTimeout = $timeout(function () {
+        $rootScope.routeLoading = true;
+      }, routeLoadingDelay);
       console.log('starting route change');
     });
 
     $rootScope.$on('$routeChangeSuccess',
       function () {
+      $timeout.cancel(routeLoadingTimeout);
       $rootScope.routeLoading = false;
       console.log('route changed successfully');
     });

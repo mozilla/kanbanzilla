@@ -1,8 +1,9 @@
 'use strict';
 
 angular.module('kanbanzillaApp')
-  .controller('BoardCtrl', ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', '$dialog', 'board',
-  function ($scope, $location, $q, Bugzilla, Boards, $routeParams, $window, $dialog, board) {
+  .controller('BoardCtrl',
+          ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', '$dialog', 'board', '$notification', '$route',
+  function ($scope,   $location,   $q,  Bugzilla,   Boards,   $routeParams,   $window,   $dialog,   board,   $notification,   $route) {
 
     var revertInfo = {
       index: undefined,
@@ -58,6 +59,20 @@ angular.module('kanbanzillaApp')
       }
     }
 
+    // Use this function rather than the Bugzilla.updateBug method
+    // as this one also reverts changes on error.
+    function updateBug(bug, data, dropColumn) {
+      Bugzilla.updateBug(bug.id, data)
+        .error(function () {
+          revert(bug, dropColumn);
+        });
+    }
+
+    function revert (bug, dropColumn) {
+      revertInfo.column.bugs.splice(revertInfo.index, 0, bug);
+      dropColumn.bugs.splice(dropColumn.bugs.indexOf(bug), 1);
+    }
+
     function receiveHandler (data, ui) {
       var bug = ui.item.sortable.moved;
       // dependent on html structure, would like to change this but its hard with what
@@ -80,10 +95,12 @@ angular.module('kanbanzillaApp')
         open = true;
       }
       else if(column.statuses.length === 1) {
-        Bugzilla.updateBug(bug.id, { status: column.statuses[0] });
+        // Bugzilla.updateBug(bug.id, { status: column.statuses[0] });
+        updateBug(bug, { status: column.statuses[0] }, column);
       }
       else {
-        Bugzilla.updateBug(bug.id, { whiteboard: columnName });
+        // Bugzilla.updateBug(bug.id, { whiteboard: columnName });
+        updateBug(bug, { whiteboard: columnName }, column);
       }
 
       var dropModalDialog = $dialog.dialog({
@@ -100,18 +117,13 @@ angular.module('kanbanzillaApp')
       if(open){
         dropModalDialog.open().then(function (result) {
           if(result.action === 'submit'){
-            Bugzilla.updateBug(bug.id, result.data);
+            updateBug(bug, result.data, column);
           }
           else if (result.action === 'close'){
-            revert(column, bug);
+            revert(bug, column);
           }
         });
       }
-    }
-
-    function revert (dropColumn, bug) {
-      revertInfo.column.bugs.splice(revertInfo.index, 0, bug);
-      dropColumn.bugs.splice(dropColumn.bugs.indexOf(bug), 1);
     }
 
     function updateBoardWith (data) {
@@ -126,27 +138,38 @@ angular.module('kanbanzillaApp')
     }
 
     $scope.refresh = function () {
-      Boards.getUpdates($scope.boardInfo.board.id, $scope.boardInfo.latest_change_time)
-        .success(function (data) {
-          if(data.latest_change_time !== undefined) {
-            console.log('theres been an update');
-            updateBoardWith(data);
-          }
-          else {
-            console.log('no update');
-          }
-        });
+      // Boards.getUpdates($scope.boardInfo.board.id, $scope.boardInfo.latest_change_time)
+      //   .success(function (data) {
+      //     if(data.latest_change_time !== undefined) {
+      //       console.log('theres been an update');
+      //       updateBoardWith(data);
+      //     }
+      //     else {
+      //       console.log('no update');
+      //     }
+      //   });
+      $route.reload();
     };
 
     $scope.updateBoard = function (data) {
       if(safeWaitFlag) {
         Boards.update($scope.boardInfo.board.id, data)
           .success(function (respData) {
+            $notification.success('Saved', 'Your board has been updated');
             console.log(respData);
           });
       }
     };
 
+
+    $scope.newBug = function () {
+      var url = Bugzilla.getPostBugPageForComponent($scope.boardInfo.board.components[0]);
+      window.open(url, '_blank');
+    };
+
+
+
+    // Sidebar/Settings Methods
     $scope.addComponent = function () {
       var index = $scope.componentsKeys.indexOf($scope.newComponent);
       var componentObject = $scope.components[$scope.newComponent];
@@ -175,14 +198,11 @@ angular.module('kanbanzillaApp')
         });
     };
 
-    $scope.newBug = function () {
-      var url = Bugzilla.getPostBugPageForComponent($scope.boardInfo.board.components[0]);
-      window.open(url, '_blank');
-    };
-
-    // watch individual changes, and only send those changes to be updated
-    // $scope.$watch fires immediately, so the safeWaitFlag is so the update
-    // function knows not to send the PUT immediately.
+    /**
+     * watch individual changes and only send those changes to be updated
+     * $scope.$watch fires immediately, so the safeWaitFlag prevents the $watch
+     * from sending an update on board load when no update has actually happened.
+     */
     var safeWaitFlag = false;
     setTimeout(function() { safeWaitFlag = true; }, 1);
 
