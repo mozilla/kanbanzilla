@@ -26,6 +26,6 @@
 
 </div>
 <div class="modal-footer">
-  <button ng-click="attemptLogin(result)" class="btn btn-primary">Login</button>
+  <button ng-click="attemptLogin(result)" class="btn btn-primary" ng-disabled="loggingIn || login.username.length == 0 || login.password.length == 0">{{loginText}}</button>
   <button ng-click="closeDialog(result)" class="btn">Close</button>
 </div>
