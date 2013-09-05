@@ -54,19 +54,16 @@ angular.module('kanbanzillaApp',
       routeLoadingTimeout = $timeout(function () {
         $rootScope.routeLoading = true;
       }, routeLoadingDelay);
-      console.log('starting route change');
     });
 
     $rootScope.$on('$routeChangeSuccess',
       function () {
       $timeout.cancel(routeLoadingTimeout);
       $rootScope.routeLoading = false;
-      console.log('route changed successfully');
     });
 
     $rootScope.$on('$routeChangeError',
       function () {
-      console.log('route failed');
       $location.path('/');
     });
 

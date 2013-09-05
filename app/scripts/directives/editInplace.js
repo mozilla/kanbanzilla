@@ -8,7 +8,7 @@ angular.module('kanbanzillaApp')
       templateUrl: 'views/editInplace.html',
       scope: {
         value: '=editInplace',
-        type: '@type'
+        type: '@editType'
       },
       controller: ['$scope', function ($scope) {
 

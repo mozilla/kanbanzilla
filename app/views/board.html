@@ -5,7 +5,7 @@
             id="board-search"
             class="input-medium search-query"
             placeholder="Search..."
-            grow-when-clicked="300"
+            grow-when-clicked="350"
             ng-model="query">
     <div class="board-actions pull-right">
       <button class="btn" ng-click="newBug()"><i class="icon-plus-sign"></i></button>
@@ -23,7 +23,7 @@
     <span class="sidebar-board-title" edit-inplace="boardInfo.board.name"></span><br>
 
     <strong>Description:</strong><br>
-    <p edit-inplace="boardInfo.board.description" type="textarea"></p>
+    <p edit-inplace="boardInfo.board.description" edit-type="textarea"></p>
     <br>
     <h4>Components</h4>
     <ul class="sidebar-components">
