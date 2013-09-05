@@ -28,13 +28,11 @@ If you intend to use, for example PostgreSQL instead of SQLite (which is default
     pip install psycopg2
 
 #### Tools
-If you don't have any of these front-end tools installed do so
-  `npm install -g grunt-cli`
-  `npm install -g bower`
-  `gem install compass`
-  `npm install -g yo`
-  `npm install -g generator-angular`
-  `npm install -g grunt-karma`
+You will need several front end tools, which you can install from npm and gem:
+```shell
+$ npm install -g grunt-cli bower yo generator-angular grunt-karma
+$ gem install compass
+```
 
 #### Project
 Then go ahead and pull down the repo and run `npm install` and `bower install` in the project directory.
