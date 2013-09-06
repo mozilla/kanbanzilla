@@ -1,0 +1,17 @@
+name: kanbanzilla-jakem
+framework:
+    type: python
+    runtime: python27
+requirements:
+    pypm:
+        - python-memcached==1.53
+        - psycopg2
+services:
+    ${name}-memcache: memcached
+    ${name}-postgresql: postgresql
+mem: 128M
+instances: 1
+processes:
+#    web: python api.py
+    web: $STACKATO_UWSGI --wsgi-file api.py --callable app --processes 1 --threads 4
+#    web: gunicorn -b 0.0.0.0:$PORT api:app
