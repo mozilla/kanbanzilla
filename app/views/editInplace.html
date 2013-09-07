@@ -1,6 +1,6 @@
 <div>
   <div ng-hide="editing">
-    <span ng-click="switchToEditMode()" class="pointer">{{editValue}} <small class="inplace-edit-icon"><i class="icon-pencil"></i></small></span>
+    <span ng-click="switchToEditMode()" class="pointer">{{editValue}} <small class="inplace-edit-icon"><i class="icon-pencil" ng-hide="disabled"></i></small></span>
   </div>
 
   <div class="inplace-edit-block" ng-show="editing">

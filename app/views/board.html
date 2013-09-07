@@ -6,7 +6,8 @@
             class="input-medium search-query"
             placeholder="Search..."
             grow-when-clicked="350"
-            ng-model="query">
+            ng-model="query"
+            debounce-model-update>
     <div class="board-actions pull-right">
       <button class="btn" ng-click="newBug()"><i class="icon-plus-sign"></i></button>
       <button class="btn" ng-click="refresh()"><i class="icon-refresh"></i></button>
@@ -17,24 +18,29 @@
 
 <div class="settings-sidebar" ng-class="{shown: settingsOpen}">
   <div class="settings-sidebar-inner">
-    <h3>Board Settings</h3>
+    <h3>Board Info</h3>
     <button class="btn settings-close-btn" ng-click="settingsOpen = false">Close</button>
 
-    <span class="sidebar-board-title" edit-inplace="boardInfo.board.name"></span><br>
+    <span class="sidebar-board-title" edit-inplace="boardInfo.board.name" edit-disable="user.username != boardInfo.board.creator"></span><br>
 
     <strong>Description:</strong><br>
-    <p edit-inplace="boardInfo.board.description" edit-type="textarea"></p>
+    <p edit-inplace="boardInfo.board.description" edit-type="textarea" edit-disable="user.username != boardInfo.board.creator"></p>
     <br>
     <h4>Components</h4>
     <ul class="sidebar-components">
       <li ng-repeat="component in boardInfo.board.components" class="sidebar-component">
-        {{component.product}}: {{component.component}} <i class="icon-remove pull-right" ng-click="removeComponent(component)"></i>
+        {{component.product}}: {{component.component}}
+        <i ng-hide="boardInfo.board.creator != user.username"
+           class="icon-remove pull-right"
+           ng-click="removeComponent(component)"></i>
       </li>
     </ul>
-    <label>Add a Component:</label>
-    <div class="input-append">
-      <input type="text" class="input-xlarge" ng-model="newComponent" typeahead="component for component in componentsKeys | filter:$viewValue | limitTo: 6">
-      <button class="btn btn-primary" ng-click="addComponent()">Add</button>
+    <div ng-show="boardInfo.board.creator == user.username">
+      <label>Add a Component:</label>
+      <div class="input-append">
+        <input type="text" class="input-xlarge" ng-model="newComponent" typeahead="component for component in componentsKeys | filter:$viewValue | limitTo: 6">
+        <button class="btn btn-primary" ng-click="addComponent()">Add</button>
+      </div>
     </div>
   </div>
 </div>

@@ -1,0 +1,19 @@
+div[edit-inplace] {
+  &:hover {
+    .inplace-edit-icon {
+      opacity: 0.6;
+      visibility: visible;
+    }
+  }
+}
+
+.inplace-edit-icon {
+  opacity: 0;
+  visibility: hidden;
+  font-size: 13px;
+  padding-left: 5px;
+}
+
+.inplace-input {
+  // margin-top: 10px;
+}

@@ -58,6 +58,7 @@ angular.module('kanbanzillaApp')
         $scope.getLastComment = function (bug) {
           Bugzilla.getCommentsForBug(bug.id)
             .success(function (data) {
+              console.log(data);
               $scope.lastComment = data.comments[data.comments.length - 1].text.replace(/\n/g,'<br/>');
             });
         };

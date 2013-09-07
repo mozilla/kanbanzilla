@@ -2,8 +2,8 @@
 
 angular.module('kanbanzillaApp')
   .controller('BoardCtrl',
-          ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', '$dialog', 'board', '$notification', '$route',
-  function ($scope,   $location,   $q,  Bugzilla,   Boards,   $routeParams,   $window,   $dialog,   board,   $notification,   $route) {
+          ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', '$dialog', 'board', '$notification', '$route', 'bugzillaAuth',
+  function ($scope,   $location,   $q,  Bugzilla,   Boards,   $routeParams,   $window,   $dialog,   board,   $notification,   $route,   bugzillaAuth) {
 
     var revertInfo = {
       index: undefined,
@@ -11,6 +11,7 @@ angular.module('kanbanzillaApp')
     };
 
     $scope.boardInfo = board.data; // the resolve from the routeProvider
+    $scope.user = bugzillaAuth.getUser();
     console.log($scope.boardInfo);
     // ui-sortable options, placeholder is a class, and helper clone disables
     // the click event from firing when dropping cards.

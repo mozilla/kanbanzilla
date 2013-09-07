@@ -43,7 +43,8 @@ angular.module('kanbanzillaApp',
 
     $httpProvider.responseInterceptors.push('globalErrorHandling');
   }])
-  .run(['$rootScope', '$location', '$timeout', function ($rootScope, $location, $timeout) {
+  .run([     '$rootScope', '$location', '$timeout',
+    function ($rootScope,  $location,    $timeout) {
 
     var routeLoadingDelay = 75, // time in ms to delay showing the route loading spinner
         routeLoadingTimeout;
