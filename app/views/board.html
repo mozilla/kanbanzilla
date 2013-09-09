@@ -6,8 +6,8 @@
             class="input-medium search-query"
             placeholder="Search..."
             grow-when-clicked="350"
-            ng-model="query"
-            debounce-model-update>
+            debounce-model-update="300ms"
+            ng-model="query">
     <div class="board-actions pull-right">
       <button class="btn" ng-click="newBug()"><i class="icon-plus-sign"></i></button>
       <button class="btn" ng-click="refresh()"><i class="icon-refresh"></i></button>
