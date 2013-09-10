@@ -221,7 +221,7 @@ class BoardView(MethodView):
 
         bug_data = fetch_bugs(
             components,
-            ('id', 'summary', 'status', 'whiteboard', 'last_change_time'),
+            ('id', 'summary', 'status', 'whiteboard', 'last_change_time', 'component'),
             token=token,
             changed_after=changed_after,
         )
@@ -233,6 +233,7 @@ class BoardView(MethodView):
             bug_info = {
                 'id': bug['id'],
                 'summary': bug['summary'],
+                'component': bug['component'],
             }
             bugs_by_column[column_name].append(bug_info)
 

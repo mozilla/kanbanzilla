@@ -6,6 +6,9 @@
       <ul ng-model="ngModel.bugs" ui-sortable="sortOptions" class="col-drop-zone">
 
         <li class="card" ng-repeat="bug in ngModel.bugs | filter: query | limitTo: workInProcess">
+          <div class="card-header">
+            {{bug.component}}
+          </div>
           <div class="card-body">
             {{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}
           </div>
