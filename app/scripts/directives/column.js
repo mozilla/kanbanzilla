@@ -12,6 +12,7 @@ angular.module('kanbanzillaApp')
         loading: '=',
         query: '=',
         sortOptions: '=',
+        workInProcess: '=',
         ngModel: '='
       },
       controller: ['$scope', 'Bugzilla', 'bugzillaAuth','$dialog', '$window', function ($scope, Bugzilla, bugzillaAuth, $dialog, $window) {
