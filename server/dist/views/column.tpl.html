@@ -10,7 +10,7 @@
             {{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}
           </div>
           <div class="card-footer">
-            <span class="id-tag" ng-click="goToBug(bug)">#{{bug.id}}</span>
+            <a class="id-tag" ng-href="https://bugzilla.mozilla.org/show_bug.cgi?id={{bug.id}}" target="_blank">#{{bug.id}}</a>
             <div class="card-actions">
               <i class="icon-briefcase" ng-click="archiveBug(bug);$event.stopPropogation()" ng-show="archiveable" title="archive bug"></i>
 

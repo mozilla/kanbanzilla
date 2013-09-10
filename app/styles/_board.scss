@@ -151,6 +151,10 @@ $column-color: #E2DFDF;
   padding: 2px 3px;
   font-size: 11px;
   line-height: 19px;
+  &:hover {
+    color:#FFF;
+    text-decoration: none;
+  }
 }
 
 .card-body {
