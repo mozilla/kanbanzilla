@@ -12,14 +12,18 @@ angular.module('kanbanzillaApp')
       return message;
     }
 
+    function successHandler (successResponse) {
+      return successResponse;
+    }
+
+    function errorHandler (errorResponse) {
+      var msg = extractMessage(errorResponse.data);
+      $notification.error(msg.title, msg.body);
+      console.log(errorResponse);
+      return $q.reject(errorResponse);
+    }
+
     return function(promise) {
-      return promise.then(function (successResponse) {
-        return successResponse;
-      }, function (errorResponse) {
-        console.log(errorResponse);
-        var msg = extractMessage(errorResponse.data);
-        $notification.error(msg.title, msg.body);
-        return $q.reject(errorResponse);
-      });
+      return promise.then(successHandler, errorHandler);
     };
   }]);
