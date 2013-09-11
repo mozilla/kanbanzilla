@@ -5,6 +5,7 @@ angular.module('kanbanzillaApp')
           ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', '$dialog', 'board', '$notification', '$route', 'bugzillaAuth',
   function ($scope,   $location,   $q,  Bugzilla,   Boards,   $routeParams,   $window,   $dialog,   board,   $notification,   $route,   bugzillaAuth) {
 
+    // Remembers the last move to be able to revert back
     var revertInfo = {
       index: undefined,
       column: undefined
@@ -127,10 +128,6 @@ angular.module('kanbanzillaApp')
       }
     }
 
-    function updateBoardWith (data) {
-      console.log(data);
-    }
-
     function startHandler (data, ui) {
       var columnName = data.target.parentNode.parentNode.attributes['display-title'].nodeValue;
       var column = getColumn(columnName);
@@ -138,7 +135,16 @@ angular.module('kanbanzillaApp')
       revertInfo.index = ui.item.sortable.index; // index of the bug in the column
     }
 
+    function updateBoardWith (data) {
+      console.log(data);
+    }
+
+
     $scope.refresh = function () {
+      $route.reload();
+    };
+
+    $scope.poll = function () {
       // Boards.getUpdates($scope.boardInfo.board.id, $scope.boardInfo.latest_change_time)
       //   .success(function (data) {
       //     if(data.latest_change_time !== undefined) {
@@ -149,7 +155,6 @@ angular.module('kanbanzillaApp')
       //       console.log('no update');
       //     }
       //   });
-      $route.reload();
     };
 
     $scope.updateBoard = function (data) {
@@ -172,11 +177,13 @@ angular.module('kanbanzillaApp')
 
     // Sidebar/Settings Methods
     $scope.addComponent = function () {
+      // remove from those that can be selected
       var index = $scope.componentsKeys.indexOf($scope.newComponent);
       var componentObject = $scope.components[$scope.newComponent];
       if(index >= 0) {
         $scope.componentsKeys.splice(index, 1);
       }
+
       $scope.boardInfo.board.components.push(componentObject);
       $scope.newComponent = '';
       Boards.addComponent($scope.boardInfo.board.id, componentObject)
@@ -186,7 +193,9 @@ angular.module('kanbanzillaApp')
     };
 
     $scope.removeComponent = function (removedComponent) {
+      // put component back into those that can be selected
       $scope.componentsKeys.push(removedComponent.product + ': ' + removedComponent.component);
+      // immediate client-side removal
       for(var i = 0; i < $scope.boardInfo.board.components.length ; i++){
         if($scope.boardInfo.board.components[i] === removedComponent) {
           $scope.boardInfo.board.components.splice(i, 1);
