@@ -11,14 +11,15 @@ angular.module('kanbanzillaApp')
           }
 
           var map = $._data(element[0], 'events');
-          var events = $.each( ['input'], function (index, eventName) {
+          console.log(map);
+          var map2 = angular.element(element[0]).data('events');
+          console.log(map2);
+          var events = _.each(['input'], function (eventName, index) {
             // only real dom events
             if(eventName.charAt(0) !== '$') {
               var handlerObj,
-              debounced = $.debounce( options.timeout, options.leading, function (event) {
-                // iterate over all event handlers registered before ourself
-                // (remember : we moved ourself at first position while installing)
-                for( var i = $.inArray( debounceHandlerObj, map[eventName])+1 ; i<map[eventName].length ; i++) {
+              debounced = _.debounce(function (event) {
+                for(var i = _.indexOf(map[eventName], debounceHandlerObj) + 1 ; i<map[eventName].length ; i++) {
                   handlerObj = map[eventName][i];
                   // call original event handler
                   handlerObj.handler.apply(this, arguments);
@@ -29,7 +30,7 @@ angular.module('kanbanzillaApp')
                     break;
                   }
                 }
-              });
+              }, options.timeout);
 
               element.on( eventName, function (event) {
                 debounced.apply(this, arguments);
