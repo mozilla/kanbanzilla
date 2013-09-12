@@ -21,6 +21,8 @@ angular.module('kanbanzillaApp')
         $scope.bugDescription = 'Loading...';
         $scope.lastComment = 'Loading...';
         $scope.archiveable = $scope.ngModel.statuses.indexOf('RESOLVED') !== -1;
+        // Using a separate model for the filtered version in order to properly update
+        // the model when cards are dragged with a filter applied.
         $scope.filteredBugs = $scope.ngModel.bugs;
         $scope.$watch('query', function () {
           $scope.filterBugs();

@@ -2,8 +2,8 @@
 
 angular.module('kanbanzillaApp')
   .controller('BoardCtrl',
-          ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', '$dialog', 'board', '$notification', '$route', 'bugzillaAuth',
-  function ($scope,   $location,   $q,  Bugzilla,   Boards,   $routeParams,   $window,   $dialog,   board,   $notification,   $route,   bugzillaAuth) {
+          ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', '$dialog', 'board', '$notification', '$route', 'bugzillaAuth', '$timeout',
+  function ($scope,   $location,   $q,  Bugzilla,   Boards,   $routeParams,   $window,   $dialog,   board,   $notification,   $route,   bugzillaAuth,   $timeout) {
 
     // Remembers the last move to be able to revert back
     var revertInfo = {
@@ -66,6 +66,9 @@ angular.module('kanbanzillaApp')
     function updateBug(bug, data, dropColumn) {
       console.log(bug);
       console.log(dropColumn.bugs);
+      $timeout(function() {
+        // revert(bug, dropColumn);
+      });
       // Bugzilla.updateBug(bug.id, data)
       //   .error(function () {
       //     revert(bug, dropColumn);
@@ -73,6 +76,8 @@ angular.module('kanbanzillaApp')
     }
 
     function revert (bug, dropColumn) {
+      // this will revert the card in the actual models but does nothing for
+      // the columns internal filtered version that is diplayed with a filter
       revertInfo.column.bugs.splice(revertInfo.index, 0, bug);
       dropColumn.bugs.splice(dropColumn.bugs.indexOf(bug), 1);
     }
