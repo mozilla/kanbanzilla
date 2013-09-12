@@ -64,10 +64,12 @@ angular.module('kanbanzillaApp')
     // Use this function rather than the Bugzilla.updateBug method
     // as this one also reverts changes on error.
     function updateBug(bug, data, dropColumn) {
-      Bugzilla.updateBug(bug.id, data)
-        .error(function () {
-          revert(bug, dropColumn);
-        });
+      console.log(bug);
+      console.log(dropColumn.bugs);
+      // Bugzilla.updateBug(bug.id, data)
+      //   .error(function () {
+      //     revert(bug, dropColumn);
+      //   });
     }
 
     function revert (bug, dropColumn) {

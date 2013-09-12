@@ -15,17 +15,16 @@ angular.module('kanbanzillaApp')
         workInProcess: '=',
         ngModel: '='
       },
-      controller: ['$scope', 'Bugzilla', 'bugzillaAuth','$dialog', '$window', function ($scope, Bugzilla, bugzillaAuth, $dialog, $window) {
+      controller: ['$scope', 'Bugzilla', 'bugzillaAuth','$dialog', '$window', '$filter',
+          function ($scope,   Bugzilla,   bugzillaAuth,  $dialog,   $window,   $filter) {
 
         $scope.bugDescription = 'Loading...';
         $scope.lastComment = 'Loading...';
         $scope.archiveable = $scope.ngModel.statuses.indexOf('RESOLVED') !== -1;
-
-
-        $scope.archiveAll = function () {
-          // should only apply to the done column. Take all cards and archive
-          // them, thus cleaning up the done column.
-        };
+        $scope.filteredBugs = $scope.ngModel.bugs;
+        $scope.$watch('query', function () {
+          $scope.filterBugs();
+        });
 
         $scope.archiveBug = function (bug) {
           // archive an individual bug.
@@ -54,6 +53,10 @@ angular.module('kanbanzillaApp')
 
         $scope.resetDescription = function () {
           $scope.bugDescription = 'Loading';
+        };
+
+        $scope.filterBugs = function () {
+          $scope.filteredBugs = $filter('filter')($scope.ngModel.bugs, $scope.query);
         };
 
         $scope.getLastComment = function (bug) {
