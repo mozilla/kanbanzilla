@@ -6,3 +6,4 @@ libpeerconnection.log
 server/venv
 server/api.pyc
 npm-debug.log
+docs/_build/

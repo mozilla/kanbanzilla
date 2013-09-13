@@ -22,7 +22,7 @@ For the server side install the requirements with:
 
     cd server
     pip install -r requirements.txt
-    
+
 If you intend to use, for example PostgreSQL instead of SQLite (which is default) then additionally install psycopg2:
 
     pip install psycopg2
@@ -53,7 +53,7 @@ To start the server run:
 To override the memcache URL use:
 
     MEMCACHE_URL=128.0.0.2:8989 python api.py
-    
+
 To override what database to use, set `DATABASE_URI` like this:
 
     DATABASE_URI="postgresql://localhost:5432/kanbanzilla" python api.py
@@ -63,3 +63,13 @@ General notation for connection strings apply as per the [SQLAlchemy documentati
 To run in debug mode (with fancy reloading):
 
     DEBUG=true python api.py
+
+
+### Writing Documentation
+
+You need to install `sphinx`:
+
+    cd docs
+    pip install sphinx
+    make html
+    open _build/html/index.html
