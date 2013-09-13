@@ -10,7 +10,7 @@
     "angular-sanitize": "~1.0.5",
     "font-awesome": "~3.2.1",
     "angular-ui-select2": "latest",
-    "animate.css": "latest",
+    "lodash": "latest",
     "jquery-ui": "latest",
     "angular-bootstrap": "latest",
     "test-angular-notifications": "latest"
