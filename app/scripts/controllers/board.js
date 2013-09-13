@@ -72,8 +72,6 @@ angular.module('kanbanzillaApp')
     }
 
     function revert (bug, dropColumn) {
-      // this will revert the card in the actual models but does nothing for
-      // the columns internal filtered version that is diplayed with a filter
       ColumnMap.getColumn(revertInfo.column.name).insertBug(bug, revertInfo.index);
       ColumnMap.getColumn(dropColumn.name).removeBug(bug);
     }

@@ -34,16 +34,15 @@ angular.module('kanbanzillaApp')
           if(!$window.confirm('Archiving a Bug will mark it as VERIFIED with the resolution it currently has. Are you sure you want to do archive this bug?')){
             return;
           }
-          var index = $scope.ngModel.bugs.indexOf(bug);
-          $scope.ngModel.bugs.splice(index, 1);
+          var index = $scope.removeBug(bug);
           Bugzilla.updateBug(bug.id, {status: 'VERIFIED'})
             .success(function (data) {
               if(data.ok !== 1) {
-                $scope.ngModel.bugs.splice(index, 0, bug);
+                $scope.insertBug(bug, index);
               }
             })
             .error(function () {
-              $scope.ngModel.bugs.splice(index, 0, bug);
+              $scope.insertBug(bug, index);
             });
         };
 
@@ -101,10 +100,13 @@ angular.module('kanbanzillaApp')
         };
 
         $scope.removeBug = function (bug) {
-          $scope.ngModel.bugs.splice($scope.ngModel.bugs.indexOf(bug), 1);
+          var index = $scope.ngModel.bugs.indexOf(bug);
+          $scope.ngModel.bugs.splice(index, 1);
           if($scope.query !== undefined) {
-            $scope.filteredBugs.splice($scope.filteredBugs.indexOf(bug), 1);
+            index = $scope.filteredBugs.indexOf(bug);
+            $scope.filteredBugs.splice(index, 1);
           }
+          return index;
         };
 
         $scope.insertBug = function (bug, index) {
