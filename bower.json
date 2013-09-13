@@ -12,7 +12,6 @@
     "angular-ui-select2": "latest",
     "animate.css": "latest",
     "jquery-ui": "latest",
-    "angular-ui-sortable": "latest",
     "angular-bootstrap": "latest",
     "test-angular-notifications": "latest"
   },
