@@ -2,8 +2,8 @@
 
 angular.module('kanbanzillaApp')
   .controller('BoardCtrl',
-          ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', '$dialog', 'board', '$notification', '$route', 'bugzillaAuth', '$timeout',
-  function ($scope,   $location,   $q,  Bugzilla,   Boards,   $routeParams,   $window,   $dialog,   board,   $notification,   $route,   bugzillaAuth,   $timeout) {
+          ['$scope', '$location', '$q','Bugzilla', 'Boards', '$routeParams', '$window', '$dialog', 'board', '$notification', '$route', 'bugzillaAuth', '$timeout', 'ColumnMap',
+  function ($scope,   $location,   $q,  Bugzilla,   Boards,   $routeParams,   $window,   $dialog,   board,   $notification,   $route,   bugzillaAuth,   $timeout,   ColumnMap) {
 
     // Remembers the last move to be able to revert back
     var revertInfo = {
@@ -54,6 +54,7 @@ angular.module('kanbanzillaApp')
       });
 
     function getColumn (name) {
+      // just gets the data model, not the directive
       for (var i = 0 ; i < $scope.boardInfo.columns.length ; i++){
         if($scope.boardInfo.columns[i].name === name) {
           return $scope.boardInfo.columns[i];
@@ -64,22 +65,17 @@ angular.module('kanbanzillaApp')
     // Use this function rather than the Bugzilla.updateBug method
     // as this one also reverts changes on error.
     function updateBug(bug, data, dropColumn) {
-      console.log(bug);
-      console.log(dropColumn.bugs);
-      $timeout(function() {
-        // revert(bug, dropColumn);
-      });
-      // Bugzilla.updateBug(bug.id, data)
-      //   .error(function () {
-      //     revert(bug, dropColumn);
-      //   });
+      Bugzilla.updateBug(bug.id, data)
+        .error(function () {
+          revert(bug, dropColumn);
+        });
     }
 
     function revert (bug, dropColumn) {
       // this will revert the card in the actual models but does nothing for
       // the columns internal filtered version that is diplayed with a filter
-      revertInfo.column.bugs.splice(revertInfo.index, 0, bug);
-      dropColumn.bugs.splice(dropColumn.bugs.indexOf(bug), 1);
+      ColumnMap.getColumn(revertInfo.column.name).insertBug(bug, revertInfo.index);
+      ColumnMap.getColumn(dropColumn.name).removeBug(bug);
     }
 
     function receiveHandler (data, ui) {

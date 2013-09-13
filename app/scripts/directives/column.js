@@ -15,9 +15,10 @@ angular.module('kanbanzillaApp')
         workInProcess: '=',
         ngModel: '='
       },
-      controller: ['$scope', 'Bugzilla', 'bugzillaAuth','$dialog', '$window', '$filter',
-          function ($scope,   Bugzilla,   bugzillaAuth,  $dialog,   $window,   $filter) {
+      controller: ['$scope', 'Bugzilla', 'bugzillaAuth','$dialog', '$window', '$filter', 'ColumnMap',
+          function ($scope,   Bugzilla,   bugzillaAuth,  $dialog,   $window,   $filter,   ColumnMap) {
 
+        ColumnMap.registerColumn($scope.ngModel.name, $scope);
         $scope.bugDescription = 'Loading...';
         $scope.lastComment = 'Loading...';
         $scope.archiveable = $scope.ngModel.statuses.indexOf('RESOLVED') !== -1;
@@ -97,6 +98,20 @@ angular.module('kanbanzillaApp')
               });
             }
           });
+        };
+
+        $scope.removeBug = function (bug) {
+          $scope.ngModel.bugs.splice($scope.ngModel.bugs.indexOf(bug), 1);
+          if($scope.query !== undefined) {
+            $scope.filteredBugs.splice($scope.filteredBugs.indexOf(bug), 1);
+          }
+        };
+
+        $scope.insertBug = function (bug, index) {
+          $scope.ngModel.bugs.splice(index, 0, bug);
+          if($scope.query !== undefined) {
+            $scope.filteredBugs.splice(index, 0, bug);
+          }
         };
 
       }]
