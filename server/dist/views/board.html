@@ -1,7 +1,7 @@
 <div class="board-header">
   <div class="board-header-inner">
     <h1>{{boardInfo.board.name}}</h1>
-    <input type="text" id="board-search" class="input-medium search-query" placeholder="Search..." grow-when-clicked="350" ng-model="query" debounce-model-update="">
+    <input type="text" id="board-search" class="input-medium search-query" placeholder="Search..." grow-when-clicked="350" debounce-model-update="300ms" ng-model="query">
     <div class="board-actions pull-right">
       <button class="btn" ng-click="newBug()"><i class="icon-plus-sign"></i></button>
       <button class="btn" ng-click="refresh()"><i class="icon-refresh"></i></button>
@@ -40,7 +40,7 @@
 <div class="board-dropzone unselectable" auto-fill-height="">
   <div class="board-dropzone-inner" fancy-scroll-horizontally="">
 
-    <div kbcolumn="" ng-repeat="column in boardInfo.columns" display-title="{{column.name}}" ng-model="column" sort-options="sortableOptions" query="query"></div>
+    <div kbcolumn="" ng-repeat="column in boardInfo.columns" display-title="{{column.name}}" ng-model="column" sort-options="sortableOptions" work-in-process="35" query="query"></div>
 
 
   </div>
