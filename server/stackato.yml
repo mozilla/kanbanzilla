@@ -1,4 +1,4 @@
-name: kanbanzilla-jakem
+name: kanbanzilla
 framework:
     type: python
     runtime: python27
