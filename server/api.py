@@ -1,24 +1,28 @@
-import datetime
-import re
-import json
-import os
 import collections
+import datetime
+import json
+import logging
+import os
+import re
 import urllib
+import uuid
 
-import pytz
 from flask import Flask, request, make_response, abort, jsonify, send_file
 from flask.views import MethodView
 from flask.ext.sqlalchemy import SQLAlchemy
 
+import pytz
+
 from werkzeug.contrib.cache import MemcachedCache
 from werkzeug.routing import BaseConverter
+
 import requests
-import uuid
+
 
 MEMCACHE_URL = os.environ.get('MEMCACHE_URL', '127.0.0.1:11211').split(',')
 DEBUG = os.environ.get('DEBUG', False) in ('true', '1')
 SQLALCHEMY_DATABASE_URI = os.environ.get(
-    'DATABASE_URI',
+    'POSTGRESQL_URL',
     'sqlite:////tmp/kanbanzilla.db'
 )
 
@@ -31,7 +35,6 @@ db = SQLAlchemy(app)
 
 login_url = 'https://bugzilla.mozilla.org/index.cgi'
 bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
-
 
 cache = MemcachedCache(MEMCACHE_URL)
 
@@ -55,6 +58,13 @@ whiteboard_regexes = dict(
     for each in COLUMNS
 )
 any_whiteboard_tag = re.compile('kanbanzilla\[[^]]+\]')
+
+
+# Add some logging in.
+log_dir = os.path.join(os.path.dirname(__file__), '..', 'logs')
+file_handler = logging.FileHandler(os.path.join(log_dir, 'kanbanzilla.log'))
+file_handler.setLevel(logging.DEBUG)
+app.logger.addHandler(file_handler)
 
 
 class RegexConverter(BaseConverter):
