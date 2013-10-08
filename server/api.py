@@ -57,13 +57,13 @@ whiteboard_regexes = dict(
 any_whiteboard_tag = re.compile('kanbanzilla\[[^]]+\]')
 
 
-
 class RegexConverter(BaseConverter):
     def __init__(self, url_map, *items):
         super(RegexConverter, self).__init__(url_map)
         self.regex = items[0]
 
 app.url_map.converters['regex'] = RegexConverter
+
 
 class Board(db.Model):
     __tablename__ = 'boards'
@@ -95,7 +95,8 @@ class ProductComponent(db.Model):
     board_id = db.Column(db.Integer, db.ForeignKey('boards.id'))
     board = db.relationship(
         'Board',
-        backref=db.backref('productcomponents', lazy='dynamic', cascade='all,delete')
+        backref=db.backref('productcomponents', lazy='dynamic',
+                           cascade='all,delete')
     )
 
     def __init__(self, product, component, board):
@@ -221,7 +222,8 @@ class BoardView(MethodView):
 
         bug_data = fetch_bugs(
             components,
-            ('id', 'summary', 'status', 'whiteboard', 'last_change_time', 'component'),
+            ('id', 'summary', 'status', 'whiteboard', 'last_change_time',
+             'component'),
             token=token,
             changed_after=changed_after,
         )
@@ -278,7 +280,8 @@ class BoardView(MethodView):
             return
         user_info = cache_get('auth:%s' % token)
         try:
-            board, = Board.query.filter_by(identifier=id, creator=user_info['username'])
+            board, = Board.query.filter_by(identifier=id,
+                                           creator=user_info['username'])
         except ValueError:
             abort(404)
             return
@@ -293,13 +296,14 @@ class BoardView(MethodView):
             return
         user_info = cache_get('auth:%s' % token)
         try:
-            board, = Board.query.filter_by(identifier=id, creator=user_info['username'])
+            board, = Board.query.filter_by(identifier=id,
+                                           creator=user_info['username'])
         except ValueError:
             abort(404)
             return
         # print board.name
-        # need to go through and change the components in the PC child rows to the new components
-        # and if necessary remove or add rows.
+        # need to go through and change the components in the PC child rows
+        # to the new components and if necessary remove or add rows.
         board.name = request.json.get('name', board.name)
         board.description = request.json.get('description', board.description)
         db.session.commit()
@@ -329,7 +333,8 @@ class BoardComponentsView(MethodView):
         db.session.add(pc)
         db.session.commit()
         print 'Should add a new component to this board'
-        print 'Component: {0}, Product: {1} - should be added to board {2}'.format(comp, prod, id)
+        print ('Component: {0}, Product: {1} - should be added to board {2}'
+               .format(comp, prod, id))
         return make_response(jsonify(request.json))
 
     def delete(self, id):
@@ -349,7 +354,9 @@ class BoardComponentsView(MethodView):
         comp = request.json.get('component',  '')
         prod = request.json.get('product', '')
 
-        db.session.query(ProductComponent).filter_by(product=prod, component=comp, board=board).delete()
+        (db.session.query(ProductComponent)
+           .filter_by(product=prod, component=comp, board=board)
+           .delete())
         db.session.commit()
         return make_response(jsonify({'status': 'success'}))
 
@@ -398,6 +405,7 @@ class LoginView(MethodView):
             response = make_response(jsonify(login_response))
             return response
 
+
 class BugView(MethodView):
 
     def put(self, id):
@@ -428,7 +436,8 @@ class BugView(MethodView):
                 'assigned_to',
             )
         )
-        wiped_whiteboard = any_whiteboard_tag.sub('', bug_data.get('whiteboard', ''))
+        wiped_whiteboard = (any_whiteboard_tag.sub('',
+                            bug_data.get('whiteboard', '')))
 
         if bug_data['status'] == 'RESOLVED' and status == 'ASSIGNED':
             # if you really want to do this, perhaps we can do two updates;
@@ -444,7 +453,8 @@ class BugView(MethodView):
             # something's left
             wiped_whiteboard = '%s ' % wiped_whiteboard.rstrip()
         if whiteboard:
-            params['whiteboard'] = wiped_whiteboard + 'kanbanzilla[%s]' % whiteboard
+            params['whiteboard'] = (wiped_whiteboard +
+                                    'kanbanzilla[%s]' % whiteboard)
         elif status:
             params['status'] = status
             resolution = resolution or bug_data.get('resolution')
@@ -479,6 +489,7 @@ class ConfigView(MethodView):
             config = json.loads(r.text)
             cache_set('config', config, DAY)
         return make_response(jsonify(config))
+
 
 def augment_with_auth(request_arguments, token):
     user_cache_key = 'auth:%s' % token
@@ -525,7 +536,8 @@ def fetch_bug(id, token=None, refresh=False, fields=None):
     return _fetch_bugs(id=id, token=token, fields=fields)
 
 
-def _fetch_bugs(id=None, components=None, fields=None, token=None, changed_after=None):
+def _fetch_bugs(id=None, components=None, fields=None, token=None,
+                changed_after=None):
     params = {}
 
     if fields:
@@ -565,7 +577,8 @@ def update_bug(id, params, token):
     augment_with_auth(params, token)
     url = bugzilla_url
     url += '/bug/%s' % id
-    url += '?' + urllib.urlencode({'cookie': params.pop('cookie'), 'userid': params.pop('userid')})
+    url += '?' + urllib.urlencode({'cookie': params.pop('cookie'),
+                                   'userid': params.pop('userid')})
 
     r = requests.put(
         url,
@@ -594,16 +607,16 @@ def api_proxy(path):
     return r.text
 
 
-"""
-Workaround for grunt/yeoman being very non-friendly towards a single
-static-folder. Will try to fix this issue at some point in the future.
-"""
 @app.route('/<regex("styles|scripts|views|images|font"):start>/<path:path>')
 def static_stuff(start, path):
+    """
+    Workaround for grunt/yeoman being very non-friendly towards a single
+    static-folder. Will try to fix this issue at some point in the future.
+    """
     return send_file('dist/%s/%s' % (start, path))
 
 
-@app.route('/', defaults={'path':''})
+@app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
     # path = path or 'index.html'
@@ -612,7 +625,8 @@ def catch_all(path):
 
 
 app.add_url_rule('/api/board/<id>', view_func=BoardView.as_view('board'))
-app.add_url_rule('/api/board/<id>/component', view_func=BoardComponentsView.as_view('components'))
+app.add_url_rule('/api/board/<id>/component',
+                 view_func=BoardComponentsView.as_view('components'))
 app.add_url_rule('/api/board', view_func=BoardsView.as_view('boards'))
 app.add_url_rule('/api/configuration', view_func=ConfigView.as_view('config'))
 app.add_url_rule('/api/bug/<int:id>', view_func=BugView.as_view('bug'))
