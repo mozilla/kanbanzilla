@@ -41,15 +41,11 @@ cache = MemcachedCache(MEMCACHE_URL)
 COLUMNS = [
     {"name": "Backlog",
      "statuses": ["NEW", "UNCONFIRMED"]},
-    {"name": "Needs Investigation",
-     "statuses": []},
-    {"name": "Ready to work on",
-     "statuses": []},
     {"name": "Working on",
      "statuses": ["ASSIGNED"]},
-    # {"name": "Testing",
-    #  "statuses": ["REOPENED", "RESOLVED"]},
-    {"name": "Done",
+    {"name": "Review",
+     "statuses": []},
+    {"name": "Testing",
      "statuses": ["RESOLVED"]},
 ]
 
@@ -148,6 +144,8 @@ class BoardsView(MethodView):
         description = request.json['description']
         board_id = uuid.uuid4().hex
 
+        user_info = {'username': 'amckay@mozilla.com'}
+
         board = Board(
             board_id,
             name,
@@ -233,7 +231,7 @@ class BoardView(MethodView):
         bug_data = fetch_bugs(
             components,
             ('id', 'summary', 'status', 'whiteboard', 'last_change_time',
-             'component'),
+             'component', 'assigned_to'),
             token=token,
             changed_after=changed_after,
         )
@@ -246,6 +244,7 @@ class BoardView(MethodView):
                 'id': bug['id'],
                 'summary': bug['summary'],
                 'component': bug['component'],
+                'assigned_to': bug['assigned_to']
             }
             bugs_by_column[column_name].append(bug_info)
 
