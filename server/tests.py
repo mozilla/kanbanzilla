@@ -1,5 +1,4 @@
 import unittest
-from datetime import datetime
 
 from api import sort_bugs
 
@@ -9,7 +8,7 @@ def bug(id, **kw):
         'id': id,
         'assigned_to': '',
         'target_milestone': '',
-        'last_change_time': datetime.now(),
+        'last_change_time': '2013-07-17T19:01:18Z',
         'whiteboard': '',
         'status': 'NEW',
         'summary': '',
@@ -36,6 +35,10 @@ class TestBugs(unittest.TestCase):
     def test_assigned_milestone(self):
         bugs = sort_bugs([bug(1, assigned_to='andy', target_milestone='yes')])
         assert self.bugs_in(bugs, 'Working on', 1)
+
+    def test_not_milestone(self):
+        bugs = sort_bugs([bug(1, assigned_to='andy', target_milestone='---')])
+        assert self.bugs_in(bugs, 'Backlog', 1)
 
     def test_assigned(self):
         bugs = sort_bugs([bug(1, status='ASSIGNED')])

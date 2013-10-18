@@ -224,12 +224,16 @@ def sort_bugs(bugs):
 
 
     for bug in bugs:
-        last_change_time = bug.pop('last_change_time')
+        last_change_time = datetime.datetime.strptime(
+            bug.pop('last_change_time'),
+            '%Y-%m-%dT%H:%M:%SZ'
+        )
 
         status = bug['status']
         # We are too lazy to assign bugs
         if status in ['NEW', 'UNCONFIRMED']:
-            if bug['assigned_to'] and bug['target_milestone']:
+            if (bug['assigned_to'] and
+                bug['target_milestone'] not in ['', '---']):
                 status = 'ASSIGNED'
 
         if last_change_time > latest_change_time:
