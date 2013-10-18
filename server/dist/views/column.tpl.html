@@ -7,8 +7,7 @@
 
         <li class="card" ng-repeat="bug in filteredBugs | limitTo: workInProcess">
           <div class="card-header">
-            {{bug.component}}<br>
-            <strong>{{bug.assigned_to['name'] }}</strong>
+            <strong>{{ bug.assigned_to['name'] }}</strong> &bull; {{ bug.target_milestone }}
           </div>
           <div class="card-body">
             {{bug.summary | truncateByCharsAndEndWith : 200 : '...' }}

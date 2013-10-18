@@ -31,6 +31,7 @@ MONTH = DAY * 30
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+app.config['SQLALCHEMY_BINDS'] = {'__all__': SQLALCHEMY_DATABASE_URI}
 db = SQLAlchemy(app)
 
 login_url = 'https://bugzilla.mozilla.org/index.cgi'
@@ -38,19 +39,24 @@ bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
 
 cache = MemcachedCache(MEMCACHE_URL)
 
+# The higher priorities get processed first.
 COLUMNS = [
     {"name": "Backlog",
-     "statuses": ["NEW", "UNCONFIRMED"]},
+     "statuses": ["NEW", "UNCONFIRMED"],
+     "priority": 0},
     {"name": "Working on",
-     "statuses": ["ASSIGNED"]},
+     "statuses": ["ASSIGNED"],
+     "priority": 0},
     {"name": "Review",
-     "statuses": []},
+     "statuses": [],
+     "priority": 0},
     {"name": "Testing",
-     "statuses": ["RESOLVED"]},
+     "statuses": ["RESOLVED"],
+     "priority": 1},
 ]
 
 whiteboard_regexes = dict(
-    (each['name'], re.compile('kanbanzilla\[%s\]' % re.escape(each['name'])))
+    (each['name'], re.compile('kanbanzilla\[(%s)\]' % re.escape(each['name'])))
     for each in COLUMNS
 )
 any_whiteboard_tag = re.compile('kanbanzilla\[[^]]+\]')
@@ -200,12 +206,68 @@ class BoardsView(MethodView):
         return response
 
 
+def sort_bugs(bugs):
+    bugs_by_column = collections.defaultdict(list)
+    latest_change_time = datetime.datetime.min
+
+    _COLUMNS = list(reversed(sorted(COLUMNS, key=lambda k: k['priority'])))
+
+    def keep(column_name, bug):
+        bug_info = {
+            'id': bug['id'],
+            'summary': bug['summary'],
+            'component': bug['component'],
+            'assigned_to': bug['assigned_to'],
+            'target_milestone': bug['target_milestone']
+        }
+        bugs_by_column[column_name].append(bug_info)
+
+
+    for bug in bugs:
+        last_change_time = bug.pop('last_change_time')
+
+        status = bug['status']
+        # We are too lazy to assign bugs
+        if status in ['NEW', 'UNCONFIRMED']:
+            if bug['assigned_to'] and bug['target_milestone']:
+                status = 'ASSIGNED'
+
+        if last_change_time > latest_change_time:
+            latest_change_time = last_change_time
+
+        whiteboard_column = None
+        for name, regex in whiteboard_regexes.items():
+            try:
+                whiteboard_column = regex.findall(bug['whiteboard'])[0]
+            except IndexError:
+                pass
+
+        for col in _COLUMNS:
+            if (whiteboard_column == col['name']
+                or status in col['statuses']):
+                keep(col['name'], bug)
+                break
+
+    columns = []
+    for each in COLUMNS:
+        columns.append({
+            'name': each['name'],
+            'bugs': bugs_by_column[each['name']],
+            'statuses': each['statuses'],
+        })
+
+    return columns, latest_change_time
+
+
 class BoardView(MethodView):
 
     def get(self, id):
         token = request.cookies.get('token')
         data = {}
         changed_after = request.args.get('since')
+
+        if not changed_after:
+            changed_after = '2013-10-01'
 
         try:
             board, = Board.query.filter_by(identifier=id)
@@ -231,52 +293,12 @@ class BoardView(MethodView):
         bug_data = fetch_bugs(
             components,
             ('id', 'summary', 'status', 'whiteboard', 'last_change_time',
-             'component', 'assigned_to'),
+             'component', 'assigned_to', 'target_milestone'),
             token=token,
             changed_after=changed_after,
         )
 
-        bugs_by_column = collections.defaultdict(list)
-        latest_change_time = None
-
-        def keep(column_name, bug):
-            bug_info = {
-                'id': bug['id'],
-                'summary': bug['summary'],
-                'component': bug['component'],
-                'assigned_to': bug['assigned_to']
-            }
-            bugs_by_column[column_name].append(bug_info)
-
-        for bug in bug_data['bugs']:
-            last_change_time = bug.pop('last_change_time')
-
-            if last_change_time > latest_change_time:
-                latest_change_time = last_change_time
-            # which named column should this go into?
-            whiteboard_found = False
-            for name, regex in whiteboard_regexes.items():
-                if regex.findall(bug['whiteboard']):
-                    keep(name, bug)
-                    whiteboard_found = True
-
-            if whiteboard_found:
-                continue
-
-            for col in COLUMNS:
-                if bug['status'] in col['statuses']:
-                    keep(col['name'], bug)
-                    break
-
-        columns = []
-        for each in COLUMNS:
-            columns.append({
-                'name': each['name'],
-                'bugs': bugs_by_column[each['name']],
-                'statuses': each['statuses'],
-            })
-
-        data['columns'] = columns
+        data['columns'], latest_change_time = sort_bugs(bug_data['bugs'])
         if latest_change_time:
             data['latest_change_time'] = latest_change_time
 
