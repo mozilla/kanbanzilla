@@ -1,9 +1,10 @@
 node_modules
+*.py[co]
 .tmp
 .sass-cache
 app/components
 libpeerconnection.log
+server/local.py
 server/venv
-server/api.pyc
 npm-debug.log
 docs/_build/

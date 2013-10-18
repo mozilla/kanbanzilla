@@ -18,6 +18,11 @@ from werkzeug.routing import BaseConverter
 
 import requests
 
+try:
+    # A place to store local stuff.
+    import local
+except ImportError:
+    local = None
 
 MEMCACHE_URL = os.environ.get('MEMCACHE_URL', '127.0.0.1:11211').split(',')
 DEBUG = os.environ.get('DEBUG', False) in ('true', '1')
@@ -490,6 +495,10 @@ class BugView(MethodView):
         if whiteboard:
             params['whiteboard'] = (wiped_whiteboard +
                                     'kanbanzilla[%s]' % whiteboard)
+            if whiteboard == 'Review':
+                if local:
+                    local.notify(id)
+
         elif status:
             params['status'] = status
             resolution = resolution or bug_data.get('resolution')
