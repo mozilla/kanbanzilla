@@ -16,11 +16,14 @@ A kanban board integrated with bugzilla
 - - - - - - -
 
 ### Installation
-We'll assume you've already got node and ruby installed.
+We'll assume you've already got node and ruby installed.  Note that Ruby is 
+only required so that compass can be used.  If your OS comes with Ruby and/or
+compass pre-installed, you're all set.
 
-For the server side install the requirements with:
+For the server side setup the requirements with:
 
     cd server
+    virtualenv `pwd`/venv
     pip install -r requirements.txt
 
 If you intend to use, for example PostgreSQL instead of SQLite (which is default) then additionally install psycopg2:
