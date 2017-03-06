@@ -1,24 +1,33 @@
-import datetime
-import re
-import json
-import os
 import collections
+import datetime
+import json
+import logging
+import os
+import re
 import urllib
+import uuid
 
-import pytz
 from flask import Flask, request, make_response, abort, jsonify, send_file
 from flask.views import MethodView
 from flask.ext.sqlalchemy import SQLAlchemy
 
+import pytz
+
 from werkzeug.contrib.cache import MemcachedCache
 from werkzeug.routing import BaseConverter
+
 import requests
-import uuid
+
+try:
+    # A place to store local stuff.
+    import local
+except ImportError:
+    local = None
 
 MEMCACHE_URL = os.environ.get('MEMCACHE_URL', '127.0.0.1:11211').split(',')
 DEBUG = os.environ.get('DEBUG', False) in ('true', '1')
 SQLALCHEMY_DATABASE_URI = os.environ.get(
-    'DATABASE_URI',
+    'POSTGRESQL_URL',
     'sqlite:////tmp/kanbanzilla.db'
 )
 
@@ -27,35 +36,42 @@ MONTH = DAY * 30
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+app.config['SQLALCHEMY_BINDS'] = {'__all__': SQLALCHEMY_DATABASE_URI}
 db = SQLAlchemy(app)
 
 login_url = 'https://bugzilla.mozilla.org/index.cgi'
 bugzilla_url = 'https://api-dev.bugzilla.mozilla.org/latest'
 
-
 cache = MemcachedCache(MEMCACHE_URL)
 
+# The higher priorities get processed first.
 COLUMNS = [
     {"name": "Backlog",
-     "statuses": ["NEW", "UNCONFIRMED"]},
-    {"name": "Needs Investigation",
-     "statuses": []},
-    {"name": "Ready to work on",
-     "statuses": []},
+     "statuses": ["NEW", "UNCONFIRMED"],
+     "priority": 0},
     {"name": "Working on",
-     "statuses": ["ASSIGNED"]},
-    # {"name": "Testing",
-    #  "statuses": ["REOPENED", "RESOLVED"]},
-    {"name": "Done",
-     "statuses": ["RESOLVED"]},
+     "statuses": ["ASSIGNED"],
+     "priority": 0},
+    {"name": "Review",
+     "statuses": [],
+     "priority": 0},
+    {"name": "Testing",
+     "statuses": ["RESOLVED"],
+     "priority": 1},
 ]
 
 whiteboard_regexes = dict(
-    (each['name'], re.compile('kanbanzilla\[%s\]' % re.escape(each['name'])))
+    (each['name'], re.compile('kanbanzilla\[(%s)\]' % re.escape(each['name'])))
     for each in COLUMNS
 )
 any_whiteboard_tag = re.compile('kanbanzilla\[[^]]+\]')
 
+
+# Add some logging in.
+log_dir = os.path.join(os.path.dirname(__file__), '..', 'logs')
+file_handler = logging.FileHandler(os.path.join(log_dir, 'kanbanzilla.log'))
+file_handler.setLevel(logging.DEBUG)
+app.logger.addHandler(file_handler)
 
 
 class RegexConverter(BaseConverter):
@@ -64,6 +80,7 @@ class RegexConverter(BaseConverter):
         self.regex = items[0]
 
 app.url_map.converters['regex'] = RegexConverter
+
 
 class Board(db.Model):
     __tablename__ = 'boards'
@@ -95,7 +112,8 @@ class ProductComponent(db.Model):
     board_id = db.Column(db.Integer, db.ForeignKey('boards.id'))
     board = db.relationship(
         'Board',
-        backref=db.backref('productcomponents', lazy='dynamic', cascade='all,delete')
+        backref=db.backref('productcomponents', lazy='dynamic',
+                           cascade='all,delete')
     )
 
     def __init__(self, product, component, board):
@@ -136,6 +154,8 @@ class BoardsView(MethodView):
         components = request.json['components']
         description = request.json['description']
         board_id = uuid.uuid4().hex
+
+        user_info = {'username': 'amckay@mozilla.com'}
 
         board = Board(
             board_id,
@@ -191,12 +211,72 @@ class BoardsView(MethodView):
         return response
 
 
+def sort_bugs(bugs):
+    bugs_by_column = collections.defaultdict(list)
+    latest_change_time = datetime.datetime.min
+
+    _COLUMNS = list(reversed(sorted(COLUMNS, key=lambda k: k['priority'])))
+
+    def keep(column_name, bug):
+        bug_info = {
+            'id': bug['id'],
+            'summary': bug['summary'],
+            'component': bug['component'],
+            'assigned_to': bug['assigned_to'],
+            'target_milestone': bug['target_milestone']
+        }
+        bugs_by_column[column_name].append(bug_info)
+
+
+    for bug in bugs:
+        last_change_time = datetime.datetime.strptime(
+            bug.pop('last_change_time'),
+            '%Y-%m-%dT%H:%M:%SZ'
+        )
+
+        status = bug['status']
+        # We are too lazy to assign bugs
+        if status in ['NEW', 'UNCONFIRMED']:
+            if (bug['assigned_to'] and
+                bug['target_milestone'] not in ['', '---']):
+                status = 'ASSIGNED'
+
+        if last_change_time > latest_change_time:
+            latest_change_time = last_change_time
+
+        whiteboard_column = None
+        for name, regex in whiteboard_regexes.items():
+            try:
+                whiteboard_column = regex.findall(bug['whiteboard'])[0]
+            except IndexError:
+                pass
+
+        for col in _COLUMNS:
+            if (whiteboard_column == col['name']
+                or status in col['statuses']):
+                keep(col['name'], bug)
+                break
+
+    columns = []
+    for each in COLUMNS:
+        columns.append({
+            'name': each['name'],
+            'bugs': bugs_by_column[each['name']],
+            'statuses': each['statuses'],
+        })
+
+    return columns, latest_change_time
+
+
 class BoardView(MethodView):
 
     def get(self, id):
         token = request.cookies.get('token')
         data = {}
         changed_after = request.args.get('since')
+
+        if not changed_after:
+            changed_after = '2013-10-01'
 
         try:
             board, = Board.query.filter_by(identifier=id)
@@ -221,51 +301,13 @@ class BoardView(MethodView):
 
         bug_data = fetch_bugs(
             components,
-            ('id', 'summary', 'status', 'whiteboard', 'last_change_time', 'component'),
+            ('id', 'summary', 'status', 'whiteboard', 'last_change_time',
+             'component', 'assigned_to', 'target_milestone'),
             token=token,
             changed_after=changed_after,
         )
 
-        bugs_by_column = collections.defaultdict(list)
-        latest_change_time = None
-
-        def keep(column_name, bug):
-            bug_info = {
-                'id': bug['id'],
-                'summary': bug['summary'],
-                'component': bug['component'],
-            }
-            bugs_by_column[column_name].append(bug_info)
-
-        for bug in bug_data['bugs']:
-            last_change_time = bug.pop('last_change_time')
-
-            if last_change_time > latest_change_time:
-                latest_change_time = last_change_time
-            # which named column should this go into?
-            whiteboard_found = False
-            for name, regex in whiteboard_regexes.items():
-                if regex.findall(bug['whiteboard']):
-                    keep(name, bug)
-                    whiteboard_found = True
-
-            if whiteboard_found:
-                continue
-
-            for col in COLUMNS:
-                if bug['status'] in col['statuses']:
-                    keep(col['name'], bug)
-                    break
-
-        columns = []
-        for each in COLUMNS:
-            columns.append({
-                'name': each['name'],
-                'bugs': bugs_by_column[each['name']],
-                'statuses': each['statuses'],
-            })
-
-        data['columns'] = columns
+        data['columns'], latest_change_time = sort_bugs(bug_data['bugs'])
         if latest_change_time:
             data['latest_change_time'] = latest_change_time
 
@@ -278,7 +320,8 @@ class BoardView(MethodView):
             return
         user_info = cache_get('auth:%s' % token)
         try:
-            board, = Board.query.filter_by(identifier=id, creator=user_info['username'])
+            board, = Board.query.filter_by(identifier=id,
+                                           creator=user_info['username'])
         except ValueError:
             abort(404)
             return
@@ -293,13 +336,14 @@ class BoardView(MethodView):
             return
         user_info = cache_get('auth:%s' % token)
         try:
-            board, = Board.query.filter_by(identifier=id, creator=user_info['username'])
+            board, = Board.query.filter_by(identifier=id,
+                                           creator=user_info['username'])
         except ValueError:
             abort(404)
             return
         # print board.name
-        # need to go through and change the components in the PC child rows to the new components
-        # and if necessary remove or add rows.
+        # need to go through and change the components in the PC child rows
+        # to the new components and if necessary remove or add rows.
         board.name = request.json.get('name', board.name)
         board.description = request.json.get('description', board.description)
         db.session.commit()
@@ -329,7 +373,8 @@ class BoardComponentsView(MethodView):
         db.session.add(pc)
         db.session.commit()
         print 'Should add a new component to this board'
-        print 'Component: {0}, Product: {1} - should be added to board {2}'.format(comp, prod, id)
+        print ('Component: {0}, Product: {1} - should be added to board {2}'
+               .format(comp, prod, id))
         return make_response(jsonify(request.json))
 
     def delete(self, id):
@@ -349,7 +394,9 @@ class BoardComponentsView(MethodView):
         comp = request.json.get('component',  '')
         prod = request.json.get('product', '')
 
-        db.session.query(ProductComponent).filter_by(product=prod, component=comp, board=board).delete()
+        (db.session.query(ProductComponent)
+           .filter_by(product=prod, component=comp, board=board)
+           .delete())
         db.session.commit()
         return make_response(jsonify({'status': 'success'}))
 
@@ -398,6 +445,7 @@ class LoginView(MethodView):
             response = make_response(jsonify(login_response))
             return response
 
+
 class BugView(MethodView):
 
     def put(self, id):
@@ -428,7 +476,8 @@ class BugView(MethodView):
                 'assigned_to',
             )
         )
-        wiped_whiteboard = any_whiteboard_tag.sub('', bug_data.get('whiteboard', ''))
+        wiped_whiteboard = (any_whiteboard_tag.sub('',
+                            bug_data.get('whiteboard', '')))
 
         if bug_data['status'] == 'RESOLVED' and status == 'ASSIGNED':
             # if you really want to do this, perhaps we can do two updates;
@@ -444,7 +493,12 @@ class BugView(MethodView):
             # something's left
             wiped_whiteboard = '%s ' % wiped_whiteboard.rstrip()
         if whiteboard:
-            params['whiteboard'] = wiped_whiteboard + 'kanbanzilla[%s]' % whiteboard
+            params['whiteboard'] = (wiped_whiteboard +
+                                    'kanbanzilla[%s]' % whiteboard)
+            if whiteboard == 'Review':
+                if local:
+                    local.notify(id)
+
         elif status:
             params['status'] = status
             resolution = resolution or bug_data.get('resolution')
@@ -479,6 +533,7 @@ class ConfigView(MethodView):
             config = json.loads(r.text)
             cache_set('config', config, DAY)
         return make_response(jsonify(config))
+
 
 def augment_with_auth(request_arguments, token):
     user_cache_key = 'auth:%s' % token
@@ -525,7 +580,8 @@ def fetch_bug(id, token=None, refresh=False, fields=None):
     return _fetch_bugs(id=id, token=token, fields=fields)
 
 
-def _fetch_bugs(id=None, components=None, fields=None, token=None, changed_after=None):
+def _fetch_bugs(id=None, components=None, fields=None, token=None,
+                changed_after=None):
     params = {}
 
     if fields:
@@ -565,7 +621,8 @@ def update_bug(id, params, token):
     augment_with_auth(params, token)
     url = bugzilla_url
     url += '/bug/%s' % id
-    url += '?' + urllib.urlencode({'cookie': params.pop('cookie'), 'userid': params.pop('userid')})
+    url += '?' + urllib.urlencode({'cookie': params.pop('cookie'),
+                                   'userid': params.pop('userid')})
 
     r = requests.put(
         url,
@@ -594,16 +651,16 @@ def api_proxy(path):
     return r.text
 
 
-"""
-Workaround for grunt/yeoman being very non-friendly towards a single
-static-folder. Will try to fix this issue at some point in the future.
-"""
 @app.route('/<regex("styles|scripts|views|images|font"):start>/<path:path>')
 def static_stuff(start, path):
+    """
+    Workaround for grunt/yeoman being very non-friendly towards a single
+    static-folder. Will try to fix this issue at some point in the future.
+    """
     return send_file('dist/%s/%s' % (start, path))
 
 
-@app.route('/', defaults={'path':''})
+@app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
     # path = path or 'index.html'
@@ -612,7 +669,8 @@ def catch_all(path):
 
 
 app.add_url_rule('/api/board/<id>', view_func=BoardView.as_view('board'))
-app.add_url_rule('/api/board/<id>/component', view_func=BoardComponentsView.as_view('components'))
+app.add_url_rule('/api/board/<id>/component',
+                 view_func=BoardComponentsView.as_view('components'))
 app.add_url_rule('/api/board', view_func=BoardsView.as_view('boards'))
 app.add_url_rule('/api/configuration', view_func=ConfigView.as_view('config'))
 app.add_url_rule('/api/bug/<int:id>', view_func=BugView.as_view('bug'))

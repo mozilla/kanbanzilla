@@ -31,7 +31,7 @@ angular.module('kanbanzillaApp')
 
         $scope.archiveBug = function (bug) {
           // archive an individual bug.
-          if(!$window.confirm('Archiving a Bug will mark it as VERIFIED with the resolution it currently has. Are you sure you want to do archive this bug?')){
+          if(!$window.confirm('Archiving a Bug will mark it as VERIFIED with the resolution it currently has. Are you sure you want to archive this bug?')){
             return;
           }
           var index = $scope.removeBug(bug);
